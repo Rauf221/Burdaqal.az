@@ -1,0 +1,250 @@
+/*** 
+
+====================================================================
+	Mobile Menu
+====================================================================
+
+***/
+
+.mobile-menu {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 300px;
+	padding-right: 30px;
+	max-width: 100%;
+	height: 100%;
+	visibility: hidden;
+	z-index: 999999;
+
+	.nav-logo {
+		position: relative;
+		background: #fff;
+		box-shadow: 0px 4px 18px 0px rgba(0, 0, 0, 0.08);
+		padding: 12px 20px;
+
+		// border-bottom: 1px solid $outline;
+		img {
+			max-width: 200px;
+		}
+	}
+
+	.bottom-canvas {
+		padding: 30px 20px 100px;
+		height: 100vh;
+		overflow-y: auto;
+	}
+}
+
+.mobile-menu-visible {
+	overflow: hidden;
+
+	.mobile-menu {
+		visibility: visible;
+
+		.menu-backdrop {
+			opacity: 1;
+
+			visibility: visible;
+			@include transition3;
+		}
+
+		.menu-box {
+			left: 0px;
+			// @include transition5;
+			-webkit-overflow-scrolling: touch;
+			-webkit-transition-duration: 0.5s;
+			transition-duration: 0.5s;
+			-webkit-transition-timing-function: ease;
+			transition-timing-function: ease;
+		}
+	}
+}
+
+.mobile-menu {
+	.menu-backdrop {
+		position: fixed;
+		right: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+		// background: $backdrop;
+		transition: all 0.3s ease 0s;
+		visibility: hidden;
+		opacity: 0;
+		// @include transition3;
+		// transition: all 0.3s ease 0s;
+	}
+
+	.menu-box {
+		position: absolute;
+		left: -300px;
+		top: 0px;
+		width: 100%;
+		height: 100%;
+		max-height: 100%;
+		// overflow-y: auto;
+		background-color: #fff;
+		z-index: 5;
+		border-radius: 0px;
+		// @include transition5;
+		-webkit-overflow-scrolling: touch;
+		-webkit-transition-duration: 0.5s;
+		transition-duration: 0.5s;
+		-webkit-transition-timing-function: ease;
+		transition-timing-function: ease;
+	}
+}
+
+.close-btn {
+	position: fixed;
+	right: 16px;
+	top: 25px;
+	line-height: 30px;
+	width: 30px;
+	text-align: center;
+	font-size: 16px;
+	color: #fff;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	z-index: 9999999999;
+	opacity: 0;
+	visibility: hidden;
+
+	&::before {
+		content: "\e92e";
+		font-family: "icomoon";
+		font-size: 24px;
+		font-weight: 100;
+	}
+}
+
+.mobile-menu-visible .close-btn {
+	visibility: visible;
+	opacity: 1;
+}
+
+.mobile-menu .close-btn:hover {
+	opacity: 0.5;
+}
+
+.mobile-menu .navigation {
+	position: relative;
+	display: block;
+	width: 100%;
+
+	li {
+		position: relative;
+		display: block;
+	}
+}
+
+.mobile-menu .navigation li {
+	position: relative;
+	display: block;
+
+	>ul>li:last-child {
+		border-bottom: none;
+	}
+
+	&.dropdown2 .dropdown2-btn {
+		position: absolute;
+		right: 0px;
+		top: 0px;
+		width: 100%;
+		text-align: end;
+		line-height: 44px;
+		cursor: pointer;
+		z-index: 5;
+
+		&::before {
+			content: '\ea3a';
+			font-family: 'icomoon';
+			font-size: 12px;
+			font-weight: 600;
+			// color: $on-surface;
+			width: 20px;
+			height: 20px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			@include transition3;
+			transform: rotate(90deg);
+		}
+	}
+
+	&.open .dropdown2-btn {
+		&::before {
+			// transform: unset;
+			transform: rotate(180deg);
+		}
+	}
+}
+
+.mobile-menu .navigation li.dropdown2> {
+
+	// a {
+	// 	border-bottom: 1px solid $color-5;
+	// }
+	ul li a {
+		border-bottom: unset;
+		// color: $on-surface;
+	}
+}
+
+.mobile-menu .navigation li.dropdown2 .dropdown2-btn span {
+	opacity: 0;
+}
+
+.mobile-menu .navigation li>ul,
+.mobile-menu .navigation li>ul>li>ul {
+	display: none;
+	background: rgba(31, 75, 67, 0.1);
+	padding: 15px 20px;
+	border-radius: 10px;
+}
+
+.mobile-menu .navigation li>ul>li,
+.mobile-menu .navigation li>ul>li>ul>li {
+	margin-bottom: 0;
+}
+
+.mobile-menu .navigation li>ul>li>a {
+	padding: 7px 0px !important;
+	font-weight: 500;
+}
+
+.mobile-menu .navigation li>ul>li>ul {
+	padding-left: 15px;
+}
+
+.mobile-menu .navigation li>ul>li>ul>li>a {
+	padding-left: 40px;
+}
+
+.mobile-menu .close-btn:hover {
+	opacity: 0.5;
+}
+
+.mobile-menu .navigation li>ul>li:last-child {
+	border-bottom: none;
+}
+
+.mobile-menu .navigation li>a {
+	// font-family: $font-2;
+	position: relative;
+	display: block;
+	font-weight: 600;
+	line-height: 26px;
+	padding: 10px 0px;
+	font-size: 16px;
+	// color: $on-surface;
+	text-transform: capitalize;
+}
+
+.mobile-menu .navigation li:hover>a,
+.mobile-menu .navigation li.current>a,
+.mobile-menu .navigation li.current li.current>a {
+	color: #1F4B43;
+}
