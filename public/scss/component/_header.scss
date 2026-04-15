@@ -288,6 +288,112 @@
 						color: var(--Secondary);
 					}
 				}
+
+				.locale-switcher {
+					position: relative;
+					flex-shrink: 0;
+
+					&__trigger {
+						@include flex(center, center);
+						gap: 8px;
+						min-height: 41px;
+						padding: 0 14px;
+						border: 1px solid var(--Secondary);
+						border-radius: 999px;
+						background: transparent;
+						cursor: pointer;
+						font-family: inherit;
+						font-size: 14px;
+						font-weight: 500;
+						line-height: 1;
+						color: var(--Secondary);
+						@include transition3;
+
+						&:hover {
+							border-color: var(--Primary);
+							color: var(--Primary);
+						}
+					}
+
+					&__code {
+						letter-spacing: 0.02em;
+					}
+
+					&__chev {
+						display: flex;
+						line-height: 0;
+						opacity: 0.85;
+					}
+
+					&__menu {
+						position: absolute;
+						top: calc(100% + 8px);
+						right: 0;
+						min-width: 120px;
+						margin: 0;
+						padding: 8px;
+						list-style: none;
+						background-color: var(--White);
+						border-radius: 16px;
+						border: 1px solid var(--Border);
+						box-shadow: 0px 12px 40px rgba(0, 0, 0, 0.12);
+						z-index: 10050;
+
+						li {
+							margin: 0;
+						}
+					}
+
+					&__option {
+						width: 100%;
+						padding: 10px 14px;
+						border: none;
+						border-radius: 12px;
+						background: transparent;
+						cursor: pointer;
+						font-family: inherit;
+						font-size: 15px;
+						font-weight: 500;
+						text-align: left;
+						color: var(--Secondary);
+						@include transition3;
+
+						&:hover {
+							background-color: rgba(0, 0, 0, 0.05);
+						}
+
+						&.is-active {
+							background-color: var(--Primary);
+							color: var(--White);
+						}
+					}
+
+					&.locale-switcher--inverse {
+						.locale-switcher__trigger {
+							border-color: rgba(255, 255, 255, 0.55);
+							color: var(--White);
+
+							&:hover {
+								border-color: var(--White);
+								color: var(--White);
+								background-color: rgba(255, 255, 255, 0.08);
+							}
+						}
+
+						.locale-switcher__menu .locale-switcher__option {
+							color: var(--Secondary);
+
+							&:hover {
+								background-color: rgba(0, 0, 0, 0.06);
+							}
+
+							&.is-active {
+								background-color: var(--Secondary);
+								color: var(--White);
+							}
+						}
+					}
+				}
 			}
 
 			.mobile-button {

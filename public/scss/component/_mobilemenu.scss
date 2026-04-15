@@ -248,3 +248,49 @@
 .mobile-menu .navigation li.current li.current>a {
 	color: #1F4B43;
 }
+
+.mobile-menu .locale-switcher--mobile {
+	margin-top: 24px;
+	padding-top: 20px;
+	border-top: 1px solid var(--Border);
+}
+
+.mobile-menu .locale-switcher-mobile__label {
+	font-size: 13px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--Text);
+	margin-bottom: 12px;
+}
+
+.mobile-menu .locale-switcher-mobile__pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.mobile-menu .locale-switcher-mobile__pill {
+	min-width: 48px;
+	padding: 10px 16px;
+	border: 1px solid var(--Border);
+	border-radius: 999px;
+	background: transparent;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--Secondary);
+	cursor: pointer;
+	@include transition3;
+
+	&:hover {
+		border-color: var(--Primary);
+		color: var(--Primary);
+	}
+
+	&.is-active {
+		border-color: var(--Primary);
+		background-color: var(--Primary);
+		color: var(--White);
+	}
+}

@@ -1,22 +1,5 @@
 
 'use client'
-import { Swiper, SwiperSlide } from 'swiper/react'
-const slider4Center = {
-	spaceBetween: 28,
-	loop: true,
-	observer: true,
-	observeParents: true,
-	centeredSlides: true,
-	breakpoints: {
-		0: {
-			slidesPerView: 1,
-		},
-		767: {
-			slidesPerView: 2,
-		},
-	},
-}
-
 import CounterNumber from '@/components/elements/CounterNumber'
 import AboutFaqSection from '@/components/sections/AboutFaqSection'
 import Layout from "@/components/layout/Layout"
@@ -31,7 +14,8 @@ export default function About() {
 
 			<Layout breadcrumbTitle="title" mainContentCls="px-20 default">
 				<div>
-					<section className="tf-section vision-mission">
+				{/* /vision-mission */}
+					<section className=" vision-mission">
 						<div className="themesflat-container">
 							<div className="row">
 								<div className="col-12">
@@ -49,59 +33,9 @@ export default function About() {
 							</div>
 						</div>
 					</section>
-					{/* /vision-mission */}
-					{/* slider */}
-					<section className="tf-section-default">
-						<div className="themesflat-container">
-							<div className="row justify-center">
-								<div className="col-xxl-10">
-									<div className="swiper-container slider-4-center">
-										<Swiper {...slider4Center}>
-											<SwiperSlide>
-												<img src="/images/slider/slider-about-1.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-about-2.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-about-3.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-about-4.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-about-1.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-about-2.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-about-1.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-about-2.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-about-3.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-about-4.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-about-1.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-about-2.jpg" alt="" />
-											</SwiperSlide>
-										</Swiper>
-									</div>
-								</div>
-							</div>
-						</div>
-					</section>
-					{/* /slider */}
-					{/* flat-counter */}
-					<section className="tf-section flat-counter">
+					
+					{/* flat-counter
+					<section className=" flat-counter">
 						<div className="themesflat-container">
 							<div className="row">
 								<div className="col-12">
@@ -152,10 +86,10 @@ export default function About() {
 								</div>
 							</div>
 						</div>
-					</section>
+					</section> */}
 					{/* /flat-counter */}
 					{/* luxury-home */}
-					<section className="tf-section luxury-home style-5">
+					<section className=" luxury-home style-5">
 						<div className="themesflat-container">
 							<div className="row justify-between">
 								<div className="col-md-6">
@@ -182,9 +116,9 @@ export default function About() {
 							</div>
 						</div>
 					</section>
-					{/* /luxury-home */}
+					 {/* /luxury-home */}
 					{/* work-with-us */}
-					<section className="tf-section work-with-us style-2 pt-0">
+					{/*<section className=" work-with-us style-2 pt-0">
 						<div className="themesflat-container">
 							<div className="row">
 								<div className="col-12">
@@ -228,10 +162,10 @@ export default function About() {
 								</div>
 							</div>
 						</div>
-					</section>
+					</section> */}
 					{/* /work-with-us */}
 					{/* flat-testimonial */}
-					<section className="tf-section flat-testimonial style-1">
+					{/* <section className=" flat-testimonial style-1">
 						<div className="testimonials">
 							<div className="themesflat-container">
 								<div className="row justify-between">
@@ -285,10 +219,10 @@ export default function About() {
 								</div>
 							</div>
 						</div>
-					</section>
+					</section> */}
 					{/* /flat-testimonial */}
 					{/* flat-experts */}
-					<section className="tf-section flat-experts style-1">
+					<section className=" flat-experts style-1">
 						<div className="themesflat-container">
 							<div className="row">
 								<div className="col-12">
