@@ -1,5 +1,5 @@
 'use client'
-import { usePathname } from 'next/navigation' // Corrected import path
+import { usePathname } from '@/i18n/navigation'
 import { useEffect } from 'react'
 
 export default function AddClassBody() {

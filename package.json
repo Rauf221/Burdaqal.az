@@ -3,23 +3,29 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev",
-        "build": "next build",
+        "dev": "next dev --turbopack",
+        "build": "next build --turbopack",
         "start": "next start",
-        "lint": "next lint",
+        "lint": "eslint .",
         "sass": "sass --watch public/scss/app.scss:public/css/style.css"
     },
     "dependencies": {
-        "next": "14.1.4",
-        "react": "18.2.0",
+        "apexcharts": "^5.10.6",
+        "next": "^16.2.3",
+        "next-intl": "^4.9.1",
+        "react": "^19.2.1",
         "react-apexcharts": "^1.4.1",
         "react-countup": "^6.5.3",
-        "react-dom": "18.2.0",
+        "react-dom": "^19.2.1",
         "react-leaflet": "^4.2.1",
         "react-modal-video": "^2.0.2",
-        "react-scroll-trigger": "^0.6.14",
         "sass": "^1.72.0",
         "swiper": "^11.1.4",
         "wowjs": "^1.1.3"
+    },
+    "devDependencies": {
+        "eslint": "^9.39.4",
+        "eslint-config-next": "^16.2.3",
+        "typescript": "^6.0.2"
     }
 }

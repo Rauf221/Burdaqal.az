@@ -1,10 +1,11 @@
 'use client'
+import { Link } from '@/i18n/navigation'
 import data from "@/utils/carousel.json"
 import { Autoplay, Navigation, Pagination } from "swiper/modules"
 import { Swiper, SwiperSlide } from "swiper/react"
 
 
-export default function SliderBoxDream({ start, end, path }) {
+export default function SliderBoxDream({ start, end, path, detailHref }) {
 	const sliderBoxDream = {
 		modules: [Navigation, Pagination, Autoplay],
 		spaceBetween: 0,
@@ -32,7 +33,13 @@ export default function SliderBoxDream({ start, end, path }) {
 					{data.slice(start, end).map((item, i) => (
 						<SwiperSlide key={item.id ?? `${start}-${i}`}>
 							<div className="w-full">
-								<img src={`/images/${path}-${item.id}.jpg`} alt="" />
+								{detailHref ? (
+									<Link href={detailHref} className="block">
+										<img src={`/images/${path}-${item.id}.jpg`} alt="" />
+									</Link>
+								) : (
+									<img src={`/images/${path}-${item.id}.jpg`} alt="" />
+								)}
 							</div>
 						</SwiperSlide>
 					))}

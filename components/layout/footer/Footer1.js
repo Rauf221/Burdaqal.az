@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from '@/i18n/navigation'
 
 export default function Footer1({ footerCls }) {
 	return (
@@ -68,9 +68,8 @@ export default function Footer1({ footerCls }) {
 								<ul className="navigation-menu-footer">
 									<li><Link href="/about">About</Link></li>
 									<li><Link href="/contact">Contact</Link></li>
-									<li><Link href="/faq">Faq</Link></li>
+									<li><Link href="/about#faq">Faq</Link></li>
 									<li><Link href="/blog-list-v1">Blog</Link></li>
-									<li><Link href="/pricing">Pricing Plans</Link></li>
 									<li><Link href="/#">Privacy Policy</Link></li>
 									<li><Link href="/#">Terms &amp; Conditions</Link></li>
 								</ul>

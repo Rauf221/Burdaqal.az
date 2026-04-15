@@ -1,6 +1,6 @@
 'use client'
 import { blogPostPath } from "@/utils/blogRoutes"
-import Link from "next/link"
+import { Link } from '@/i18n/navigation'
 import { Swiper, SwiperSlide } from "swiper/react"
 const sliderNews = {
 	spaceBetween: 28,

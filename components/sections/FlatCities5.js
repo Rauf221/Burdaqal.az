@@ -21,7 +21,7 @@ const sliderCities2 = {
 		},
 	},
 }
-import Link from "next/link"
+import { Link } from '@/i18n/navigation'
 
 export default function FlatCities5() {
 	return (

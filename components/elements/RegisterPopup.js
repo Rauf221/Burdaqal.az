@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from '@/i18n/navigation'
 
 export default function RegisterPopup({ isRegister, handleRegister, handleLogin }) {
 	return (
@@ -15,16 +15,16 @@ export default function RegisterPopup({ isRegister, handleRegister, handleLogin 
 							<h4>Create an account</h4>
 							<form className="form-login">
 								<fieldset className="name">
-									<input type="text" placeholder="Username" className name="text" tabIndex={2} aria-required="true" required />
+									<input type="text" placeholder="Username" name="text" tabIndex={2} aria-required="true" required />
 								</fieldset>
 								<fieldset className="email">
-									<input type="email" placeholder="Email" className name="email" tabIndex={2} aria-required="true" required />
+									<input type="email" placeholder="Email" name="email" tabIndex={2} aria-required="true" required />
 								</fieldset>
 								<fieldset className="password">
-									<input type="password" placeholder="Password" className name="password" tabIndex={2} aria-required="true" required />
+									<input type="password" placeholder="Password" name="password" tabIndex={2} aria-required="true" required />
 								</fieldset>
 								<fieldset className="password">
-									<input type="password" placeholder="Retype Password" className name="password" tabIndex={2} aria-required="true" required />
+									<input type="password" placeholder="Retype Password" name="password" tabIndex={2} aria-required="true" required />
 								</fieldset>
 								<div className="flex items-center justify-between">
 									<div className="checkbox-item">

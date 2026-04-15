@@ -1,0 +1,23 @@
+{
+	"metadata": {
+		"title": "JustHome - Real Estate",
+		"description": "JustHome real estate template"
+	},
+	"navigation": {
+		"home": "Home",
+		"property": "Property",
+		"propertyGrid": "Property Grid 02",
+		"propertySingle": "Property Single 05",
+		"pages": "Pages",
+		"aboutUs": "About Us",
+		"faqPage": "FAQ Page",
+		"page404": "404 Page",
+		"dashboard": "Dashboard",
+		"blog": "Blog",
+		"blogList": "Blog List 01",
+		"blogSingle": "Blog Single",
+		"contact": "Contact",
+		"addListing": "Add Listing",
+		"language": "Language"
+	}
+}

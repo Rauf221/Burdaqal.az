@@ -1,6 +1,12 @@
-import Link from "next/link"
-import Menu from "../Menu"
+'use client'
+
+import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
+import LocaleSwitcher from '@/components/elements/LocaleSwitcher'
+import Menu from '../Menu'
+
 export default function Header12({ scroll, isMobileMenu, handleMobileMenu, isLogin, handleLogin, isRegister, handleRegister }) {
+	const t = useTranslations('navigation')
 	return (
 		<>
 
@@ -16,6 +22,7 @@ export default function Header12({ scroll, isMobileMenu, handleMobileMenu, isLog
 							<Menu />
 						</nav>
 						<div className="header-right">
+							<LocaleSwitcher variant="default" />
 							<div className="header-call">
 								<div className="icon">
 									<i className="flaticon-phone" />
@@ -28,7 +35,7 @@ export default function Header12({ scroll, isMobileMenu, handleMobileMenu, isLog
 								</div>
 							</div>
 							<div className="header-btn">
-								<Link href="/dashboard-add-properties" className="tf-button-default">Add Listing</Link>
+								<Link href="/dashboard-add-properties" className="tf-button-default">{t('addListing')}</Link>
 							</div>
 						</div>
 						<a className="mobile-nav-toggler mobile-button" onClick={handleMobileMenu} />

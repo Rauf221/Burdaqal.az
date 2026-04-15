@@ -1,5 +1,6 @@
-import dynamic from 'next/dynamic'
+'use client'
 
+import dynamic from 'next/dynamic'
 
 const EarningsChart1 = dynamic(() => import('./EarningsChart1'), { ssr: false })
 const EarningsChart3 = dynamic(() => import('./EarningsChart3'), { ssr: false })

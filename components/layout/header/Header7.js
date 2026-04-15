@@ -1,10 +1,26 @@
-import Link from "next/link"
-import Menu from "../Menu"
-export default function Header7({ scroll, isMobileMenu, handleMobileMenu, isLogin, handleLogin, isRegister, handleRegister }) {
+'use client'
+
+import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
+import LocaleSwitcher from '@/components/elements/LocaleSwitcher'
+import Menu from '../Menu'
+
+export default function Header7({
+	scroll,
+	isMobileMenu,
+	handleMobileMenu,
+	isLogin,
+	handleLogin,
+	isRegister,
+	handleRegister,
+}) {
+	const t = useTranslations('navigation')
 	return (
 		<>
-
-			<header id="header_main" className={`header header-fixed style-no-bg style-absolute ${scroll ? "is-fixed is-small" : ""}`}>
+			<header
+				id="header_main"
+				className={`header header-fixed style-no-bg style-absolute ${scroll ? 'is-fixed is-small' : ''}`}
+			>
 				<div className="header-inner">
 					<div className="header-inner-wrap">
 						<div id="site-logo">
@@ -17,6 +33,7 @@ export default function Header7({ scroll, isMobileMenu, handleMobileMenu, isLogi
 							<Menu />
 						</nav>
 						<div className="header-right">
+							<LocaleSwitcher variant="inverse" />
 							<div className="header-call style-white">
 								<div className="icon">
 									<i className="flaticon-phone" />
@@ -29,15 +46,15 @@ export default function Header7({ scroll, isMobileMenu, handleMobileMenu, isLogi
 								</div>
 							</div>
 							<div className="header-btn">
-								<Link href="/dashboard-add-properties" className="tf-button-default style-white">Add
-									Listing</Link>
+								<Link href="/dashboard-add-properties" className="tf-button-default style-white">
+									{t('addListing')}
+								</Link>
 							</div>
 						</div>
 						<a className="mobile-nav-toggler mobile-button" onClick={handleMobileMenu} />
 					</div>
 				</div>
 			</header>
-
 		</>
 	)
 }

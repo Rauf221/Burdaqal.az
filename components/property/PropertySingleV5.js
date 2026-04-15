@@ -4,7 +4,7 @@ import VideoPopup from "@/components/elements/VideoPopup"
 import Layout from "@/components/layout/Layout"
 import SliderBoxDream from "@/components/slider/SliderBoxDream"
 import { PROPERTY_GRID, getPropertyTitle, propertyDetailHref } from "@/utils/propertyRoutes"
-import Link from "next/link"
+import { Link } from '@/i18n/navigation'
 import { useState } from 'react'
 import 'swiper/css/free-mode'
 import 'swiper/css/thumbs'
@@ -890,21 +890,21 @@ export default function PropertySingleV5({ slug }) {
 										</div>
 										<form className="form-comment">
 											<fieldset className="message wow fadeInUp has-top-title">
-												<textarea name="message" rows={4} placeholder="Your Comment" className tabIndex={2} aria-required="true" required defaultValue={"Lorem Ipsum"} />
+												<textarea name="message" rows={4} placeholder="Your Comment" tabIndex={2} aria-required="true" required defaultValue={"Lorem Ipsum"} />
 												<label htmlFor>Your Comment</label>
 											</fieldset>
 											<div className="cols">
 												<fieldset className="name wow fadeInUp has-top-title">
-													<input type="text" placeholder="Name" className name="text" tabIndex={2} defaultValue="Ali Tufan" aria-required="true" required />
+													<input type="text" placeholder="Name" name="text" tabIndex={2} defaultValue="Ali Tufan" aria-required="true" required />
 													<label htmlFor>Name</label>
 												</fieldset>
 												<fieldset className="email wow fadeInUp has-top-title">
-													<input type="email" placeholder="Email" className name="email" tabIndex={2} defaultValue="themesflat@gmail.com" aria-required="true" required />
+													<input type="email" placeholder="Email" name="email" tabIndex={2} defaultValue="themesflat@gmail.com" aria-required="true" required />
 													<label htmlFor>Email</label>
 												</fieldset>
 											</div>
 											<fieldset className="website wow fadeInUp has-top-title">
-												<input type="text" placeholder="Website" className name="text" tabIndex={2} aria-required="true" required />
+												<input type="text" placeholder="Website" name="text" tabIndex={2} aria-required="true" required />
 												<label htmlFor>Website</label>
 											</fieldset>
 											<div className="checkbox-item wow fadeInUp">
@@ -1039,40 +1039,40 @@ export default function PropertySingleV5({ slug }) {
 													<div className="widget-content-inner flex-display active">
 														<div className="cols">
 															<fieldset className="name has-top-title">
-																<input type="text" placeholder="Name" className name="text" tabIndex={2} defaultValue="Ali Tufan" aria-required="true" required />
+																<input type="text" placeholder="Name" name="text" tabIndex={2} defaultValue="Ali Tufan" aria-required="true" required />
 																<label htmlFor>Name</label>
 															</fieldset>
 															<fieldset className="phone has-top-title">
-																<input type="number" placeholder="Phone" className name="number" tabIndex={2} aria-required="true" required />
+																<input type="number" placeholder="Phone" name="number" tabIndex={2} aria-required="true" required />
 																<label htmlFor>Phone</label>
 															</fieldset>
 															<fieldset className="email has-top-title">
-																<input type="email" placeholder="Email" className name="email" tabIndex={2} aria-required="true" required />
+																<input type="email" placeholder="Email" name="email" tabIndex={2} aria-required="true" required />
 																<label htmlFor>Email</label>
 															</fieldset>
 														</div>
 														<fieldset className="message has-top-title">
-															<textarea name="message" rows={4} placeholder="Your Comment" className tabIndex={2} aria-required="true" required defaultValue={"Lorem Ipsum Dolar Sit Amet"} />
+															<textarea name="message" rows={4} placeholder="Your Comment" tabIndex={2} aria-required="true" required defaultValue={"Lorem Ipsum Dolar Sit Amet"} />
 															<label htmlFor>Your Comment</label>
 														</fieldset>
 													</div>
 													<div className="widget-content-inner flex-display">
 														<div className="cols">
 															<fieldset className="name has-top-title">
-																<input type="text" placeholder="Name" className name="text" tabIndex={2} defaultValue="Ali Tufan" aria-required="true" required />
+																<input type="text" placeholder="Name" name="text" tabIndex={2} defaultValue="Ali Tufan" aria-required="true" required />
 																<label htmlFor>Name</label>
 															</fieldset>
 															<fieldset className="phone has-top-title">
-																<input type="number" placeholder="Phone" className name="number" tabIndex={2} aria-required="true" required />
+																<input type="number" placeholder="Phone" name="number" tabIndex={2} aria-required="true" required />
 																<label htmlFor>Phone</label>
 															</fieldset>
 															<fieldset className="email has-top-title">
-																<input type="email" placeholder="Email" className name="email" tabIndex={2} aria-required="true" required />
+																<input type="email" placeholder="Email" name="email" tabIndex={2} aria-required="true" required />
 																<label htmlFor>Email</label>
 															</fieldset>
 														</div>
 														<fieldset className="message has-top-title">
-															<textarea name="message" rows={4} placeholder="Your Comment" className tabIndex={2} aria-required="true" required defaultValue={"Lorem Ipsum Dolar Sit Amet"} />
+															<textarea name="message" rows={4} placeholder="Your Comment" tabIndex={2} aria-required="true" required defaultValue={"Lorem Ipsum Dolar Sit Amet"} />
 															<label htmlFor>Your Comment</label>
 														</fieldset>
 													</div>
@@ -1101,17 +1101,17 @@ export default function PropertySingleV5({ slug }) {
 											<form className="form-comment">
 												<div className="cols">
 													<fieldset className="name has-top-title">
-														<input type="text" placeholder="Name" className name="text" tabIndex={2} defaultValue="Ali Tufan" aria-required="true" required />
+														<input type="text" placeholder="Name" name="text" tabIndex={2} defaultValue="Ali Tufan" aria-required="true" required />
 														<label htmlFor>Name</label>
 													</fieldset>
 													<fieldset className="phone has-top-title">
-														<input type="number" placeholder="Phone" className name="number" tabIndex={2} aria-required="true" required />
+														<input type="number" placeholder="Phone" name="number" tabIndex={2} aria-required="true" required />
 														<label htmlFor>Phone</label>
 													</fieldset>
 												</div>
 												<div className="cols">
 													<fieldset className="email has-top-title">
-														<input type="email" placeholder="Email" className name="email" tabIndex={2} aria-required="true" required />
+														<input type="email" placeholder="Email" name="email" tabIndex={2} aria-required="true" required />
 														<label htmlFor>Email</label>
 													</fieldset>
 													<select className="nice-select" tabIndex={0}>
@@ -1123,7 +1123,7 @@ export default function PropertySingleV5({ slug }) {
 													</select>
 												</div>
 												<fieldset className="message has-top-title">
-													<textarea name="message" rows={4} placeholder="Message" className tabIndex={2} aria-required="true" required defaultValue={""} />
+													<textarea name="message" rows={4} placeholder="Message" tabIndex={2} aria-required="true" required defaultValue={""} />
 													<label htmlFor>Message</label>
 												</fieldset>
 												<div className="button-submit">

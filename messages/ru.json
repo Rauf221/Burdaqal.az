@@ -1,0 +1,23 @@
+{
+	"metadata": {
+		"title": "JustHome — Недвижимость",
+		"description": "Шаблон JustHome для недвижимости"
+	},
+	"navigation": {
+		"home": "Главная",
+		"property": "Недвижимость",
+		"propertyGrid": "Сетка объектов 02",
+		"propertySingle": "Карточка объекта 05",
+		"pages": "Страницы",
+		"aboutUs": "О нас",
+		"faqPage": "FAQ",
+		"page404": "Страница 404",
+		"dashboard": "Кабинет",
+		"blog": "Блог",
+		"blogList": "Список статей 01",
+		"blogSingle": "Статья",
+		"contact": "Контакты",
+		"addListing": "Добавить объявление",
+		"language": "Язык"
+	}
+}

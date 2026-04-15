@@ -1,6 +1,6 @@
 
 'use client'
-import Link from "next/link"
+import { Link } from '@/i18n/navigation'
 import { EffectFade, Navigation } from "swiper/modules"
 import { Swiper, SwiperSlide } from "swiper/react"
 const sliderHome7 = {
@@ -226,10 +226,10 @@ export default function Slider7() {
 										</div>
 										<div className="grid-4-cols">
 											<fieldset className="name">
-												<input type="text" placeholder="Min. Area" className name="name" tabIndex={2} aria-required="true" required />
+												<input type="text" placeholder="Min. Area" name="name" tabIndex={2} aria-required="true" required />
 											</fieldset>
 											<fieldset className="name">
-												<input type="text" placeholder="Max. Area" className name="name" tabIndex={2} aria-required="true" required />
+												<input type="text" placeholder="Max. Area" name="name" tabIndex={2} aria-required="true" required />
 											</fieldset>
 											<select className="nice-select" tabIndex={0}>
 
@@ -343,7 +343,7 @@ export default function Slider7() {
 						</div >
 						<div className="group-form">
 							<div className="button-submit">
-								<button className type="submit">Search</button>
+								<button type="submit">Search</button>
 							</div>
 						</div>
 					</div >

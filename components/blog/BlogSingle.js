@@ -1,6 +1,6 @@
 import Layout from "@/components/layout/Layout"
 import { BLOG_LIST, BLOG_LIST_POSTS, blogPostPath, getBlogPostTitle } from "@/utils/blogRoutes"
-import Link from "next/link"
+import { Link } from '@/i18n/navigation'
 
 export default function BlogSingle({ slug }) {
 	const title = getBlogPostTitle(slug)
@@ -237,21 +237,21 @@ export default function BlogSingle({ slug }) {
 										</div>
 										<form className="form-comment">
 											<fieldset className="message wow fadeInUp has-top-title">
-												<textarea name="message" rows={4} placeholder="Your Comment" className tabIndex={2} aria-required="true" required defaultValue={"Lorem Ipsum"} />
+												<textarea name="message" rows={4} placeholder="Your Comment" tabIndex={2} aria-required="true" required defaultValue={"Lorem Ipsum"} />
 												<label htmlFor>Your Comment</label>
 											</fieldset>
 											<div className="cols">
 												<fieldset className="name wow fadeInUp has-top-title">
-													<input type="text" placeholder="Name" className name="text" tabIndex={2} defaultValue="Ali Tufan" aria-required="true" required />
+													<input type="text" placeholder="Name" name="text" tabIndex={2} defaultValue="Ali Tufan" aria-required="true" required />
 													<label htmlFor>Name</label>
 												</fieldset>
 												<fieldset className="email wow fadeInUp has-top-title">
-													<input type="email" placeholder="Email" className name="email" tabIndex={2} defaultValue="themesflat@gmail.com" aria-required="true" required />
+													<input type="email" placeholder="Email" name="email" tabIndex={2} defaultValue="themesflat@gmail.com" aria-required="true" required />
 													<label htmlFor>Email</label>
 												</fieldset>
 											</div>
 											<fieldset className="website wow fadeInUp has-top-title">
-												<input type="text" placeholder="Website" className name="text" tabIndex={2} aria-required="true" required />
+												<input type="text" placeholder="Website" name="text" tabIndex={2} aria-required="true" required />
 												<label htmlFor>Website</label>
 											</fieldset>
 											<div className="checkbox-item wow fadeInUp">

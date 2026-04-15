@@ -1,19 +1,39 @@
 'use client'
-import { useState } from 'react';
-import CountUp from "react-countup";
-import ScrollTrigger from 'react-scroll-trigger';
+
+import { useState, useRef, useEffect } from 'react'
+import CountUp from 'react-countup'
 
 export default function CounterUp({ count, time }) {
-    const [counterOn, setCounterOn] = useState(false);
-    return (
-        <>
-            <ScrollTrigger onEnter={() => setCounterOn(true)} onExit={() => setCounterOn(false)}  component="span">
-                <CountUp end={count} duration={time} redraw={true}>
-                    {({ countUpRef }) => (
-                        <span className='number' ref={countUpRef}/>
-                    )}
-                </CountUp>
-            </ScrollTrigger>
-        </>
-    );
+	const [inView, setInView] = useState(false)
+	const ref = useRef(null)
+
+	useEffect(() => {
+		const el = ref.current
+		if (!el) return
+
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting) {
+					setInView(true)
+					observer.disconnect()
+				}
+			},
+			{ threshold: 0.2, rootMargin: '0px' }
+		)
+
+		observer.observe(el)
+		return () => observer.disconnect()
+	}, [])
+
+	return (
+		<span ref={ref}>
+			{inView ? (
+				<CountUp end={count} duration={time}>
+					{({ countUpRef }) => <span className="number" ref={countUpRef} />}
+				</CountUp>
+			) : (
+				<span className="number">0</span>
+			)}
+		</span>
+	)
 }

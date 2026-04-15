@@ -1,0 +1,23 @@
+{
+	"metadata": {
+		"title": "JustHome - \u018fmlak",
+		"description": "JustHome \u0259mlak \u015fablonu"
+	},
+	"navigation": {
+		"home": "Ana s\u0259hif\u0259",
+		"property": "\u018fmlak",
+		"propertyGrid": "\u018fmlak \u015f\u0259b\u0259k\u0259si 02",
+		"propertySingle": "T\u0259k \u0259mlak 05",
+		"pages": "S\u0259hif\u0259l\u0259r",
+		"aboutUs": "Haqq\u0131m\u0131zda",
+		"faqPage": "FAQ",
+		"page404": "404 s\u0259hif\u0259",
+		"dashboard": "\u0130dar\u0259 paneli",
+		"blog": "Blog",
+		"blogList": "Blog siyah\u0131s\u0131 01",
+		"blogSingle": "T\u0259k bloq",
+		"contact": "\u018flaq\u0259",
+		"addListing": "Elan \u0259lav\u0259 et",
+		"language": "Dil"
+	}
+}
