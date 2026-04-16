@@ -1,5 +1,5 @@
 /** Base path for Property Grid 02 (listing). Detail pages live under `${PROPERTY_GRID}/[slug]`. */
-export const PROPERTY_GRID = '/property-grid-v2'
+export const PROPERTY_GRID = '/elanlar'
 
 export function propertyDetailHref(slug) {
 	return `${PROPERTY_GRID}/${slug}`

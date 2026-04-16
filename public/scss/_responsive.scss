@@ -1765,8 +1765,7 @@
             }
         }
         .content {
-            bottom: 20px !important;
-            left: 20px !important;
+            display: block;
             padding: 15px 20px 10px;
             .title {
                 font-size: 20px;

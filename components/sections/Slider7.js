@@ -1,104 +1,140 @@
-
 'use client'
+
 import { Link } from '@/i18n/navigation'
-import { EffectFade, Navigation } from "swiper/modules"
-import { Swiper, SwiperSlide } from "swiper/react"
+import { useQuery } from '@tanstack/react-query'
+import { useLocale } from 'next-intl'
+import { EffectFade, Navigation } from 'swiper/modules'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { getSliderQuery } from '@/services/client/home'
+
 const sliderHome7 = {
 	modules: [Navigation, EffectFade],
 	spaceBetween: 0,
 	slidesPerView: 1,
 	observer: true,
 	observeParents: true,
-	effect: "fade",
+	effect: 'fade',
 	fadeEffect: {
 		crossFade: true,
 	},
 	navigation: {
-		nextEl: ".home7-next",
-		prevEl: ".home7-prev",
+		nextEl: '.home7-next',
+		prevEl: '.home7-prev',
 		clickable: true,
 	},
 }
 
+const FALLBACK_SLIDES = [
+	{
+		title: 'Modern Apartment in \nMission District',
+		description: '25 beds - 291 Bats - 2500 sq ft',
+		image: '/images/slider/slider-home-7.jpg',
+		thumb_image: '',
+		btn: 'View Details',
+		btn_link: '/elanlar/villa-one-hyde-park',
+	},
+	{
+		title: 'Modern Apartment in \nMission District',
+		description: '25 beds - 291 Bats - 2500 sq ft',
+		image: '/images/slider/slider-home-71.jpg',
+		thumb_image: '',
+		btn: 'View Details',
+		btn_link: '/elanlar/villa-one-hyde-park',
+	},
+	{
+		title: 'Modern Apartment in \nMission District',
+		description: '25 beds - 291 Bats - 2500 sq ft',
+		image: '/images/slider/slider-home-72.jpg',
+		thumb_image: '',
+		btn: 'View Details',
+		btn_link: '/elanlar/villa-one-hyde-park',
+	},
+]
+
+function slideBtnTarget(raw) {
+	const t = (raw || '').trim()
+	if (!t) return { kind: 'internal', href: '/' }
+	if (t.startsWith('/')) return { kind: 'internal', href: t }
+	if (/^https?:\/\//i.test(t)) return { kind: 'external', href: t }
+	return { kind: 'external', href: `https://${t}` }
+}
+
+function TitleLines({ text }) {
+	const lines = String(text || '')
+		.split(/\n/)
+		.map((s) => s.trim())
+		.filter(Boolean)
+	if (lines.length === 0) return null
+	return (
+		<h1 className="fade-item fade-item-2">
+			{lines.map((line, i) => (
+				<span key={i}>
+					{i > 0 ? <br /> : null}
+					{line}
+				</span>
+			))}
+		</h1>
+	)
+}
+
 export default function Slider7() {
+	const locale = useLocale()
+	const { data, isPending } = useQuery(getSliderQuery(locale, 1))
+
+	const slides = !isPending && data?.data?.length > 0 ? data.data : FALLBACK_SLIDES
+
 	return (
 		<>
-
 			<section className="slider home7">
 				<div className="swiper-container slider-home7 slider-effect-fade arrow-style-1 pagination-style-1">
-					<Swiper {...sliderHome7}>
-						<SwiperSlide>
-							<div className="wrap-slider">
-								<div className="image">
-									<img src="/images/slider/slider-home-7.jpg" alt="" />
-								</div>
-								<div className="slider-item">
-									<div className="themesflat-container">
-										<div className="row">
-											<div className="col-12">
-												<div className="slider-content">
-													<div className="text fade-item fade-item-1">25 beds - 291 Bats -
-														2500 sq ft</div>
-													<h1 className="fade-item fade-item-2">Modern Apartment in <br />
-														Mission District</h1>
-													<div className="text-1 fade-item fade-item-3">$85.000</div>
-													<Link href="/property-grid-v2/villa-one-hyde-park" className="tf-button-primary m-auto fade-item fade-item-4">View
-														Details<i className="icon-arrow-right-add" /></Link>
+					<Swiper
+						key={!isPending && data?.data?.length ? `slider-api-${data.data.length}` : 'slider-fallback'}
+						{...sliderHome7}
+					>
+						{slides.map((item, idx) => {
+							const img = item.image || item.thumb_image
+							const target = slideBtnTarget(item.btn_link)
+							return (
+								<SwiperSlide key={`${img}-${idx}`}>
+									<div className="wrap-slider">
+										<div className="image">
+											<img src={img} alt={item.title?.replace(/\n/g, ' ') || ''} />
+										</div>
+										<div className="slider-item">
+											<div className="themesflat-container">
+												<div className="row">
+													<div className="col-12">
+														<div className="slider-content">
+															<div className="text fade-item fade-item-1">{item.description}</div>
+															<TitleLines text={item.title} />
+															{target.kind === 'internal' ? (
+																<Link
+																	href={target.href}
+																	className="tf-button-primary m-auto fade-item fade-item-4"
+																>
+																	{item.btn}
+																	<i className="icon-arrow-right-add" />
+																</Link>
+															) : (
+																<a
+																	href={target.href}
+																	className="tf-button-primary m-auto fade-item fade-item-4"
+																	target="_blank"
+																	rel="noopener noreferrer"
+																>
+																	{item.btn}
+																	<i className="icon-arrow-right-add" />
+																</a>
+															)}
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</div>
-						</SwiperSlide>
-						<SwiperSlide>
-							<div className="wrap-slider">
-								<div className="image">
-									<img src="/images/slider/slider-home-71.jpg" alt="" />
-								</div>
-								<div className="slider-item">
-									<div className="themesflat-container">
-										<div className="row">
-											<div className="col-12">
-												<div className="slider-content">
-													<div className="text fade-item fade-item-1">25 beds - 291 Bats -
-														2500 sq ft</div>
-													<h1 className="fade-item fade-item-2">Modern Apartment in <br />
-														Mission District</h1>
-													<div className="text-1 fade-item fade-item-3">$85.000</div>
-													<Link href="/property-grid-v2/villa-one-hyde-park" className="tf-button-primary m-auto fade-item fade-item-4">View
-														Details<i className="icon-arrow-right-add" /></Link>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</SwiperSlide>
-						<SwiperSlide>
-							<div className="wrap-slider">
-								<div className="image">
-									<img src="/images/slider/slider-home-72.jpg" alt="" />
-								</div>
-								<div className="slider-item">
-									<div className="themesflat-container">
-										<div className="row">
-											<div className="col-12">
-												<div className="slider-content">
-													<div className="text fade-item fade-item-1">25 beds - 291 Bats -
-														2500 sq ft</div>
-													<h1 className="fade-item fade-item-2">Modern Apartment in <br />
-														Mission District</h1>
-													<div className="text-1 fade-item fade-item-3">$85.000</div>
-													<Link href="/property-grid-v2/villa-one-hyde-park" className="tf-button-primary m-auto fade-item fade-item-4">View
-														Details<i className="icon-arrow-right-add" /></Link>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</SwiperSlide>
+								</SwiperSlide>
+							)
+						})}
 					</Swiper>
 					<div className="home7-next has-background swiper-button-next" />
 					<div className="home7-prev has-background swiper-button-prev" />
@@ -342,8 +378,8 @@ export default function Slider7() {
 							</div >
 						</div >
 						<div className="group-form">
-							<div className="button-submit">
-								<button type="submit">Search</button>
+							<div className="button-submit	">
+								<button type="submit">Harda qalım ?</button>
 							</div>
 						</div>
 					</div >

@@ -27,8 +27,8 @@ export default function Menu() {
 				</li>
 				<li>
 					<Link
-						href="/property-grid-v2"
-						className={`item ${checkParentActive(['/property-grid-v2'])}`}
+						href="/elanlar"
+						className={`item ${checkParentActive(['/elanlar'])}`}
 					>
 						{t('property')}
 					</Link>
@@ -38,25 +38,10 @@ export default function Menu() {
 						{t('aboutUs')}
 					</Link>
 				</li>
-				<li
-					className={`has-children ${checkParentActive(['/dashboard'])}`}
-				>
-					<a>{t('pages')}</a>
-					<ul>
-						<li>
-							<Link
-								href="/dashboard"
-								className={`${checkCurrentMenuItem('/dashboard')}`}
-							>
-								{t('dashboard')}
-							</Link>
-						</li>
-					</ul>
-				</li>
 				<li>
 					<Link
-						href="/blog-list-v1"
-						className={`item ${checkParentActive(['/blog-list-v1'])}`}
+						href="/bloglar"
+						className={`item ${checkParentActive(['/bloglar'])}`}
 					>
 						{t('blog')}
 					</Link>

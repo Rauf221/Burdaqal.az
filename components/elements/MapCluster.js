@@ -33,7 +33,7 @@ export default function MapCluster({ topmap }) {
 								</div>
 								<div className="content">
 									<div className="price">$815,000</div>
-									<h4><Link href="/property-grid-v2/archer-house">Archer House</Link></h4>
+									<h4><Link href="/elanlar/archer-house">Archer House</Link></h4>
 									<div className="icon-box">
 										<div className="item">
 											<i className="flaticon-hotel" />
@@ -66,7 +66,7 @@ export default function MapCluster({ topmap }) {
 								</div>
 								<div className="content">
 									<div className="price">$815,000</div>
-									<h4><Link href="/property-grid-v2/archer-house">Archer House</Link></h4>
+									<h4><Link href="/elanlar/archer-house">Archer House</Link></h4>
 									<div className="icon-box">
 										<div className="item">
 											<i className="flaticon-hotel" />
@@ -99,7 +99,7 @@ export default function MapCluster({ topmap }) {
 								</div>
 								<div className="content">
 									<div className="price">$815,000</div>
-									<h4><Link href="/property-grid-v2/archer-house">Archer House</Link></h4>
+									<h4><Link href="/elanlar/archer-house">Archer House</Link></h4>
 									<div className="icon-box">
 										<div className="item">
 											<i className="flaticon-hotel" />

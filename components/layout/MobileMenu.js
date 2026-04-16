@@ -18,12 +18,6 @@ export default function MobileMenu({ isMobileMenu, handleMobileMenu }) {
 	const checkParentActive = (paths) =>
 		paths.some((path) => currentMenuItem.startsWith(path)) ? 'current' : ''
 
-	const [isAccordion, setIsAccordion] = useState(null)
-
-	const handleAccordion = (key) => {
-		setIsAccordion((prevState) => (prevState === key ? null : key))
-	}
-
 	return (
 		<>
 			<div className="mobile-menu">
@@ -45,28 +39,15 @@ export default function MobileMenu({ isMobileMenu, handleMobileMenu }) {
 										<Link href="/">{t('home')}</Link>
 									</li>
 									<li
-										className={`${checkParentActive(['/property-grid-v2'])}`}
+										className={`${checkParentActive(['/elanlar'])}`}
 									>
-										<Link href="/property-grid-v2">{t('property')}</Link>
+										<Link href="/elanlar">{t('property')}</Link>
 									</li>
 									<li className={`${checkCurrentMenuItem('/about')}`}>
 										<Link href="/about">{t('aboutUs')}</Link>
 									</li>
-									<li
-										className={`dropdown2 ${isAccordion === 2 ? 'open' : ''} ${checkParentActive([
-											'/dashboard',
-										])}`}
-									>
-										<Link href="#">{t('pages')}</Link>
-										<ul style={{ display: `${isAccordion === 2 ? 'block' : 'none'}` }}>
-											<li className={`${checkCurrentMenuItem('/dashboard')}`}>
-												<Link href="/dashboard">{t('dashboard')}</Link>
-											</li>
-										</ul>
-										<div className="dropdown2-btn" onClick={() => handleAccordion(2)} />
-									</li>
-									<li className={`${checkParentActive(['/blog-list-v1'])}`}>
-										<Link href="/blog-list-v1">{t('blog')}</Link>
+									<li className={`${checkParentActive(['/bloglar'])}`}>
+										<Link href="/bloglar">{t('blog')}</Link>
 									</li>
 									<li className={`${checkCurrentMenuItem('/contact')}`}>
 										<Link href="/contact">{t('contact')}</Link>

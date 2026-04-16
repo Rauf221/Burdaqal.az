@@ -118,10 +118,11 @@
     padding: 18px 26px;
     border-radius: 12px;
     border: 0;
-    background-color: #E7C873;
+    background-color: #FF9F0A;
     font-weight: 500;
     font-size: 15px;
     line-height: 18px;
+    color: var(--White);
     cursor: pointer;
     @include transition3;
     i {
@@ -129,8 +130,8 @@
     }
     &.active,
     &:hover {
-        background-color: #D9B75A;
-        color: var(--Secondary);
+        background-color: #ff8800;
+        color: var(--White);
         i {
             animation: 0.3s link-icon linear;
         }
@@ -262,6 +263,7 @@
         font-size: 15px;
         line-height: 28px;
         gap: 10px;
+        color: var(--Secondary);
         padding-right: 0;
         i {
             width: 40px;

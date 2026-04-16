@@ -1,4 +1,8 @@
-x
+.tf-section {
+	padding-top: 200px;
+	padding-bottom: 200px;
+}
+
 .heading-section {
 	margin-bottom: 46px;
 
@@ -934,6 +938,9 @@ ul.list-text {
 	}
 
 	.content {
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
 		padding: 24px 30px 30px 30px;
 
 		.head {
@@ -1000,6 +1007,15 @@ ul.list-text {
 		&:hover {
 			box-shadow: 0px 6px 15px 0px #404F680D;
 		}
+	}
+
+	/* Full-card link: keep padding on inner .content (block) — avoids <a> box quirks */
+	.box-dream-body-link {
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
+		color: inherit;
+		text-decoration: none;
 	}
 
 	&.style-1 {
@@ -1218,6 +1234,8 @@ ul.list-text {
 
 		.content {
 			position: absolute;
+			/* Base .box-dream .content sets width:100% — breaks left+right inset for abspos */
+			width: auto;
 			padding: 14px 20px 17px 20px;
 			bottom: 20px;
 			left: 20px;
@@ -1259,6 +1277,27 @@ ul.list-text {
 
 			.content {
 				background-color: transparent;
+				left: 22px;
+				right: 22px;
+				padding: 16px 22px 18px 22px;
+				box-sizing: border-box;
+
+				> .flex {
+					width: 100%;
+					min-width: 0;
+					gap: 14px;
+				}
+
+				.icon-box {
+					flex: 1 1 auto;
+					min-width: 0;
+				}
+
+				.price {
+					flex: 0 0 auto;
+					white-space: nowrap;
+					text-align: right;
+				}
 
 				.icon-box .item p,
 				.icon-box .item i,
@@ -1516,7 +1555,7 @@ ul.list-text {
 
 		&.featured {
 			background-color: var(--Primary);
-			color: var(--Secondary);
+			color: var(--White);
 		}
 	}
 
@@ -5616,7 +5655,7 @@ ul.grid-tags {
 
 			>.list {
 				.group-form {
-					width: 172px;
+					width: 130px;
 
 					&.form-search-content {
 						width: 356px;

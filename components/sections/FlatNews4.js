@@ -10,9 +10,8 @@ export default function FlatNews4() {
 					<div className="row">
 						<div className="col-12">
 							<div className="heading-section text-center">
-								<h2 className="wow fadeInUp">Recent Articles &amp; News</h2>
-								<div className="text wow fadeInUp">Lorem ipsum dolor sit amet, consectetur adipiscing
-									elit.</div>
+								<h2 className="wow fadeInUp">Faydalı Məqalələr</h2>
+								<div className="text wow fadeInUp">Rayonlar, ev seçimi və istirahət üçün lazım olan bütün faydalı məlumatlar burada.</div>
 							</div>
 						</div>
 					</div>

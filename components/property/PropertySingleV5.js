@@ -53,7 +53,7 @@ export default function PropertySingleV5({ slug }) {
 	return (
 		<>
 
-			<Layout>
+			<Layout mainContentCls="px-20 default">
 				<div className="property-single-wrap v5">
 					<div className="themesflat-container">
 						<div className="row">

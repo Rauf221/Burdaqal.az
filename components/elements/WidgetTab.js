@@ -6,10 +6,14 @@ export default function WidgetTab() {
 	useEffect(() => {
 		const widgetTabs = document.querySelectorAll('.widget-tabs')
 
-		widgetTabs.forEach(widgetTab => {
-			const contentTabs = widgetTab.querySelector('.widget-content-tab').children
-			Array.from(contentTabs).forEach(child => child.style.display = 'none')
-			Array.from(contentTabs).forEach(child => {
+		widgetTabs.forEach((widgetTab) => {
+			const contentTabEl = widgetTab.querySelector('.widget-content-tab')
+			const menuTabEl = widgetTab.querySelector('.widget-menu-tab')
+			if (!contentTabEl || !menuTabEl) return
+
+			const contentTabs = contentTabEl.children
+			Array.from(contentTabs).forEach((child) => (child.style.display = 'none'))
+			Array.from(contentTabs).forEach((child) => {
 				if (child.classList.contains('active')) {
 					if (child.classList.contains('flex-display')) {
 						child.style.display = 'flex'
@@ -19,13 +23,14 @@ export default function WidgetTab() {
 				}
 			})
 
-			const menuItems = widgetTab.querySelector('.widget-menu-tab').children
+			const menuItems = menuTabEl.children
 			Array.from(menuItems).forEach((menuItem, index) => {
 				menuItem.addEventListener('click', function () {
 					const liActive = index
-					const contentActive = widgetTab.querySelector('.widget-content-tab').children[liActive]
+					const contentActive = contentTabEl.children[liActive]
+					if (!contentActive) return
 
-					Array.from(widgetTab.querySelector('.widget-content-tab').children).forEach(child => {
+					Array.from(contentTabEl.children).forEach((child) => {
 						child.classList.remove('active')
 						child.style.display = 'none'
 					})
@@ -37,7 +42,7 @@ export default function WidgetTab() {
 						contentActive.style.display = 'block'
 					}
 
-					Array.from(menuItems).forEach(item => item.classList.remove('active'))
+					Array.from(menuItems).forEach((item) => item.classList.remove('active'))
 					menuItem.classList.add('active')
 				})
 			})

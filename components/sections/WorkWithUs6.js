@@ -10,9 +10,8 @@ export default function WorkWithUs6() {
 					<div className="row">
 						<div className="col-12">
 							<div className="heading-section text-center">
-								<h2 className="wow fadeInUp">Featured Properties</h2>
-								<div className="text wow fadeInUp">Lorem ipsum dolor sit amet, consectetur adipiscing
-									elit.</div>
+								<h2 className="wow fadeInUp">İstirahətin üçün ideal məkanı seç</h2>
+								<div className="text wow fadeInUp">Şəhərdən uzaqlaş, rahat bir məkan seç və istirahətin dadını çıxar.</div>
 							</div>
 						</div>
 					</div>
@@ -37,7 +36,7 @@ export default function WorkWithUs6() {
 						</div>
 						<div className="widget-content-tab">
 							<div className="widget-content-inner">
-								<div className="row">
+								<div className="row">	
 									<div className="col-xl-4 col-md-6 col-12">
 										<div className="box-dream style-absolute type-no-bg-content">
 											<div className="image">
@@ -50,7 +49,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/archer-house">Archer House</Link>
+														<Link href="/elanlar/archer-house">Archer House</Link>
 													</div>
 												</div>
 												<div className="location">
@@ -90,7 +89,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/villa-one-hyde-park">Villa One Hyde Park</Link>
+														<Link href="/elanlar/villa-one-hyde-park">Villa One Hyde Park</Link>
 													</div>
 												</div>
 												<div className="location">
@@ -130,7 +129,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/home-pitt-street">Home Pitt Street</Link>
+														<Link href="/elanlar/home-pitt-street">Home Pitt Street</Link>
 													</div>
 												</div>
 												<div className="location">
@@ -170,7 +169,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/villa-on-hollywood-boulevard">Villa on Hollywood
+														<Link href="/elanlar/villa-on-hollywood-boulevard">Villa on Hollywood
 															Boulevard</Link>
 													</div>
 												</div>
@@ -211,7 +210,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/house-on-the-beverly-hills">House on the beverly
+														<Link href="/elanlar/house-on-the-beverly-hills">House on the beverly
 															hills</Link>
 													</div>
 												</div>
@@ -252,7 +251,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/office-space-at-northwest">Office Space at
+														<Link href="/elanlar/office-space-at-northwest">Office Space at
 															Northwest</Link>
 													</div>
 												</div>
@@ -298,7 +297,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/archer-house">Archer House</Link>
+														<Link href="/elanlar/archer-house">Archer House</Link>
 													</div>
 												</div>
 												<div className="location">
@@ -338,7 +337,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/villa-one-hyde-park">Villa One Hyde Park</Link>
+														<Link href="/elanlar/villa-one-hyde-park">Villa One Hyde Park</Link>
 													</div>
 												</div>
 												<div className="location">
@@ -378,7 +377,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/home-pitt-street">Home Pitt Street</Link>
+														<Link href="/elanlar/home-pitt-street">Home Pitt Street</Link>
 													</div>
 												</div>
 												<div className="location">
@@ -418,7 +417,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/villa-on-hollywood-boulevard">Villa on Hollywood
+														<Link href="/elanlar/villa-on-hollywood-boulevard">Villa on Hollywood
 															Boulevard</Link>
 													</div>
 												</div>
@@ -459,7 +458,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/house-on-the-beverly-hills">House on the beverly
+														<Link href="/elanlar/house-on-the-beverly-hills">House on the beverly
 															hills</Link>
 													</div>
 												</div>
@@ -500,7 +499,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/office-space-at-northwest">Office Space at
+														<Link href="/elanlar/office-space-at-northwest">Office Space at
 															Northwest</Link>
 													</div>
 												</div>
@@ -546,7 +545,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/archer-house">Archer House</Link>
+														<Link href="/elanlar/archer-house">Archer House</Link>
 													</div>
 												</div>
 												<div className="location">
@@ -586,7 +585,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/villa-one-hyde-park">Villa One Hyde Park</Link>
+														<Link href="/elanlar/villa-one-hyde-park">Villa One Hyde Park</Link>
 													</div>
 												</div>
 												<div className="location">
@@ -626,7 +625,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/home-pitt-street">Home Pitt Street</Link>
+														<Link href="/elanlar/home-pitt-street">Home Pitt Street</Link>
 													</div>
 												</div>
 												<div className="location">
@@ -666,7 +665,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/villa-on-hollywood-boulevard">Villa on Hollywood
+														<Link href="/elanlar/villa-on-hollywood-boulevard">Villa on Hollywood
 															Boulevard</Link>
 													</div>
 												</div>
@@ -707,7 +706,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/house-on-the-beverly-hills">House on the beverly
+														<Link href="/elanlar/house-on-the-beverly-hills">House on the beverly
 															hills</Link>
 													</div>
 												</div>
@@ -748,7 +747,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/office-space-at-northwest">Office Space at
+														<Link href="/elanlar/office-space-at-northwest">Office Space at
 															Northwest</Link>
 													</div>
 												</div>
@@ -794,7 +793,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/archer-house">Archer House</Link>
+														<Link href="/elanlar/archer-house">Archer House</Link>
 													</div>
 												</div>
 												<div className="location">
@@ -834,7 +833,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/villa-one-hyde-park">Villa One Hyde Park</Link>
+														<Link href="/elanlar/villa-one-hyde-park">Villa One Hyde Park</Link>
 													</div>
 												</div>
 												<div className="location">
@@ -874,7 +873,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/home-pitt-street">Home Pitt Street</Link>
+														<Link href="/elanlar/home-pitt-street">Home Pitt Street</Link>
 													</div>
 												</div>
 												<div className="location">
@@ -914,7 +913,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/villa-on-hollywood-boulevard">Villa on Hollywood
+														<Link href="/elanlar/villa-on-hollywood-boulevard">Villa on Hollywood
 															Boulevard</Link>
 													</div>
 												</div>
@@ -955,7 +954,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/house-on-the-beverly-hills">House on the beverly
+														<Link href="/elanlar/house-on-the-beverly-hills">House on the beverly
 															hills</Link>
 													</div>
 												</div>
@@ -996,7 +995,7 @@ export default function WorkWithUs6() {
 											<div className="content">
 												<div className="head">
 													<div className="title">
-														<Link href="/property-grid-v2/office-space-at-northwest">Office Space at
+														<Link href="/elanlar/office-space-at-northwest">Office Space at
 															Northwest</Link>
 													</div>
 												</div>
@@ -1032,7 +1031,7 @@ export default function WorkWithUs6() {
 					</div>
 					<div className="row">
 						<div className="col-12">
-							<Link href="/property-grid-v2" className="tf-button-primary border-radius-corner m-auto wow fadeInUp">See All Listing<i className="icon-arrow-right-add" /></Link>
+							<Link href="/elanlar" className="tf-button-primary border-radius-corner m-auto wow fadeInUp">See All Listing<i className="icon-arrow-right-add" /></Link>
 						</div>
 					</div>
 				</div>

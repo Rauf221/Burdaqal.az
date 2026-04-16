@@ -1,6 +1,6 @@
 /** Blog list (Blog List 01 / v1). Post detail: `${BLOG_LIST}/${slug}` */
 
-export const BLOG_LIST = '/blog-list-v1'
+export const BLOG_LIST = '/bloglar'
 
 export const BLOG_LIST_POSTS = [
 	{

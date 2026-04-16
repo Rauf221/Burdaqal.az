@@ -26,7 +26,7 @@ export default function DashboardMyFavorites() {
 								<div className="head">
 									<div className="price">$815,000</div>
 									<div className="title">
-										<Link href="/property-grid-v2/archer-house">Archer House</Link>
+										<Link href="/elanlar/archer-house">Archer House</Link>
 									</div>
 								</div>
 								<div className="location">
@@ -68,7 +68,7 @@ export default function DashboardMyFavorites() {
 								<div className="head">
 									<div className="price">$815,000</div>
 									<div className="title">
-										<Link href="/property-grid-v2/archer-house">Archer House</Link>
+										<Link href="/elanlar/archer-house">Archer House</Link>
 									</div>
 								</div>
 								<div className="location">
@@ -110,7 +110,7 @@ export default function DashboardMyFavorites() {
 								<div className="head">
 									<div className="price">$815,000</div>
 									<div className="title">
-										<Link href="/property-grid-v2/archer-house">Archer House</Link>
+										<Link href="/elanlar/archer-house">Archer House</Link>
 									</div>
 								</div>
 								<div className="location">
@@ -152,7 +152,7 @@ export default function DashboardMyFavorites() {
 								<div className="head">
 									<div className="price">$815,000</div>
 									<div className="title">
-										<Link href="/property-grid-v2/archer-house">Archer House</Link>
+										<Link href="/elanlar/archer-house">Archer House</Link>
 									</div>
 								</div>
 								<div className="location">
@@ -194,7 +194,7 @@ export default function DashboardMyFavorites() {
 								<div className="head">
 									<div className="price">$815,000</div>
 									<div className="title">
-										<Link href="/property-grid-v2/archer-house">Archer House</Link>
+										<Link href="/elanlar/archer-house">Archer House</Link>
 									</div>
 								</div>
 								<div className="location">
@@ -236,7 +236,7 @@ export default function DashboardMyFavorites() {
 								<div className="head">
 									<div className="price">$815,000</div>
 									<div className="title">
-										<Link href="/property-grid-v2/archer-house">Archer House</Link>
+										<Link href="/elanlar/archer-house">Archer House</Link>
 									</div>
 								</div>
 								<div className="location">

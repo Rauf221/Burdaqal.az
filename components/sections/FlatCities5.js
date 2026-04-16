@@ -32,9 +32,8 @@ export default function FlatCities5() {
 					<div className="row">
 						<div className="col-12">
 							<div className="heading-section text-center">
-								<h2 className="wow fadeInUp">Find Properties in These Cities</h2>
-								<div className="text wow fadeInUp">Lorem ipsum dolor sit amet, consectetur adipiscing
-									elit.</div>
+								<h2 className="wow fadeInUp">Bu Rayonlarda Qal</h2>
+								<div className="text wow fadeInUp ">Azərbaycanın fərqli rayonlarında yerləşən günlük evləri araşdır, sənə uyğun olanı seç və rahatlıqla rezerv et.</div>
 							</div>
 						</div>
 					</div>
@@ -50,7 +49,7 @@ export default function FlatCities5() {
 													<p>23 Properties</p>
 													<h4>New York</h4>
 												</div>
-												<Link href="/property-grid-v2" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
+												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
 											</div>
 										</SwiperSlide>
 										<SwiperSlide>
@@ -60,7 +59,7 @@ export default function FlatCities5() {
 													<p>23 Properties</p>
 													<h4>Los Angeles</h4>
 												</div>
-												<Link href="/property-grid-v2" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
+												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
 											</div>
 										</SwiperSlide>
 										<SwiperSlide>
@@ -70,7 +69,7 @@ export default function FlatCities5() {
 													<p>23 Properties</p>
 													<h4>Miami</h4>
 												</div>
-												<Link href="/property-grid-v2" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
+												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
 											</div>
 										</SwiperSlide>
 										<SwiperSlide>
@@ -80,7 +79,7 @@ export default function FlatCities5() {
 													<p>23 Properties</p>
 													<h4>Florida</h4>
 												</div>
-												<Link href="/property-grid-v2" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
+												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
 											</div>
 										</SwiperSlide>
 										<SwiperSlide>
@@ -90,7 +89,7 @@ export default function FlatCities5() {
 													<p>23 Properties</p>
 													<h4>San Francisco</h4>
 												</div>
-												<Link href="/property-grid-v2" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
+												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
 											</div>
 										</SwiperSlide>
 										<SwiperSlide>
@@ -100,7 +99,7 @@ export default function FlatCities5() {
 													<p>23 Properties</p>
 													<h4>Florida</h4>
 												</div>
-												<Link href="/property-grid-v2" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
+												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
 											</div>
 										</SwiperSlide>
 										<SwiperSlide>
@@ -110,7 +109,7 @@ export default function FlatCities5() {
 													<p>23 Properties</p>
 													<h4>San Francisco</h4>
 												</div>
-												<Link href="/property-grid-v2" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
+												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
 											</div>
 										</SwiperSlide>
 									</Swiper>

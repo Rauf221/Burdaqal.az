@@ -1,6 +1,6 @@
 
 'use client'
-import { useEffect, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import AddClassBody from "../elements/AddClassBody"
 import BackToTop from '../elements/BackToTop'
 import DeleteButton from "../elements/DeleteButton"
@@ -12,7 +12,8 @@ import MobileMenu from "./MobileMenu"
 import Header12 from "./header/Header12"
 
 export default function LayoutAdmin({ breadcrumbTitle, children }) {
-	const [scroll, setScroll] = useState(0)
+	const [scroll, setScroll] = useState(false)
+	const headerFlowHeightRef = useRef(0)
 	const [isMobileMenu, setMobileMenu] = useState(false)
 	const handleMobileMenu = () => {
 		setMobileMenu(!isMobileMenu)
@@ -40,9 +41,24 @@ export default function LayoutAdmin({ breadcrumbTitle, children }) {
 			setScroll(window.scrollY > 100)
 		}
 
+		onScroll()
 		window.addEventListener("scroll", onScroll)
 		return () => window.removeEventListener("scroll", onScroll)
 	}, [])
+
+	useLayoutEffect(() => {
+		const page = document.getElementById('page')
+		const header = document.getElementById('header_main')
+		if (!page || !header) return
+		if (!scroll) {
+			headerFlowHeightRef.current = header.offsetHeight
+			page.style.paddingTop = ''
+			return
+		}
+		const h = headerFlowHeightRef.current || header.offsetHeight
+		page.style.paddingTop = `${h}px`
+	}, [scroll])
+
 	return (
 		<><div id="top" />
 			<AddClassBody />

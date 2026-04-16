@@ -7,7 +7,7 @@ export default function PropertyGridV2() {
 	return (
 		<>
 
-			<Layout>
+			<Layout mainContentCls="px-20 default">
 				<div>
 					<div className="flat-title page-property-grid-2">
 						<div className="themesflat-container">
@@ -300,10 +300,11 @@ export default function PropertyGridV2() {
 											</div>
 											<div className="button-heart"><i className="flaticon-heart-1" /></div>
 											<div className="swiper-container slider-box-dream arrow-style-1 pagination-style-1">
-												<SliderBoxDream path="house/property-listing" start={1} end={3} detailHref="/property-grid-v2/archer-house" />
+												<SliderBoxDream path="house/property-listing" start={1} end={3} detailHref="/elanlar/archer-house" />
 											</div>
 										</div>
-										<Link href="/property-grid-v2/archer-house" className="content">
+										<Link href="/elanlar/archer-house" className="box-dream-body-link">
+											<div className="content">
 											<div className="head">
 												<div className="title">
 													Archer House
@@ -330,6 +331,7 @@ export default function PropertyGridV2() {
 													<p>2660 Sqft</p>
 												</div>
 											</div>
+											</div>
 										</Link>
 									</div>
 								</div>
@@ -341,10 +343,11 @@ export default function PropertyGridV2() {
 											</div>
 											<div className="button-heart"><i className="flaticon-heart-1" /></div>
 											<div className="swiper-container slider-box-dream arrow-style-1 pagination-style-1">
-												<SliderBoxDream path="house/property-listing" start={2} end={4} detailHref="/property-grid-v2/villa-one-hyde-park" />
+												<SliderBoxDream path="house/property-listing" start={2} end={4} detailHref="/elanlar/villa-one-hyde-park" />
 											</div>
 										</div>
-										<Link href="/property-grid-v2/villa-one-hyde-park" className="content">
+										<Link href="/elanlar/villa-one-hyde-park" className="box-dream-body-link">
+											<div className="content">
 											<div className="head">
 												<div className="title">
 													Villa One Hyde Park
@@ -371,6 +374,7 @@ export default function PropertyGridV2() {
 													<p>2660 Sqft</p>
 												</div>
 											</div>
+											</div>
 										</Link>
 									</div>
 								</div>
@@ -382,10 +386,11 @@ export default function PropertyGridV2() {
 											</div>
 											<div className="button-heart"><i className="flaticon-heart-1" /></div>
 											<div className="swiper-container slider-box-dream arrow-style-1 pagination-style-1">
-												<SliderBoxDream path="house/property-listing" start={3} end={5} detailHref="/property-grid-v2/home-pitt-street" />
+												<SliderBoxDream path="house/property-listing" start={3} end={5} detailHref="/elanlar/home-pitt-street" />
 											</div>
 										</div>
-										<Link href="/property-grid-v2/home-pitt-street" className="content">
+										<Link href="/elanlar/home-pitt-street" className="box-dream-body-link">
+											<div className="content">
 											<div className="head">
 												<div className="title">
 													Home Pitt Street
@@ -412,6 +417,7 @@ export default function PropertyGridV2() {
 													<p>2660 Sqft</p>
 												</div>
 											</div>
+											</div>
 										</Link>
 									</div>
 								</div>
@@ -423,10 +429,11 @@ export default function PropertyGridV2() {
 											</div>
 											<div className="button-heart"><i className="flaticon-heart-1" /></div>
 											<div className="swiper-container slider-box-dream arrow-style-1 pagination-style-1">
-												<SliderBoxDream path="house/property-listing" start={4} end={6} detailHref="/property-grid-v2/relaxing-villa" />
+												<SliderBoxDream path="house/property-listing" start={4} end={6} detailHref="/elanlar/relaxing-villa" />
 											</div>
 										</div>
-										<Link href="/property-grid-v2/relaxing-villa" className="content">
+										<Link href="/elanlar/relaxing-villa" className="box-dream-body-link">
+											<div className="content">
 											<div className="head">
 												<div className="title">
 													Relaxing Villa
@@ -453,6 +460,7 @@ export default function PropertyGridV2() {
 													<p>2660 Sqft</p>
 												</div>
 											</div>
+											</div>
 										</Link>
 									</div>
 								</div>
@@ -464,10 +472,11 @@ export default function PropertyGridV2() {
 											</div>
 											<div className="button-heart"><i className="flaticon-heart-1" /></div>
 											<div className="swiper-container slider-box-dream arrow-style-1 pagination-style-1">
-												<SliderBoxDream path="house/property-listing" start={5} end={7} detailHref="/property-grid-v2/luxury-mansion" />
+												<SliderBoxDream path="house/property-listing" start={5} end={7} detailHref="/elanlar/luxury-mansion" />
 											</div>
 										</div>
-										<Link href="/property-grid-v2/luxury-mansion" className="content">
+										<Link href="/elanlar/luxury-mansion" className="box-dream-body-link">
+											<div className="content">
 											<div className="head">
 												<div className="title">
 													Luxury Mansion
@@ -494,6 +503,7 @@ export default function PropertyGridV2() {
 													<p>2660 Sqft</p>
 												</div>
 											</div>
+											</div>
 										</Link>
 									</div>
 								</div>
@@ -505,10 +515,11 @@ export default function PropertyGridV2() {
 											</div>
 											<div className="button-heart"><i className="flaticon-heart-1" /></div>
 											<div className="swiper-container slider-box-dream arrow-style-1 pagination-style-1">
-												<SliderBoxDream path="house/property-listing" start={6} end={8} detailHref="/property-grid-v2/home-in-merrick-way" />
+												<SliderBoxDream path="house/property-listing" start={6} end={8} detailHref="/elanlar/home-in-merrick-way" />
 											</div>
 										</div>
-										<Link href="/property-grid-v2/home-in-merrick-way" className="content">
+										<Link href="/elanlar/home-in-merrick-way" className="box-dream-body-link">
+											<div className="content">
 											<div className="head">
 												<div className="title">
 													Home in Merrick Way
@@ -535,6 +546,7 @@ export default function PropertyGridV2() {
 													<p>2660 Sqft</p>
 												</div>
 											</div>
+											</div>
 										</Link>
 									</div>
 								</div>
@@ -546,10 +558,11 @@ export default function PropertyGridV2() {
 											</div>
 											<div className="button-heart"><i className="flaticon-heart-1" /></div>
 											<div className="swiper-container slider-box-dream arrow-style-1 pagination-style-1">
-												<SliderBoxDream path="house/property-listing" start={7} end={9} detailHref="/property-grid-v2/villa-in-coral-gables" />
+												<SliderBoxDream path="house/property-listing" start={7} end={9} detailHref="/elanlar/villa-in-coral-gables" />
 											</div>
 										</div>
-										<Link href="/property-grid-v2/villa-in-coral-gables" className="content">
+										<Link href="/elanlar/villa-in-coral-gables" className="box-dream-body-link">
+											<div className="content">
 											<div className="head">
 												<div className="title">
 													Villa in Coral Gables
@@ -576,6 +589,7 @@ export default function PropertyGridV2() {
 													<p>2660 Sqft</p>
 												</div>
 											</div>
+											</div>
 										</Link>
 									</div>
 								</div>
@@ -587,10 +601,11 @@ export default function PropertyGridV2() {
 											</div>
 											<div className="button-heart"><i className="flaticon-heart-1" /></div>
 											<div className="swiper-container slider-box-dream arrow-style-1 pagination-style-1">
-												<SliderBoxDream path="house/property-listing" start={8} end={10} detailHref="/property-grid-v2/modern-house-in-greenville" />
+												<SliderBoxDream path="house/property-listing" start={8} end={10} detailHref="/elanlar/modern-house-in-greenville" />
 											</div>
 										</div>
-										<Link href="/property-grid-v2/modern-house-in-greenville" className="content">
+										<Link href="/elanlar/modern-house-in-greenville" className="box-dream-body-link">
+											<div className="content">
 											<div className="head">
 												<div className="title">
 													Modern House in Greenville
@@ -617,6 +632,7 @@ export default function PropertyGridV2() {
 													<p>2660 Sqft</p>
 												</div>
 											</div>
+											</div>
 										</Link>
 									</div>
 								</div>
@@ -628,10 +644,11 @@ export default function PropertyGridV2() {
 											</div>
 											<div className="button-heart"><i className="flaticon-heart-1" /></div>
 											<div className="swiper-container slider-box-dream arrow-style-1 pagination-style-1">
-												<SliderBoxDream path="house/property-listing" start={9} end={11} detailHref="/property-grid-v2/garden-villa-house" />
+												<SliderBoxDream path="house/property-listing" start={9} end={11} detailHref="/elanlar/garden-villa-house" />
 											</div>
 										</div>
-										<Link href="/property-grid-v2/garden-villa-house" className="content">
+										<Link href="/elanlar/garden-villa-house" className="box-dream-body-link">
+											<div className="content">
 											<div className="head">
 												<div className="title">
 													Garden Villa House
@@ -657,6 +674,7 @@ export default function PropertyGridV2() {
 													<i className="flaticon-minus-front" />
 													<p>2660 Sqft</p>
 												</div>
+											</div>
 											</div>
 										</Link>
 									</div>
