@@ -15,6 +15,12 @@ import {
 
 const USER_API_BASE_URL = process.env.NEXT_PUBLIC_USER_API_BASE_URL
 
+/** Bu endpointlər özü email/şifrə ilə işləyir; köhnə Bearer göndərilməsi serverdə 401 verə bilər. */
+function isPublicAuthUrl(url: string): boolean {
+	const p = url.split('?')[0]
+	return /\/(login|register|verify-code|forgot-password)$/.test(p)
+}
+
 const userAxios: AxiosInstance = axios.create({
 	baseURL: USER_API_BASE_URL,
 	timeout: 15000,
@@ -24,9 +30,13 @@ const userAxios: AxiosInstance = axios.create({
 })
 
 const handleApiError = (error: AxiosError): void => {
+	const reqUrl = String(error.config?.url || '')
 	if (error.response?.status === 401) {
-		clearAuthToken()
-		clearPasswordResetBearerToken()
+		/* Yanlış giriş/qeydiyyat cavabında sessiyanı silmə — yalnız real 401 (Bearer etibarsız) üçün */
+		if (!isPublicAuthUrl(reqUrl)) {
+			clearAuthToken()
+			clearPasswordResetBearerToken()
+		}
 	} else if (error.response?.status === 403) {
 		console.error('Access forbidden')
 	} else if (error.response && error.response.status >= 500) {
@@ -36,8 +46,9 @@ const handleApiError = (error: AxiosError): void => {
 
 userAxios.interceptors.request.use(
 	(config: InternalAxiosRequestConfig) => {
+		const url = String(config.url || '')
 		const token = getAuthToken() || getPasswordResetBearerToken()
-		if (token && config.headers) {
+		if (token && config.headers && !isPublicAuthUrl(url)) {
 			config.headers.Authorization = `Bearer ${token}`
 		}
 

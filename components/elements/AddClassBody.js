@@ -18,31 +18,7 @@ export default function AddClassBody() {
 			else if (pathname === '/invoice') {
 				bodyElement.classList.add('counter-scroll')
 			}
-			else if (pathname === '/dashboard') {
-				bodyElement.classList.add('dashboard')
-			}
-			else if (pathname === '/dashboard-my-profile') {
-				bodyElement.classList.add('dashboard')
-			}
-			else if (pathname === '/dashboard-reviews') {
-				bodyElement.classList.add('dashboard')
-			}
-			else if (pathname === '/dashboard-message') {
-				bodyElement.classList.add('dashboard')
-			}
-			else if (pathname === '/dashboard-add-properties') {
-				bodyElement.classList.add('dashboard')
-			}
-			else if (pathname === '/dashboard-my-properties') {
-				bodyElement.classList.add('dashboard')
-			}
-			else if (pathname === '/dashboard-my-favorites') {
-				bodyElement.classList.add('dashboard')
-			}
-			else if (pathname === '/dashboard-saved-search') {
-				bodyElement.classList.add('dashboard')
-			}
-			else if (pathname === '/dashboard-my-package') {
+			else if (pathname === '/dashboard' || pathname.startsWith('/dashboard-')) {
 				bodyElement.classList.add('dashboard')
 			}
 

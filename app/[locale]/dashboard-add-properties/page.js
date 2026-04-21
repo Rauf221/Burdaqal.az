@@ -1,4 +1,5 @@
 import LayoutAdmin from "@/components/layout/LayoutAdmin"
+import TimeDigitsInput from "@/components/dashboard/TimeDigitsInput"
 
 const PROPERTY_AMENITY_SECTIONS = [
 	{
@@ -35,11 +36,40 @@ const PROPERTY_AMENITY_SECTIONS = [
 	},
 ]
 
-const PROPERTY_RULE_GROUPS = [
-	{ name: "rule_smoking", label: "Siqaret" },
-	{ name: "rule_pets", label: "Ev heyvanları" },
-	{ name: "rule_party", label: "Party" },
+const PROPERTY_CATEGORIES = [
+	{ value: "menzil", label: "Mənzil" },
+	{ value: "aframe", label: "Aframe" },
+	{ value: "villa", label: "Villa" },
+	{ value: "heyet_evi", label: "Həyət evi" },
+	{ value: "hostel", label: "Hostel" },
+	{ value: "otel", label: "Otel" },
 ]
+
+/** Şəhər / rayon — API ilə uyğunlaşdırmaq üçün value saxlanılır */
+const CITY_REGIONS = [
+	{ value: "baki", label: "Bakı" },
+	{ value: "sumqayit", label: "Sumqayıt" },
+	{ value: "gence", label: "Gəncə" },
+	{ value: "mingecevir", label: "Mingəçevir" },
+	{ value: "seki", label: "Şəki" },
+	{ value: "lenkeran", label: "Lənkəran" },
+	{ value: "naftalan", label: "Naftalan" },
+	{ value: "diger", label: "Digər" },
+]
+
+/** Bakı mərkəzi — xəritə önizləməsi (pin üçün sonradan iframe URL API-dən dəyişilə bilər) */
+const MAP_EMBED_BAKU =
+	"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d243646.90504353077!2d49.8185576!3d40.3931052!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40307d6bd475b172%3A0xae10b7968942d9e8!2sBaku%2C%20Azerbaijan!5e0!3m2!1saz!2s!4v1700000000000!5m2!1saz!2s"
+
+/** Şəkil yükləmə qaydaları — backend ilə eyni rəqəmləri saxlayın */
+const MEDIA_RULES = {
+	minWidth: 800,
+	minHeight: 600,
+	maxFileMb: 5,
+}
+
+/** has-top-title üzən etiket əvəzinə: mətn inputun üstündə, kənarda */
+const LABEL_ABOVE = { display: "block", marginBottom: 10, fontWeight: 600, fontSize: 17 }
 
 export default function DashboardAddProperties() {
 
@@ -49,199 +79,259 @@ export default function DashboardAddProperties() {
 			<LayoutAdmin breadcrumbTitle="Add New Property">
 				<div>
 					<div className="wg-box pl-44 mb-20">
-						<h4>Basic information</h4>
+						<h4>
+							Əsas məlumatlar <span style={{ fontWeight: 400, fontSize: 15, opacity: 0.85 }}>(Core Info)</span>
+						</h4>
 						<form className="form-bacsic-infomation flex gap30 flex-column">
-							<fieldset className="text has-top-title">
-								<input type="text" placeholder="Property Title *" name="text" tabIndex={2} aria-required="true" required />
-								<label htmlFor>Property Title *</label>
+							<fieldset className="text">
+								<label htmlFor="property-title" style={LABEL_ABOVE}>
+									Elan başlığı (maks. 100 simvol) *
+								</label>
+								<input
+									id="property-title"
+									type="text"
+									name="title"
+									maxLength={100}
+									placeholder="Elan başlığı *"
+									tabIndex={2}
+									aria-required="true"
+									required
+								/>
 							</fieldset>
-							<select className="nice-select" tabIndex={0}>
-
-								<option data-value className="option selected">List</option>
-								<option data-value="For Ren" className="option">Grid</option>
-								<option data-value="Sold" className="option">Single</option>
-
-							</select>
-							<fieldset className="description has-top-title">
-								<textarea name="description" rows={4} placeholder="Property Description" tabIndex={2} aria-required="true" required defaultValue={"Lorem Ipsum Dolar Sit Amet"} />
-								<label htmlFor>Property Description</label>
+							<div>
+								<label htmlFor="property-category" style={LABEL_ABOVE}>
+									Kateqoriya
+								</label>
+								<select
+									id="property-category"
+									className="nice-select"
+									name="category"
+									tabIndex={0}
+									required
+									defaultValue=""
+								>
+									<option value="" disabled className="option">
+										Kateqoriya seçin
+									</option>
+									{PROPERTY_CATEGORIES.map((cat) => (
+										<option key={cat.value} value={cat.value} className="option">
+											{cat.label}
+										</option>
+									))}
+								</select>
+							</div>
+							<fieldset className="description">
+								<label htmlFor="property-description" style={LABEL_ABOVE}>
+									Təsvir *
+								</label>
+								<textarea
+									id="property-description"
+									name="description"
+									rows={5}
+									placeholder="Elanın təsviri *"
+									tabIndex={2}
+									aria-required="true"
+									required
+								/>
 							</fieldset>
+							<div className="cols cols-two">
+								<fieldset className="text">
+									<label htmlFor="property-check-in" style={LABEL_ABOVE}>
+										Check-in
+									</label>
+									<TimeDigitsInput id="property-check-in" name="check_in" placeholder="14:00" tabIndex={2} />
+								</fieldset>
+								<fieldset className="text">
+									<label htmlFor="property-check-out" style={LABEL_ABOVE}>
+										Check-out
+									</label>
+									<TimeDigitsInput id="property-check-out" name="check_out" placeholder="11:00" tabIndex={2} />
+								</fieldset>
+							</div>
+							<div className="cols">
+								<fieldset className="text">
+									<label htmlFor="property-price" style={LABEL_ABOVE}>
+										Qiymət (AZN) *
+									</label>
+									<input
+										id="property-price"
+										type="text"
+										name="price"
+										inputMode="decimal"
+										placeholder="Məs. 120"
+										tabIndex={2}
+										aria-required="true"
+										required
+									/>
+								</fieldset>
+							</div>
 							<div className="button-submit mt-10">
-								<button className="tf-button-primary" type="submit">Save &amp; Preview<i className="icon-arrow-right-add" /></button>
+								<button className="tf-button-primary" type="submit">
+									Saxla və ön baxış
+									<i className="icon-arrow-right-add" />
+								</button>
 							</div>
 						</form>
 					</div>
 					<div className="wg-box pl-44 mb-20">
-						<h4>Price</h4>
-						<form className="form-price flex gap30 flex-column">
-							<div className="cols">
-								<fieldset className="text">
-									<input type="text" placeholder="Price ($)" name="text" tabIndex={2} aria-required="true" required />
-								</fieldset>
-								<fieldset className="text">
-									<input type="text" placeholder="Price Prefix" name="text" tabIndex={2} aria-required="true" required />
-								</fieldset>
-							</div>
-							<div className="cols">
-								<fieldset className="text">
-									<input type="text" placeholder="Price Suffix" name="text" tabIndex={2} aria-required="true" required />
-								</fieldset>
-								<fieldset className="text">
-									<input type="text" placeholder="Price Custom" name="text" tabIndex={2} aria-required="true" required />
-								</fieldset>
-							</div>
-							<div className="button-submit mt-10">
-								<button className="tf-button-primary" type="submit">Save &amp; Preview<i className="icon-arrow-right-add" /></button>
-							</div>
-						</form>
-					</div>
-					<div className="wg-box pl-44 mb-20">
-						<h4>Location</h4>
+						<h4>
+							Ünvan və lokasiya <span style={{ fontWeight: 400, fontSize: 15, opacity: 0.85 }}>(Location)</span>
+						</h4>
 						<form className="form-location flex gap30 flex-column">
-							<select className="nice-select" tabIndex={0}>
-
-								<option data-value className="option selected">1</option>
-								<option data-value="For Ren" className="option">2</option>
-								<option data-value="Sold" className="option">3</option>
-
-							</select>
-							<div className="cols">
-								<fieldset className="text">
-									<input type="text" placeholder="Friendly Address" name="text" tabIndex={2} aria-required="true" required />
-								</fieldset>
-								<fieldset className="text">
-									<input type="text" placeholder="Map Location" name="text" tabIndex={2} aria-required="true" required />
-								</fieldset>
+							<div>
+								<label htmlFor="property-city-region" style={LABEL_ABOVE}>
+									Şəhər (rayon)
+								</label>
+								<select
+									id="property-city-region"
+									className="nice-select"
+									name="city_region"
+									tabIndex={0}
+									required
+									defaultValue=""
+								>
+									<option value="" disabled className="option">
+										Şəhər və ya rayon seçin
+									</option>
+									{CITY_REGIONS.map((r) => (
+										<option key={r.value} value={r.value} className="option">
+											{r.label}
+										</option>
+									))}
+								</select>
 							</div>
-							<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2643.6895046810805!2d-122.52642526124438!3d38.00014098339506!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085976736097a2f%3A0xbe014d20e6e22654!2sSan Rafael%2C California%2C Hoa Kỳ!5e0!3m2!1svi!2s!4v1678975266976!5m2!1svi!2s" height={400} style={{ border: 0, width: "100%" }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
-							<div className="cols small">
-								<fieldset className="number">
-									<input type="number" placeholder="X" name="number" tabIndex={2} defaultValue="25.783260" aria-required="true" required />
-								</fieldset>
-								<fieldset className="number">
-									<input type="number" placeholder="Y" name="number" tabIndex={2} defaultValue="-80.230863" aria-required="true" required />
-								</fieldset>
+							<fieldset className="description">
+								<label htmlFor="property-street-address" style={LABEL_ABOVE}>
+									Tam ünvan (küçə, bina) *
+								</label>
+								<textarea
+									id="property-street-address"
+									name="street_address"
+									rows={3}
+									placeholder="Küçə, bina, mənzil *"
+									tabIndex={2}
+									aria-required="true"
+									required
+								/>
+							</fieldset>
+							<div>
+								<p style={{ fontWeight: 600, marginBottom: 12, fontSize: 15 }}>Xəritədə pin (Google Maps)</p>
+								<iframe
+									title="Xəritə — Bakı (önizləmə)"
+									src={MAP_EMBED_BAKU}
+									height={400}
+									style={{ border: 0, width: "100%" }}
+									allowFullScreen
+									loading="lazy"
+									referrerPolicy="no-referrer-when-downgrade"
+								/>
 							</div>
+							<fieldset className="description">
+								<label htmlFor="property-landmark" style={LABEL_ABOVE}>
+									Landmark (yaxın obyektlər)
+								</label>
+								<textarea
+									id="property-landmark"
+									name="landmark"
+									rows={3}
+									placeholder="Məs. metro, park, ticarət mərkəzi"
+									tabIndex={2}
+								/>
+							</fieldset>
 							<div className="button-submit mt-10">
-								<button className="tf-button-primary" type="submit">Save &amp; Preview<i className="icon-arrow-right-add" /></button>
+								<button className="tf-button-primary" type="submit">
+									Saxla və ön baxış
+									<i className="icon-arrow-right-add" />
+								</button>
 							</div>
 						</form>
 					</div>
 					<div className="wg-box pl-44 mb-20">
-						<h4>Media</h4>
-						<form className="form-media">
+						<h4>
+							Media <span style={{ fontWeight: 400, fontSize: 15, opacity: 0.85 }}>(Şəkillər və video)</span>
+						</h4>
+						<form className="form-media flex gap30 flex-column">
+							<div
+								style={{
+									padding: "14px 16px",
+									background: "#f5f5f5",
+									borderRadius: 8,
+									fontSize: 14,
+									lineHeight: 1.5,
+								}}
+							>
+								<p style={{ fontWeight: 600, marginBottom: 8 }}>Qaydalar</p>
+								<ul style={{ margin: 0, paddingLeft: 20 }}>
+									<li>
+										Minimum ölçü (en × hündürlük): {MEDIA_RULES.minWidth}×{MEDIA_RULES.minHeight} px
+									</li>
+									<li>Hər fayl üçün maksimum ölçü: {MEDIA_RULES.maxFileMb} MB</li>
+									<li>Format: JPG, PNG, WebP</li>
+								</ul>
+							</div>
+
 							<div className="upload-image-wrap">
-								<div className="text">Featured Image</div>
+								<div className="text">Cover şəkil (1 ədəd – məcburi) *</div>
 								<div className="list">
 									<div className="item">
-										<img src="/images/image-box/upload-1.jpg" alt="" />
-										<ul>
-											<li className="edit-btns">
-												<i className="flaticon-edit" />
-											</li>
-											<li className="delete-btns">
-												<i className="flaticon-delete" />
-											</li>
-										</ul>
-									</div>
-									<div className="item">
-										<img src="/images/image-box/upload-2.jpg" alt="" />
-										<ul>
-											<li className="edit-btns">
-												<i className="flaticon-edit" />
-											</li>
-											<li className="delete-btns">
-												<i className="flaticon-delete" />
-											</li>
-										</ul>
-									</div>
-									<div className="item">
-										<label className="uploadfile">
-											<input type="file" name="file" />
+										<label className="uploadfile" htmlFor="property-cover-image">
+											<input
+												id="property-cover-image"
+												type="file"
+												name="cover_image"
+												accept="image/jpeg,image/png,image/webp"
+												required
+											/>
 											<i className="flaticon-gallery" />
-											<div>Upload</div>
+											<div>Cover yüklə</div>
 										</label>
 									</div>
 								</div>
-								<p>Max file size is 1MB, Minimum dimension: 330x300 And Suitable files are .jpg &amp; .png</p>
 							</div>
+
 							<div className="upload-image-wrap">
-								<div className="text">Gallery</div>
+								<div className="text">Gallery (ən azı 5 şəkil) *</div>
 								<div className="list">
-									<div className="item">
-										<img src="/images/image-box/upload-1.jpg" alt="" />
-										<ul>
-											<li className="edit-btns">
-												<i className="flaticon-edit" />
-											</li>
-											<li className="delete-btns">
-												<i className="flaticon-delete" />
-											</li>
-										</ul>
-									</div>
-									<div className="item">
-										<img src="/images/image-box/upload-2.jpg" alt="" />
-										<ul>
-											<li className="edit-btns">
-												<i className="flaticon-edit" />
-											</li>
-											<li className="delete-btns">
-												<i className="flaticon-delete" />
-											</li>
-										</ul>
-									</div>
-									<div className="item">
-										<label className="uploadfile">
-											<input type="file" name="file" />
+									<div className="item" style={{ minWidth: "100%", maxWidth: "100%" }}>
+										<label className="uploadfile" htmlFor="property-gallery-images" style={{ width: "100%" }}>
+											<input
+												id="property-gallery-images"
+												type="file"
+												name="gallery_images[]"
+												accept="image/jpeg,image/png,image/webp"
+												multiple
+												required
+											/>
 											<i className="flaticon-gallery" />
-											<div>Upload</div>
+											<div>Şəkilləri seçin (Ctrl ilə çoxlu)</div>
 										</label>
 									</div>
 								</div>
-								<p>Max file size is 1MB, Minimum dimension: 330x300 And Suitable files are .jpg &amp; .png</p>
+								<p style={{ marginTop: 10 }}>
+									Ən azı 5 şəkil seçilməlidir; təsdiq server tərəfində də yoxlanılacaq.
+								</p>
 							</div>
-							<div className="upload-image-wrap">
-								<div className="text">Attachments</div>
-								<div className="list">
-									<div className="item">
-										<img src="/images/image-box/upload-1.jpg" alt="" />
-										<ul>
-											<li className="edit-btns">
-												<i className="flaticon-edit" />
-											</li>
-											<li className="delete-btns">
-												<i className="flaticon-delete" />
-											</li>
-										</ul>
-									</div>
-									<div className="item">
-										<img src="/images/image-box/upload-2.jpg" alt="" />
-										<ul>
-											<li className="edit-btns">
-												<i className="flaticon-edit" />
-											</li>
-											<li className="delete-btns">
-												<i className="flaticon-delete" />
-											</li>
-										</ul>
-									</div>
-									<div className="item">
-										<label className="uploadfile">
-											<input type="file" name="file" />
-											<i className="flaticon-gallery" />
-											<div>Upload</div>
-										</label>
-									</div>
-								</div>
-								<p>Max file size is 1MB, Minimum dimension: 330x300 And Suitable files are .jpg &amp; .png</p>
-							</div>
-							<fieldset className="text has-top-title">
-								<input type="text" placeholder="Video link" name="text" tabIndex={2} aria-required="true" required />
-								<label htmlFor>Video link</label>
+
+							<fieldset className="text">
+								<label htmlFor="property-video-youtube" style={LABEL_ABOVE}>
+									Video (YouTube, opsional)
+								</label>
+								<input
+									id="property-video-youtube"
+									type="url"
+									name="video_youtube_url"
+									inputMode="url"
+									autoComplete="off"
+									placeholder="https://www.youtube.com/watch?v=… və ya youtu.be/…"
+									tabIndex={2}
+								/>
 							</fieldset>
-							
+
 							<div className="button-submit">
-								<button className="tf-button-primary" type="submit">Save &amp; Preview<i className="icon-arrow-right-add" /></button>
+								<button className="tf-button-primary" type="submit">
+									Saxla və ön baxış
+									<i className="icon-arrow-right-add" />
+								</button>
 							</div>
 						</form>
 					</div>
@@ -264,106 +354,96 @@ export default function DashboardAddProperties() {
 									</ul>
 								</div>
 							))}
-							<div>
-								<p style={{ fontWeight: 600, marginBottom: 12, fontSize: 17 }}>Qaydalar</p>
-								<ul className="grid-checkbox ">
-									{PROPERTY_RULE_GROUPS.map((rule) => (
-										<li key={rule.name} className="amenity-rule-cell ">
-											<fieldset>
-												<legend>{rule.label}</legend>
-												<div className="amenity-rule-radios ">
-													<label>
-														<input type="radio" name={rule.name} value="yes" />
-														<span>İcazə var</span>
-													</label>
-													<label>
-														<input type="radio" name={rule.name} value="no" defaultChecked />
-														<span>İcazə yoxdur</span>
-													</label>
-												</div>
-											</fieldset>
-										</li>
-									))}
-								</ul>
-							</div>
 							<div className="button-submit">
 								<button className="tf-button-primary" type="submit">Save &amp; Preview<i className="icon-arrow-right-add" /></button>
 							</div>
 						</form>
 					</div>
-					<div className="wg-box pl-44">
-						<h4>Floors</h4>
-						<form className="form-floors">
+					<div className="wg-box pl-44 mb-20">
+						<h4>
+							Otaq və tutum <span style={{ fontWeight: 400, fontSize: 15, opacity: 0.85 }}>(Capacity)</span>
+						</h4>
+						<form className="form-capacity flex gap30 flex-column">
 							<div className="cols cols-two">
-								<fieldset className="text has-top-title">
-									<input type="text" placeholder="Name" name="text" tabIndex={2} aria-required="true" required />
-									<label htmlFor>Name</label>
+								<fieldset className="number">
+									<label htmlFor="property-room-count" style={LABEL_ABOVE}>
+										Otaq sayı *
+									</label>
+									<input
+										id="property-room-count"
+										type="number"
+										name="room_count"
+										min={1}
+										step={1}
+										inputMode="numeric"
+										placeholder="0"
+										tabIndex={2}
+										aria-required="true"
+										required
+									/>
 								</fieldset>
-								<select className="nice-select" tabIndex={0}>
-
-									<option data-value className="option selected">USA</option>
-									<option data-value="For Ren" className="option">Viet Nam</option>
-									<option data-value="Sold" className="option">China</option>
-
-								</select>
+								<fieldset className="number">
+									<label htmlFor="property-bed-count" style={LABEL_ABOVE}>
+										Yataq sayı *
+									</label>
+									<input
+										id="property-bed-count"
+										type="number"
+										name="bed_count"
+										min={1}
+										step={1}
+										inputMode="numeric"
+										placeholder="0"
+										tabIndex={2}
+										aria-required="true"
+										required
+									/>
+								</fieldset>
 							</div>
 							<div className="cols cols-two">
-								<select className="nice-select" tabIndex={0}>
-
-									<option data-value className="option selected">USA</option>
-									<option data-value="For Ren" className="option">Viet Nam</option>
-									<option data-value="Sold" className="option">China</option>
-
-								</select>
-								<fieldset className="text has-top-title">
-									<input type="text" placeholder="Size" name="text" tabIndex={2} aria-required="true" required />
-									<label htmlFor>Size</label>
+								<fieldset className="number">
+									<label htmlFor="property-bathroom-count" style={LABEL_ABOVE}>
+										Hamam sayı *
+									</label>
+									<input
+										id="property-bathroom-count"
+										type="number"
+										name="bathroom_count"
+										min={1}
+										step={1}
+										inputMode="numeric"
+										placeholder="0"
+										tabIndex={2}
+										aria-required="true"
+										required
+									/>
 								</fieldset>
-							</div >
-							<fieldset className="description has-top-title">
-								<textarea name="description" rows={4} placeholder="Content" tabIndex={2} aria-required="true" required defaultValue={"Lorem Ipsum Dolar Sit Amet"} />
-								<label htmlFor>Content</label>
-							</fieldset>
-							<div className="upload-image-wrap">
-								<div className="text">Preview Image</div>
-								<div className="list">
-									<div className="item">
-										<img src="/images/image-box/upload-1.jpg" alt="" />
-										<ul>
-											<li className="edit-btns">
-												<i className="flaticon-edit" />
-											</li>
-											<li className="delete-btns">
-												<i className="flaticon-delete" />
-											</li>
-										</ul>
-									</div>
-									<div className="item">
-										<img src="/images/image-box/upload-2.jpg" alt="" />
-										<ul>
-											<li className="edit-btns">
-												<i className="flaticon-edit" />
-											</li>
-											<li className="delete-btns">
-												<i className="flaticon-delete" />
-											</li>
-										</ul>
-									</div>
-									<div className="item">
-										<label className="uploadfile">
-											<input type="file" name="file" />
-											<i className="flaticon-gallery" />
-											<div>Upload</div>
-										</label>
-									</div>
-								</div>
-								<p>Max file size is 1MB, Minimum dimension: 330x300 And Suitable files are .jpg &amp; .png</p>
+								<fieldset className="number">
+									<label htmlFor="property-max-guests" style={LABEL_ABOVE}>
+										Maksimum qonaq sayı *
+									</label>
+									<input
+										id="property-max-guests"
+										type="number"
+										name="max_guests"
+										min={1}
+										step={1}
+										inputMode="numeric"
+										placeholder="0"
+										tabIndex={2}
+										aria-required="true"
+										required
+									/>
+								</fieldset>
 							</div>
 							<div className="button-submit">
-								<button className="tf-button-primary" type="submit">Save &amp; Preview<i className="icon-arrow-right-add" /></button>
+								<button className="tf-button-primary" type="submit">
+									Saxla və ön baxış
+									<i className="icon-arrow-right-add" />
+								</button>
 							</div>
-						</form >
-					</div >
+						</form>
+					</div>
 				</div >
 
 			</LayoutAdmin >

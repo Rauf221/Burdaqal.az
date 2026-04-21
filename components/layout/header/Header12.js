@@ -1,5 +1,6 @@
 'use client'
 
+import { getAuthToken } from '@/lib/api/client'
 import { Link } from '@/i18n/navigation'
 import HeaderUserNav from '@/components/elements/HeaderUserNav'
 import LocaleSwitcher from '@/components/elements/LocaleSwitcher'
@@ -52,7 +53,18 @@ export default function Header12({ scroll, isMobileMenu, handleMobileMenu, isLog
 							</div>
 							<HeaderUserNav handleLogin={handleLogin} accountMenuTheme="green" />
 							<div className="header-btn">
-								<Link href="/dashboard-add-properties" className="tf-button-default">{t('addListing')}</Link>
+								<Link
+									href="/dashboard-add-properties"
+									className="tf-button-default"
+									onClick={(e) => {
+										if (!getAuthToken()) {
+											e.preventDefault()
+											handleLogin()
+										}
+									}}
+								>
+									{t('addListing')}
+								</Link>
 							</div>
 						</div>
 						<a className="mobile-nav-toggler mobile-button" onClick={handleMobileMenu} />

@@ -50,6 +50,19 @@ export default function Layout({ headerStyle, breadcrumbTitle, children, mainCon
 		return () => window.removeEventListener("scroll", onScroll)
 	}, [])
 
+	/** Middleware dashboard-dan qonağı çıxardıqda ?login=1 — login modalını açır. */
+	useEffect(() => {
+		if (typeof window === 'undefined') return
+		const params = new URLSearchParams(window.location.search)
+		if (params.get('login') !== '1') return
+		setLogin(true)
+		document.body.classList.add('modal-open')
+		params.delete('login')
+		const q = params.toString()
+		const next = window.location.pathname + (q ? `?${q}` : '') + window.location.hash
+		window.history.replaceState({}, '', next)
+	}, [])
+
 	/** Header12 axında ikən hündürlük saxlanılır; fixed olduqda axın çöküşünün qarşısı alınır (Header7 absolute olduğu üçün ehtiyac yoxdur). */
 	useLayoutEffect(() => {
 		const page = document.getElementById('page')

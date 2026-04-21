@@ -42,6 +42,13 @@ function socialIconClass(link) {
 	return 'flaticon-share'
 }
 
+/** Layihə `public/images/blog/*.jpg` daşımır — mövcud SVG ilə 404 qarşısı alınır */
+const FALLBACK_BLOG_IMAGES = [
+	'/images/image-box/img-1.svg',
+	'/images/image-box/img-2.svg',
+	'/images/image-box/img-3.svg',
+]
+
 export default function SliderNews({ expert }) {
 	const locale = useLocale()
 	const { data, isPending, isError } = useQuery({
@@ -57,7 +64,7 @@ export default function SliderNews({ expert }) {
 						<SwiperSlide>
 							<div className="wg-blog wow fadeInUp">
 								<div className="image">
-									<img src="/images/blog/blog-grid-1.jpg" alt="" />
+									<img src={FALLBACK_BLOG_IMAGES[0]} alt="" />
 								</div>
 								<div className="content has-border">
 									<div className="sub-blog">
@@ -79,7 +86,7 @@ export default function SliderNews({ expert }) {
 						<SwiperSlide>
 							<div className="wg-blog wow fadeInUp" data-wow-delay="0.1s">
 								<div className="image">
-									<img src="/images/blog/blog-grid-2.jpg" alt="" />
+									<img src={FALLBACK_BLOG_IMAGES[1]} alt="" />
 								</div>
 								<div className="content has-border">
 									<div className="sub-blog">
@@ -101,7 +108,7 @@ export default function SliderNews({ expert }) {
 						<SwiperSlide>
 							<div className="wg-blog wow fadeInUp" data-wow-delay="0.2s">
 								<div className="image">
-									<img src="/images/blog/blog-grid-3.jpg" alt="" />
+									<img src={FALLBACK_BLOG_IMAGES[2]} alt="" />
 								</div>
 								<div className="content has-border">
 									<div className="sub-blog">
@@ -123,7 +130,7 @@ export default function SliderNews({ expert }) {
 						<SwiperSlide>
 							<div className="wg-blog wow fadeInUp" data-wow-delay="0.3s">
 								<div className="image">
-									<img src="/images/blog/blog-grid-4.jpg" alt="" />
+									<img src={FALLBACK_BLOG_IMAGES[0]} alt="" />
 								</div>
 								<div className="content has-border">
 									<div className="sub-blog">
@@ -145,7 +152,7 @@ export default function SliderNews({ expert }) {
 						<SwiperSlide>
 							<div className="wg-blog">
 								<div className="image">
-									<img src="/images/blog/blog-grid-3.jpg" alt="" />
+									<img src={FALLBACK_BLOG_IMAGES[1]} alt="" />
 								</div>
 								<div className="content has-border">
 									<div className="sub-blog">

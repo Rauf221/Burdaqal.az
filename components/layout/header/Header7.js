@@ -1,5 +1,6 @@
 'use client'
 
+import { getAuthToken } from '@/lib/api/client'
 import { Link } from '@/i18n/navigation'
 import HeaderUserNav from '@/components/elements/HeaderUserNav'
 import LocaleSwitcher from '@/components/elements/LocaleSwitcher'
@@ -62,7 +63,16 @@ export default function Header7({
 							</div>
 							<HeaderUserNav handleLogin={handleLogin} inverse accountMenuTheme="dark" />
 							<div className="header-btn">
-								<Link href="/dashboard-add-properties" className="tf-button-default style-white">
+								<Link
+									href="/dashboard-add-properties"
+									className="tf-button-default style-white"
+									onClick={(e) => {
+										if (!getAuthToken()) {
+											e.preventDefault()
+											handleLogin()
+										}
+									}}
+								>
 									{t('addListing')}
 								</Link>
 							</div>
