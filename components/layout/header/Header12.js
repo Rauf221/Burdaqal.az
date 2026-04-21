@@ -49,7 +49,7 @@ export default function Header12({ scroll, isMobileMenu, handleMobileMenu, isLog
 								<div className="icon">
 									<i className="flaticon-phone" />
 								</div>
-								<div className="number">800-555-6789</div>
+								
 							</div>
 							<HeaderUserNav handleLogin={handleLogin} accountMenuTheme="green" />
 							<div className="header-btn">

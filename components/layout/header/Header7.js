@@ -59,7 +59,7 @@ export default function Header7({
 								<div className="icon">
 									<i className="flaticon-phone" />
 								</div>
-								<div className="number">+994 50 123 45 67</div>
+							
 							</div>
 							<HeaderUserNav handleLogin={handleLogin} inverse accountMenuTheme="dark" />
 							<div className="header-btn">
