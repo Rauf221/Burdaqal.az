@@ -1600,6 +1600,14 @@ body {
 
 .property-grid-wrap-v2 {
     padding-bottom: 80px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    /* flex sütun: məzmun eni sütundan böyük olanda row-u genişləndirməsin */
+    .row > [class*='col-'] {
+        min-width: 0;
+    }
     .top {
         padding: 0;
         margin-bottom: 21px;
@@ -1609,6 +1617,59 @@ body {
     }
     .box-dream {
         margin-bottom: 30px;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    /* API şəkilləri müxtəlif ölçüdə olsa da kart şəkil hissəsi eyni hündürlükdə qalsın (absolute yox — taşma riski azalar) */
+    .box-dream .image-group {
+        aspect-ratio: 4 / 3;
+        width: 100%;
+        max-width: 95.5%;
+        overflow: hidden;
+        position: relative;
+        box-sizing: border-box;
+        .swiper {
+            width: 100% !important;
+            max-width: 100% !important;
+            height: 100% !important;
+            min-height: 0;
+            margin: 0 !important;
+            box-sizing: border-box;
+        }
+        .swiper-wrapper {
+            height: 100%;
+        }
+        .swiper-slide {
+            height: 100%;
+            box-sizing: border-box;
+            .w-full {
+                height: 100%;
+                min-height: 0;
+            }
+            a.block {
+                display: block;
+                height: 100%;
+            }
+            img {
+                width: 100%;
+                height: 100%;
+                max-width: 100%;
+                object-fit: cover;
+                object-position: center;
+                display: block;
+            }
+        }
+    }
+    .box-dream .content .head {
+        min-width: 0;
+    }
+    .box-dream .content .title {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        word-break: break-word;
+        min-width: 0;
     }
     .wg-pagination {
         margin-top: 10px;

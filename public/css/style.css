@@ -4426,18 +4426,24 @@ ul.grid-tags li a:hover {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
-  align-items: start;
+  align-items: stretch;
   justify-content: start;
   gap: 20px;
 }
 .my-properties-item .property .image {
+  flex: 0 0 150px;
   width: 150px;
-  height: 128.57px;
+  min-height: 128.57px;
   overflow: hidden;
   border-radius: 12px;
+  align-self: stretch;
 }
 .my-properties-item .property .image img {
   width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
 }
 .my-properties-item .property .price {
   font-weight: 500;
@@ -9805,6 +9811,15 @@ body::-webkit-scrollbar {
 
 .property-grid-wrap-v2 {
   padding-bottom: 80px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  /* flex sütun: məzmun eni sütundan böyük olanda row-u genişləndirməsin */
+  /* API şəkilləri müxtəlif ölçüdə olsa da kart şəkil hissəsi eyni hündürlükdə qalsın (absolute yox — taşma riski azalar) */
+}
+.property-grid-wrap-v2 .row > [class*=col-] {
+  min-width: 0;
 }
 .property-grid-wrap-v2 .top {
   padding: 0;
@@ -9815,6 +9830,58 @@ body::-webkit-scrollbar {
 }
 .property-grid-wrap-v2 .box-dream {
   margin-bottom: 30px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.property-grid-wrap-v2 .box-dream .image-group {
+  aspect-ratio: 4/3;
+  width: 100%;
+  max-width: 95.5%;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+}
+.property-grid-wrap-v2 .box-dream .image-group .swiper {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  min-height: 0;
+  margin: 0 !important;
+  box-sizing: border-box;
+}
+.property-grid-wrap-v2 .box-dream .image-group .swiper-wrapper {
+  height: 100%;
+}
+.property-grid-wrap-v2 .box-dream .image-group .swiper-slide {
+  height: 100%;
+  box-sizing: border-box;
+}
+.property-grid-wrap-v2 .box-dream .image-group .swiper-slide .w-full {
+  height: 100%;
+  min-height: 0;
+}
+.property-grid-wrap-v2 .box-dream .image-group .swiper-slide a.block {
+  display: block;
+  height: 100%;
+}
+.property-grid-wrap-v2 .box-dream .image-group .swiper-slide img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+.property-grid-wrap-v2 .box-dream .content .head {
+  min-width: 0;
+}
+.property-grid-wrap-v2 .box-dream .content .title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: break-word;
+  min-width: 0;
 }
 .property-grid-wrap-v2 .wg-pagination {
   margin-top: 10px;
