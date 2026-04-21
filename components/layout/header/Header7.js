@@ -55,12 +55,6 @@ export default function Header7({
 						</nav>
 						<div className="header-right">
 							<LocaleSwitcher variant="inverse" />
-							<div className="header-call style-white">
-								<div className="icon">
-									<i className="flaticon-phone" />
-								</div>
-							
-							</div>
 							<HeaderUserNav handleLogin={handleLogin} inverse accountMenuTheme="dark" />
 							<div className="header-btn">
 								<Link

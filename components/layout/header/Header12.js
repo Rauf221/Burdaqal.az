@@ -45,12 +45,6 @@ export default function Header12({ scroll, isMobileMenu, handleMobileMenu, isLog
 						</nav>
 						<div className="header-right">
 							<LocaleSwitcher variant="default" />
-							<div className="header-call">
-								<div className="icon">
-									<i className="flaticon-phone" />
-								</div>
-								
-							</div>
 							<HeaderUserNav handleLogin={handleLogin} accountMenuTheme="green" />
 							<div className="header-btn">
 								<Link
