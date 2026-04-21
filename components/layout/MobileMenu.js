@@ -1,11 +1,12 @@
 'use client'
 
+import HeaderUserNav from '@/components/elements/HeaderUserNav'
 import LocaleSwitcher from '@/components/elements/LocaleSwitcher'
 import { Link, usePathname } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 
-export default function MobileMenu({ isMobileMenu, handleMobileMenu }) {
+export default function MobileMenu({ isMobileMenu, handleMobileMenu, handleLogin }) {
 	const pathname = usePathname()
 	const t = useTranslations('navigation')
 	const [currentMenuItem, setCurrentMenuItem] = useState('')
@@ -54,6 +55,13 @@ export default function MobileMenu({ isMobileMenu, handleMobileMenu }) {
 									</li>
 								</ul>
 								<LocaleSwitcher variant="mobile" />
+								{typeof handleLogin === 'function' ? (
+									<HeaderUserNav
+										handleLogin={handleLogin}
+										placement="mobile"
+										onAfterNavigate={handleMobileMenu}
+									/>
+								) : null}
 							</div>
 						</div>
 					</div>

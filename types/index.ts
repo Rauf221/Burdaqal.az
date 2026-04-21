@@ -182,3 +182,27 @@ export type BlogRelatedResponse = {
 	lang?: string
 	data: BlogListItem[]
 }
+
+/**
+ * `GET /settings` — Laravel cavabı: `{ data: { logo, dark_logo, favicon } }` (ümumi tam https URL).
+ */
+export type SiteSettingsData = {
+	logo: string
+	dark_logo: string
+	favicon: string
+}
+
+/** Bir sətir `GET /meta-tag` → `data[]`. */
+export type MetaTagRow = {
+	name: string
+	meta_title: string
+	meta_description: string
+	meta_keywords: string
+}
+
+/** Tam JSON `GET /meta-tag` (Laravel paginator). */
+export type MetaTagListResponse = {
+	data: MetaTagRow[]
+	links: LaravelPaginationLinks
+	meta: LaravelPaginationMeta
+}

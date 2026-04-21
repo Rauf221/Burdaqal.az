@@ -1,12 +1,18 @@
 'use client'
 
 import { Link } from '@/i18n/navigation'
-import { useTranslations } from 'next-intl'
+import HeaderUserNav from '@/components/elements/HeaderUserNav'
 import LocaleSwitcher from '@/components/elements/LocaleSwitcher'
+import { useSiteBranding } from '@/providers/SiteBrandingProvider'
+import { useTranslations } from 'next-intl'
 import Menu from '../Menu'
 
 export default function Header12({ scroll, isMobileMenu, handleMobileMenu, isLogin, handleLogin, isRegister, handleRegister }) {
 	const t = useTranslations('navigation')
+	const branding = useSiteBranding()
+	const forDesktop = branding.logoOnLightBg || branding.logoOnDarkBg
+	const forMobile = branding.logoOnLightBg || branding.logoOnDarkBg
+	const logoImgClass = 'site-logo__img'
 	return (
 		<>
 
@@ -14,8 +20,23 @@ export default function Header12({ scroll, isMobileMenu, handleMobileMenu, isLog
 				<div className="header-inner">
 					<div className="header-inner-wrap">
 						<div id="site-logo">
-							<Link href="/" rel="home">
-								<img className="d-block" id="logo-header" src="/images/logo/logo.svg" alt="" />
+							<Link href="/" rel="home" className="site-logo__link">
+								{forDesktop ? (
+									<img
+										id="logo-header"
+										className={`${logoImgClass} site-logo__img--desktop`}
+										src={forDesktop}
+										alt=""
+									/>
+								) : null}
+								{forMobile ? (
+									<img
+										id="logo-header-mobile"
+										className={`${logoImgClass} site-logo__img--mobile`}
+										src={forMobile}
+										alt=""
+									/>
+								) : null}
 							</Link>
 						</div>
 						<nav className="main-menu">
@@ -29,11 +50,7 @@ export default function Header12({ scroll, isMobileMenu, handleMobileMenu, isLog
 								</div>
 								<div className="number">800-555-6789</div>
 							</div>
-							<div onClick={handleLogin} className="header-user">
-								<div className="icon">
-									<i className="flaticon-user" />
-								</div>
-							</div>
+							<HeaderUserNav handleLogin={handleLogin} accountMenuTheme="green" />
 							<div className="header-btn">
 								<Link href="/dashboard-add-properties" className="tf-button-default">{t('addListing')}</Link>
 							</div>

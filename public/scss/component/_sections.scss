@@ -303,17 +303,6 @@ body {
             }
         }
     }
-    &.type-home8 {
-        padding-left: 60px;
-        padding-right: 60px;
-        padding-bottom: 60px;
-        .footer-inner {
-            background-color: #F9F9FB;
-        }
-        .bottom-footer {
-            background-color: #F9F9FB;
-        }
-    }
 }
 
 .blog-single-wrap {
@@ -2432,7 +2421,10 @@ body {
     .form-profiles {
         .description {
             textarea {
-                height: 230px !important;
+                min-height: 120px;
+                height: auto !important;
+                max-height: 360px;
+                resize: vertical;
             }
         }
         .wrap-map-v1 {
@@ -2454,7 +2446,10 @@ body {
 
 .form-bacsic-infomation {
     textarea {
-        height: 230px !important;
+        min-height: 120px;
+        height: auto !important;
+        max-height: 360px;
+        resize: vertical;
     }
 }
 
@@ -2493,6 +2488,50 @@ body {
         margin-top: -3px;
         gap: 12px 30px;
         margin-bottom: 35px;
+    }
+
+    // Qaydalar: eyni 3 sütun şəbəkə (grid-checkbox), yuxarıdakı checkbox sütunları ilə hizalı
+    .amenity-rule-cell {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        min-width: 0;
+
+        fieldset {
+            border: 0;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        legend {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            padding: 0;
+            float: none;
+            width: auto;
+        }
+
+        .amenity-rule-radios {
+            @include d-flex();
+            flex-direction: flex;
+            align-items: flex-start;
+            gap: 8px;
+
+            label {
+                @include d-flex();
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                font-size: 14px;
+                margin: 0;
+                
+                input[type="radio"] {
+                    flex-shrink: 0;
+                }
+            }
+        }
     }
 }
 

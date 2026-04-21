@@ -118,7 +118,7 @@
     padding: 18px 26px;
     border-radius: 12px;
     border: 0;
-    background-color: #FF9F0A;
+    background-color: var(--Primary);
     font-weight: 500;
     font-size: 15px;
     line-height: 18px;
@@ -130,7 +130,7 @@
     }
     &.active,
     &:hover {
-        background-color: #ff8800;
+        background-color: #6fb042;
         color: var(--White);
         i {
             animation: 0.3s link-icon linear;
@@ -153,9 +153,17 @@
     &.style-bg-white {
         background-color: var(--White);
         border: 1px solid var(--Primary);
+        color: #000000;
+        i {
+            color: #000000;
+        }
         &.active,
         &:hover {
             background-color: #D9B75A0D;
+            color: #000000;
+            i {
+                color: #000000;
+            }
         }
     }
     &.style-black {

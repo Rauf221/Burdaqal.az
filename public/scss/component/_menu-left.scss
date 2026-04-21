@@ -40,6 +40,33 @@
                                 font-size: 20px;
                             }
                         }
+                        // Çıxış: Link kimi eyni xətt və rəng (yalnız <a> üçün SCSS olduğuna görə əvvəl dizayn yox idi)
+                        button[type='button'] {
+                            @include flex(center, start);
+                            gap: 10px;
+                            height: 60px;
+                            width: 100%;
+                            margin: 0;
+                            padding: 0 0 0 20px;
+                            border: none;
+                            background: transparent;
+                            appearance: none;
+                            font-family: inherit;
+                            font-size: 16px;
+                            font-weight: 400;
+                            line-height: 24px;
+                            color: var(--White);
+                            text-align: left;
+                            cursor: pointer;
+                            @include transition3;
+                            i {
+                                font-size: 20px;
+                            }
+                            &:disabled {
+                                opacity: 0.65;
+                                cursor: wait;
+                            }
+                        }
                         &.active,
                         &:hover {
                             background: #FFFFFF0D;
@@ -51,14 +78,14 @@
         .section-content-right {
             flex-grow: 1;
             padding-left: 371px;
-            padding-top: 121px;
+            padding-top: 0px;
             @include transition3;
             > h3 {
-                margin-top: 31px;
+                margin-top: 8px;
                 margin-bottom: 5px;
             }
             > .text-content {
-                margin-bottom: 33px;
+                margin-bottom: 24px;
             }
             >.bottom-page {
                 padding: 32px 0 11px;
@@ -88,13 +115,21 @@
     cursor: pointer;
     @include transition3;
     display: none;
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
     .text-content {
         display: none;
     }
-    span {
+    .btn-canvas-burger {
         width: 23px;
         height: 10px;
         position: relative;
+        flex-shrink: 0;
         &::before,
         &::after {
             position: absolute;
@@ -114,7 +149,7 @@
     }
     &.active {
         left: 351px;
-        span {
+        .btn-canvas-burger {
             &::before {
                 transform: rotate3d(0, 0, 1, 45deg);
                 top: 50%;

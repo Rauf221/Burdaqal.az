@@ -99,7 +99,11 @@ export default function Layout({ headerStyle, breadcrumbTitle, children, mainCon
 					<Footer1 footerCls={footerCls} />
 				</div>
 			</div>
-			<MobileMenu isMobileMenu={isMobileMenu} handleMobileMenu={handleMobileMenu} />
+			<MobileMenu
+				isMobileMenu={isMobileMenu}
+				handleMobileMenu={handleMobileMenu}
+				handleLogin={handleLogin}
+			/>
 			<BackToTop target="#top" />
 			<LoginPopup isLogin={isLogin} handleLogin={handleLogin} isRegister={isRegister} handleRegister={handleRegister} />
 			<RegisterPopup isLogin={isLogin} handleLogin={handleLogin} isRegister={isRegister} handleRegister={handleRegister} />

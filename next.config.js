@@ -4,8 +4,9 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.js')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	// Dev-də true olanda bəzən Turbopack keşi pozulur və JSON.parse (RSC flight) xətası verir; lazım olsa əl ilə yenidən yandırın.
 	experimental: {
-		turbopackFileSystemCacheForDev: true,
+		turbopackFileSystemCacheForDev: false,
 	},
 	async redirects() {
 		return [

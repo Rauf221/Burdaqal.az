@@ -1,8 +1,13 @@
-import { Link } from '@/i18n/navigation'
+'use client'
+
 import FooterContactInfo from '@/components/layout/footer/FooterContactInfo'
 import FooterNewsletterForm from '@/components/layout/footer/FooterNewsletterForm'
+import { useSiteBranding } from '@/providers/SiteBrandingProvider'
+import { Link } from '@/i18n/navigation'
 
 export default function Footer1({ footerCls }) {
+	const branding = useSiteBranding()
+	const logoFooter = branding.logoOnDarkBg
 	return (
 		<>
 
@@ -12,7 +17,14 @@ export default function Footer1({ footerCls }) {
 						<div className="top-footer">
 							<div className="logo-footer">
 								<Link href="/">
-									<img id="logo-footer" src="/images/logo/logo-footer.svg" alt="images" />
+									{logoFooter ? (
+										<img
+											id="logo-footer"
+											src={logoFooter}
+											alt=""
+											style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+										/>
+									) : null}
 								</Link>
 							</div>
 							<div className="wg-social">

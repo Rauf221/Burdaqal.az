@@ -1,5 +1,7 @@
 import { DM_Sans, Jost, Roboto } from 'next/font/google'
 
+import { QueryProvider } from '@/providers/QueryProvider'
+
 import '@/public/css/animate.min.css'
 import '@/public/css/animation.css'
 import '@/public/css/bootstrap-select.min.css'
@@ -41,7 +43,9 @@ export default function RootLayout({ children }) {
 			suppressHydrationWarning
 			className={`${roboto.className} ${roboto.variable} ${dm.variable} ${jost.variable}`}
 		>
-			<body className={`${roboto.className} body mm-wrapper`}>{children}</body>
+			<body className={`${roboto.className} body mm-wrapper`}>
+			<QueryProvider>{children}</QueryProvider>
+		</body>
 		</html>
 	)
 }

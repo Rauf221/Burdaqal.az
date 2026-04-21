@@ -9,7 +9,9 @@ import Cookies from 'js-cookie'
 import { getAcceptLanguageHeader } from '@/lib/utils'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
-const TOKEN_COOKIE_NAME = 'access_token'
+
+/** İstifadəçi API və əsas API üçün eyni cookie adı. */
+export const TOKEN_COOKIE_NAME = 'access_token'
 
 const client: AxiosInstance = axios.create({
 	baseURL: API_BASE_URL,
@@ -19,12 +21,48 @@ const client: AxiosInstance = axios.create({
 	},
 })
 
-const getAuthToken = (): string | null => {
+/** Token dəyişəndə navbar və s. komponentlər yenilənsin. */
+export const AUTH_TOKEN_CHANGED_EVENT = 'auth-token-changed'
+
+function notifyAuthTokenChanged(): void {
+	if (typeof window !== 'undefined') {
+		window.dispatchEvent(new CustomEvent(AUTH_TOKEN_CHANGED_EVENT))
+	}
+}
+
+export const getAuthToken = (): string | null => {
 	return Cookies.get(TOKEN_COOKIE_NAME) || null
 }
 
-const clearAuthToken = (): void => {
-	Cookies.remove(TOKEN_COOKIE_NAME)
+export const setAuthToken = (token: string): void => {
+	Cookies.set(TOKEN_COOKIE_NAME, token, { expires: 7, sameSite: 'Lax', path: '/' })
+	notifyAuthTokenChanged()
+}
+
+export const clearAuthToken = (): void => {
+	Cookies.remove(TOKEN_COOKIE_NAME, { path: '/' })
+	notifyAuthTokenChanged()
+}
+
+/** Şifrə bərpası verify cavabındakı Bearer — cookie-də saxlanmır ki, profil sorğusu 401 ilə tokeni silməsin. */
+const PW_RESET_BEARER_KEY = 'user_api_password_reset_bearer'
+
+export const setPasswordResetBearerToken = (token: string | null): void => {
+	if (typeof window === 'undefined') return
+	if (token) {
+		sessionStorage.setItem(PW_RESET_BEARER_KEY, token)
+	} else {
+		sessionStorage.removeItem(PW_RESET_BEARER_KEY)
+	}
+}
+
+export const getPasswordResetBearerToken = (): string | null => {
+	if (typeof window === 'undefined') return null
+	return sessionStorage.getItem(PW_RESET_BEARER_KEY)
+}
+
+export const clearPasswordResetBearerToken = (): void => {
+	setPasswordResetBearerToken(null)
 }
 
 const handleUnauthorized = (): void => {

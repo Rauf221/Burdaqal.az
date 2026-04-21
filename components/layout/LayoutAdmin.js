@@ -15,9 +15,14 @@ export default function LayoutAdmin({ breadcrumbTitle, children }) {
 	const [scroll, setScroll] = useState(false)
 	const headerFlowHeightRef = useRef(0)
 	const [isMobileMenu, setMobileMenu] = useState(false)
+	// Header hamburger: əsas sayt MobileMenu (body.mobile-menu-visible). Dashboard sol panel yalnız CSS: mobil sticky, tablet sabit.
 	const handleMobileMenu = () => {
-		setMobileMenu(!isMobileMenu)
-		!isMobileMenu ? document.body.classList.add("mobile-menu-visible") : document.body.classList.remove("mobile-menu-visible")
+		setMobileMenu((open) => {
+			const next = !open
+			if (next) document.body.classList.add('mobile-menu-visible')
+			else document.body.classList.remove('mobile-menu-visible')
+			return next
+		})
 	}
 	const [isLogin, setLogin] = useState(false)
 	const handleLogin = () => {
@@ -44,6 +49,12 @@ export default function LayoutAdmin({ breadcrumbTitle, children }) {
 		onScroll()
 		window.addEventListener("scroll", onScroll)
 		return () => window.removeEventListener("scroll", onScroll)
+	}, [])
+
+	useEffect(() => {
+		return () => {
+			document.body.classList.remove('mobile-menu-visible')
+		}
 	}, [])
 
 	useLayoutEffect(() => {
@@ -78,25 +89,24 @@ export default function LayoutAdmin({ breadcrumbTitle, children }) {
 					/>
 
 					<div className="main-content spacing-20">
-						<div className="layout-wrap-inner">
+						<div className="layout-wrap-inner dashboard-layout">
 							<Sidebar />
 							<div className="section-content-right">
 								{breadcrumbTitle && <BreadcrumbAdmin breadcrumbTitle={breadcrumbTitle} />}
 								{children}
 								<div className="bottom-page">
-									<p>Copyright © 2024. JustHome</p>
+									<p>Copyright © 2024. Markup Agency</p>
 								</div>
 							</div>
-							<div className="btn-canvas active">
-								<span />
-								<div className="text-content"> Dashboard Navigation</div>
-							</div>
-
 						</div>
 					</div>
 				</div>
 			</div>
-			<MobileMenu isMobileMenu={isMobileMenu} handleMobileMenu={handleMobileMenu} />
+			<MobileMenu
+				isMobileMenu={isMobileMenu}
+				handleMobileMenu={handleMobileMenu}
+				handleLogin={handleLogin}
+			/>
 			<BackToTop target="#top" />
 			<LoginPopup isLogin={isLogin} handleLogin={handleLogin} isRegister={isRegister} handleRegister={handleRegister} />
 			<RegisterPopup isLogin={isLogin} handleLogin={handleLogin} isRegister={isRegister} handleRegister={handleRegister} />
