@@ -11228,6 +11228,19 @@ body::-webkit-scrollbar {
 .layout-wrap .layout-wrap-inner .section-menu-left .menu-content::-webkit-scrollbar {
   width: 0px;
 }
+.layout-wrap .layout-wrap-inner .section-menu-left .menu-content .dashboard-sidebar-brand {
+  margin-bottom: 24px;
+}
+.layout-wrap .layout-wrap-inner .section-menu-left .menu-content .dashboard-sidebar-brand__link {
+  display: block;
+  line-height: 0;
+}
+.layout-wrap .layout-wrap-inner .section-menu-left .menu-content .dashboard-sidebar-brand__img {
+  max-width: 200px;
+  width: 100%;
+  height: auto;
+  display: block;
+}
 .layout-wrap .layout-wrap-inner .section-menu-left .menu-content ul {
   display: -webkit-box;
   display: -moz-box;

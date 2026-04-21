@@ -2,6 +2,7 @@
 
 import HeaderUserNav from '@/components/elements/HeaderUserNav'
 import LocaleSwitcher from '@/components/elements/LocaleSwitcher'
+import { useSiteBranding } from '@/providers/SiteBrandingProvider'
 import { Link, usePathname } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
@@ -9,6 +10,8 @@ import { useEffect, useState } from 'react'
 export default function MobileMenu({ isMobileMenu, handleMobileMenu, handleLogin }) {
 	const pathname = usePathname()
 	const t = useTranslations('navigation')
+	const branding = useSiteBranding()
+	const menuLogo = branding.logoOnLightBg || branding.logoOnDarkBg
 	const [currentMenuItem, setCurrentMenuItem] = useState('')
 
 	useEffect(() => {
@@ -25,8 +28,18 @@ export default function MobileMenu({ isMobileMenu, handleMobileMenu, handleLogin
 				<div className="menu-backdrop" onClick={handleMobileMenu} />
 				<nav className="menu-box">
 					<div className="nav-logo">
-						<Link href="/">
-							<img src="/images/logo/logo.svg" alt="nav-logo" width={174} height={44} />
+						<Link href="/" rel="home" className="site-logo__link">
+							{menuLogo ? (
+								<img
+									className="site-logo__img"
+									src={menuLogo}
+									alt=""
+									width={174}
+									height={44}
+								/>
+							) : (
+								<img src="/images/logo/logo.svg" alt="" width={174} height={44} />
+							)}
 						</Link>
 					</div>
 					<div className="bottom-canvas">
