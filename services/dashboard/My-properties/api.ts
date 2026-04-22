@@ -49,6 +49,9 @@ export type MyAnnouncementItem = {
 	status: number
 	check_in: string
 	check_out: string
+	/** Bəzi cavablarda yalnız `category_id`, bəzilərində `category: { id }` gəlir */
+	category_id?: number | null
+	category?: { id: number; name?: string } | null
 	address: MyAnnouncementAddress | null
 	detail: MyAnnouncementDetail | null
 	media: MyAnnouncementMedia | null
@@ -59,6 +62,14 @@ export type MyAnnouncementsResponse = {
 	data: MyAnnouncementItem[]
 	links: LaravelPaginationLinks
 	meta: LaravelPaginationMeta
+}
+
+export type MyAnnouncementShowResponse = {
+	timestamp?: string
+	status?: boolean
+	message?: string
+	lang?: string
+	data: MyAnnouncementItem
 }
 
 export type GetMyAnnouncementsOptions = {
@@ -79,6 +90,17 @@ export async function getMyAnnouncements(
 		params: { page },
 		...(locale && { headers: { 'X-Locale': locale } }),
 	})
+}
+
+/** İstifadəçinin tək elanı — GET .../announcement/show/:id */
+export async function getMyAnnouncementById(
+	announcementId: number,
+	locale?: string
+): Promise<MyAnnouncementShowResponse> {
+	return userGet<MyAnnouncementShowResponse>(
+		`/announcement/show/${announcementId}`,
+		locale ? { headers: { 'X-Locale': locale } } : undefined
+	)
 }
 
 /**

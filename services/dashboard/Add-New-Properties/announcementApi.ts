@@ -174,7 +174,8 @@ export function buildAddressStoreFormData(source: FormData, announcementId: numb
 	const region = source.get('region_id')
 	fd.append('region_id', region !== null && region !== '' ? String(region) : '')
 	fd.append('street', String(source.get('street_address') ?? ''))
-	fd.append('map', String(source.get('map') ?? ''))
+	const map = source.get('map') ?? source.get('iframe_link')
+	fd.append('map', String(map ?? ''))
 	fd.append('landmark', String(source.get('landmark') ?? ''))
 	return fd
 }
@@ -185,7 +186,8 @@ export function buildAddressUpdateFormData(source: FormData): FormData {
 	const region = source.get('region_id')
 	fd.append('region_id', region !== null && region !== '' ? String(region) : '')
 	fd.append('street', String(source.get('street_address') ?? ''))
-	fd.append('map', String(source.get('map') ?? ''))
+	const map = source.get('map') ?? source.get('iframe_link')
+	fd.append('map', String(map ?? ''))
 	fd.append('landmark', String(source.get('landmark') ?? ''))
 	return fd
 }

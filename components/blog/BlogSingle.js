@@ -66,7 +66,7 @@ export default function BlogSingle({ slug }) {
 									<div>
 										<h2 className="wow fadeInUp">{post.title}</h2>
 										<div className="sub-blog style-color wow fadeInUp">
-											<div>{post.tags?.[0]?.name ?? post.meta_title ?? 'Blog'}</div>
+											
 											<div>&nbsp;</div>
 										</div>
 									</div>

@@ -51,24 +51,30 @@ export default function DashboardMyPropertiesClient() {
 	const locale = useLocale()
 	const [page, setPage] = useState(1)
 	const [deleteError, setDeleteError] = useState(null)
+	const [deleteTarget, setDeleteTarget] = useState(null)
 	const q = useQuery(myAnnouncementsListQuery(locale, page))
 	const deleteM = useDeleteAnnouncementMutation(locale)
 
-	function handleDeleteAnnouncement(announcementId, title, options) {
-		const { goPrevPageIfLast } = options ?? {}
-		if (
-			typeof globalThis.confirm === 'function' &&
-			!globalThis.confirm(`«${title}» elanını silmək istəyirsiniz? Bu əməliyyat geri qaytarılmır.`)
-		) {
-			return
-		}
+	async function confirmDelete() {
+		if (!deleteTarget?.id) return
 		setDeleteError(null)
-		deleteM.mutate(announcementId, {
-			onSuccess: () => {
-				if (goPrevPageIfLast) setPage((p) => Math.max(1, p - 1))
-			},
-			onError: (err) => setDeleteError(getMutationErrorMessage(err)),
-		})
+		try {
+			await deleteM.mutateAsync({
+				announcementId: deleteTarget.id,
+				confirmed: true,
+			})
+			setDeleteTarget(null)
+			const goPrevPageIfLast = Boolean(deleteTarget.goPrevPageIfLast)
+			if (goPrevPageIfLast) setPage((p) => Math.max(1, p - 1))
+		} catch (err) {
+			setDeleteError(getMutationErrorMessage(err))
+		}
+	}
+
+	function openDeleteModal(e, payload) {
+		e.preventDefault()
+		e.stopPropagation()
+		setDeleteTarget(payload)
 	}
 
 	const items = q.data?.data ?? []
@@ -184,8 +190,12 @@ export default function DashboardMyPropertiesClient() {
 											
 											<div>
 												<ul className="wg-icon">
-													<li className="edit-btns" title="Redaktə (tezliklə)">
-														<Link href="/dashboard-add-properties">
+													<li className="edit-btns" title="Redaktə et">
+														<Link
+															href={`/dashboard-edit-property/${row.id}`}
+															className="icon-action-link"
+															aria-label="Elanı redaktə et"
+														>
 															<i className="flaticon-edit" />
 														</Link>
 													</li>
@@ -193,19 +203,15 @@ export default function DashboardMyPropertiesClient() {
 														<button
 															type="button"
 															title="Sil"
-															disabled={deleteM.isPending}
-															onClick={() =>
-																handleDeleteAnnouncement(row.id, row.title, {
+															disabled={deleteM.isPending && deleteTarget?.id === row.id}
+															onClick={(e) =>
+																openDeleteModal(e, {
+																	id: row.id,
+																	title: row.title,
 																	goPrevPageIfLast: goPrevAfterDelete,
 																})
 															}
-															style={{
-																background: 'none',
-																border: 0,
-																padding: 0,
-																cursor: deleteM.isPending ? 'wait' : 'pointer',
-																color: 'inherit',
-															}}
+															className="icon-action-btn"
 															aria-label="Elanı sil"
 														>
 															<i className="flaticon-delete" />
@@ -255,6 +261,59 @@ export default function DashboardMyPropertiesClient() {
 					</ul>
 				) : null}
 			</div>
+			{deleteTarget ? (
+				<div
+					role="dialog"
+					aria-modal="true"
+					aria-labelledby="delete-announcement-modal-title"
+					style={{
+						position: 'fixed',
+						inset: 0,
+						background: 'rgba(17, 24, 39, 0.45)',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						padding: 16,
+						zIndex: 2000,
+					}}
+				>
+					<div
+						style={{
+							width: '100%',
+							maxWidth: 520,
+							background: '#fff',
+							borderRadius: 16,
+							padding: 24,
+							boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
+						}}
+					>
+						<h4 id="delete-announcement-modal-title" style={{ marginBottom: 10 }}>
+							Elanı silmək istəyirsiniz?
+						</h4>
+						<p style={{ marginBottom: 20, color: '#4b5563' }}>
+							<strong>“{deleteTarget.title}”</strong> silinəcək. Bu əməliyyat geri qaytarılmır.
+						</p>
+						<div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+							<button
+								type="button"
+								className="tf-button-default"
+								onClick={() => setDeleteTarget(null)}
+								disabled={deleteM.isPending}
+							>
+								Ləğv et
+							</button>
+							<button
+								type="button"
+								className="tf-button-primary"
+								onClick={confirmDelete}
+								disabled={deleteM.isPending}
+							>
+								{deleteM.isPending ? 'Silinir…' : 'Bəli, sil'}
+							</button>
+						</div>
+					</div>
+				</div>
+			) : null}
 		</LayoutAdmin>
 	)
 }

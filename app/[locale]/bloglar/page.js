@@ -116,7 +116,7 @@ function BlogListContent() {
 										<div className="content">
 											<div className="sub-blog">
 												<div>{post.tags?.[0]?.name ?? 'Blog'}</div>
-												<div className="date"> {post.created_at} </div>
+												<div className="date">{post.created_at ?? '—'}</div>
 											</div>
 											
 											<div className="name">

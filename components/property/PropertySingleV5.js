@@ -1,17 +1,132 @@
 'use client'
-import VideoPopup from "@/components/elements/VideoPopup"
 import Layout from "@/components/layout/Layout"
 import SliderBoxDream from "@/components/slider/SliderBoxDream"
 import { PROPERTY_GRID, getPropertyTitle, propertyDetailHref } from "@/utils/propertyRoutes"
 import { Link } from '@/i18n/navigation'
-import { useState } from 'react'
+import { CalendarArrowDown, CalendarArrowUp } from 'lucide-react'
+import { Fragment, useState } from 'react'
 import 'swiper/css/free-mode'
 import 'swiper/css/thumbs'
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
-export default function PropertySingleV5({ slug }) {
+
+const FEATURE_PARENT_LABELS = {
+	1: 'Interior Details',
+	2: 'Outdoor Details',
+	3: 'Utilities Central',
+	4: 'Other Features',
+}
+
+function groupAttributesForFeatures(attributes) {
+	const groups = { 1: [], 2: [], 3: [], 4: [] }
+	for (const a of attributes ?? []) {
+		const pid = groups[a.parent_id] !== undefined ? a.parent_id : 4
+		groups[pid].push(a)
+	}
+	return groups
+}
+
+function extractMapEmbedSrc(mapValue) {
+	if (!mapValue) return ''
+	let raw = String(mapValue).trim()
+	if (!raw) return ''
+
+	// Backend bəzən HTML entity encode olunmuş string qaytara bilər.
+	raw = raw
+		.replace(/&quot;/gi, '"')
+		.replace(/&#39;/gi, "'")
+		.replace(/&lt;/gi, '<')
+		.replace(/&gt;/gi, '>')
+		.replace(/&amp;/gi, '&')
+
+	// API bəzən yalnız URL, bəzən isə tam <iframe ...> HTML qaytarır.
+	if (!raw.includes('<')) {
+		return /^https?:\/\//i.test(raw) ? raw : ''
+	}
+
+	const m = raw.match(/src\s*=\s*["']([^"']+)["']/i)
+	const src = m?.[1] ? m[1].trim() : ''
+	return /^https?:\/\//i.test(src) ? src : ''
+}
+
+function extractVideoEmbedSrc(videoValue) {
+	if (!videoValue) return ''
+	let raw = String(videoValue).trim()
+	if (!raw) return ''
+	raw = raw
+		.replace(/&quot;/gi, '"')
+		.replace(/&#39;/gi, "'")
+		.replace(/&lt;/gi, '<')
+		.replace(/&gt;/gi, '>')
+		.replace(/&amp;/gi, '&')
+
+	if (raw.includes('<')) {
+		const m = raw.match(/src\s*=\s*["']([^"']+)["']/i)
+		const src = m?.[1] ? m[1].trim() : ''
+		return /^https?:\/\//i.test(src) ? src : ''
+	}
+
+	// YouTube watch/short URLs -> embed URL
+	try {
+		const u = new URL(raw)
+		const host = u.hostname.replace(/^www\./, '').toLowerCase()
+		if (host === 'youtube.com' || host === 'm.youtube.com') {
+			if (u.pathname === '/watch') {
+				const id = u.searchParams.get('v')
+				return id ? `https://www.youtube.com/embed/${id}` : ''
+			}
+			if (u.pathname.startsWith('/embed/')) return raw
+			if (u.pathname.startsWith('/shorts/')) {
+				const id = u.pathname.split('/')[2]
+				return id ? `https://www.youtube.com/embed/${id}` : ''
+			}
+		}
+		if (host === 'youtu.be') {
+			const id = u.pathname.replace(/^\/+/, '').split('/')[0]
+			return id ? `https://www.youtube.com/embed/${id}` : ''
+		}
+		return raw
+	} catch {
+		return ''
+	}
+}
+
+export default function PropertySingleV5({ slug, announcement }) {
 	const [thumbsSwiper, setThumbsSwiper] = useState(null)
-	const title = getPropertyTitle(slug)
+	const title = announcement?.title ?? getPropertyTitle(slug)
+	const detail = announcement?.detail
+	const address = announcement?.address
+	const category = announcement?.category
+	const media = announcement?.media
+	const user = announcement?.user
+	const checkIn = announcement?.check_in
+	const checkOut = announcement?.check_out
+	const attrGroups = groupAttributesForFeatures(announcement?.attributes)
+
+	const placeholderImg = '/images/slider/slider-properties-detail-11.jpg'
+	const mainSlides =
+		media?.gallery?.length > 0
+			? media.gallery
+			: media?.cover_image
+				? [media.cover_image]
+				: [placeholderImg]
+	const thumbSlides =
+		media?.thumb_gallery?.length >= mainSlides.length
+			? media.thumb_gallery.slice(0, mainSlides.length)
+			: mainSlides
+
+	const locationLine =
+		[address?.street].filter(Boolean).join(', ') || '—'
+
+	const phoneDigits = user?.mobile ? String(user.mobile).replace(/\D/g, '') : ''
+	const whatsappHref = phoneDigits ? `https://wa.me/${phoneDigits}` : '/#'
+	const telHref = user?.mobile ? `tel:${String(user.mobile).replace(/\s/g, '')}` : '/#'
+
+	const mapSrcFromApi = extractMapEmbedSrc(address?.map)
+	const mapEmbedSrc =
+		mapSrcFromApi ||
+		'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2643.6895046810805!2d-122.52642526124438!3d38.00014098339506!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085976736097a2f%3A0xbe014d20e6e22654!2sSan Rafael%2C California%2C Hoa Kỳ!5e0!3m2!1svi!2s!4v1678975266976!5m2!1svi!2s'
+	const videoEmbedSrc = extractVideoEmbedSrc(announcement?.video_youtube_url)
 
 	// Swiper options for the main slider
 	const mainSwiperOptions = {
@@ -83,12 +198,12 @@ export default function PropertySingleV5({ slug }) {
 											<div className="icon">
 												<i className="flaticon-location" />
 											</div>
-											<div className="text-content">148-37 88th Ave, Jamaica, NY 11435</div>
-										</div>
+										<div className="text-content">{locationLine}</div>
 									</div>
-									<div>
-										<div className="square wow fadeInUp">Price</div>
-										<div className="price wow fadeInUp">$989,000</div>
+								</div>
+								<div>
+									<div className="square wow fadeInUp">Price</div>
+									<div className="price wow fadeInUp"> {announcement?.price ?? '—'} ₼</div>
 									</div>
 								</div>
 							</div>
@@ -96,96 +211,28 @@ export default function PropertySingleV5({ slug }) {
 								<div className="thumbs-slider-column arrow-style-1">
 									<Swiper {...mainSwiperOptions} className="swiper-container slider-thumbs-gallery-2">
 										<div className="swiper-wrapper">
-											<SwiperSlide>
-												<div className="relative h-full">
-													<div className="list-tags">
-														<Link href="/#" className="tags-item for-sell">FOR RENT</Link>
-														<Link href="/#" className="tags-item featured">FEATURED</Link>
+											{mainSlides.map((src, idx) => (
+												<SwiperSlide key={`main-${idx}`}>
+													<div className="relative h-full">
+														<div className="list-tags">
+															<Link href="/#" className="tags-item for-sell">FOR RENT</Link>
+															<Link href="/#" className="tags-item featured">FEATURED</Link>
+														</div>
+														<img src={src} alt="" />
 													</div>
-													<img src="/images/slider/slider-properties-detail-11.jpg" alt="" />
-												</div>
-											</SwiperSlide>
-											<SwiperSlide>
-												<div className="relative h-full">
-													<div className="list-tags">
-														<Link href="/#" className="tags-item for-sell">FOR RENT</Link>
-														<Link href="/#" className="tags-item featured">FEATURED</Link>
-													</div>
-													<img src="/images/slider/slider-properties-detail-11.jpg" alt="" />
-												</div>
-											</SwiperSlide>
-											<SwiperSlide>
-												<div className="relative h-full">
-													<div className="list-tags">
-														<Link href="/#" className="tags-item for-sell">FOR RENT</Link>
-														<Link href="/#" className="tags-item featured">FEATURED</Link>
-													</div>
-													<img src="/images/slider/slider-properties-detail-11.jpg" alt="" />
-												</div>
-											</SwiperSlide>
-											<SwiperSlide>
-												<div className="relative h-full">
-													<div className="list-tags">
-														<Link href="/#" className="tags-item for-sell">FOR RENT</Link>
-														<Link href="/#" className="tags-item featured">FEATURED</Link>
-													</div>
-													<img src="/images/slider/slider-properties-detail-11.jpg" alt="" />
-												</div>
-											</SwiperSlide>
-											<SwiperSlide>
-												<div className="relative h-full">
-													<div className="list-tags">
-														<Link href="/#" className="tags-item for-sell">FOR RENT</Link>
-														<Link href="/#" className="tags-item featured">FEATURED</Link>
-													</div>
-													<img src="/images/slider/slider-properties-detail-11.jpg" alt="" />
-												</div>
-											</SwiperSlide>
-											<SwiperSlide>
-												<div className="relative h-full">
-													<div className="list-tags">
-														<Link href="/#" className="tags-item for-sell">FOR RENT</Link>
-														<Link href="/#" className="tags-item featured">FEATURED</Link>
-													</div>
-													<img src="/images/slider/slider-properties-detail-11.jpg" alt="" />
-												</div>
-											</SwiperSlide>
-											<SwiperSlide>
-												<div className="relative h-full">
-													<div className="list-tags">
-														<Link href="/#" className="tags-item for-sell">FOR RENT</Link>
-														<Link href="/#" className="tags-item featured">FEATURED</Link>
-													</div>
-													<img src="/images/slider/slider-properties-detail-11.jpg" alt="" />
-												</div>
-											</SwiperSlide>
+												</SwiperSlide>
+											))}
 										</div>
 										<div className="swiper-button-next has-background thumbs-next" />
 										<div className="swiper-button-prev has-background thumbs-prev" />
 									</Swiper>
 									<Swiper {...thumbnailSwiperOptions} onSwiper={setThumbsSwiper} className="swiper-container slider-thumbs-gallery-1">
 										<div className="swiper-wrapper">
-											<SwiperSlide>
-												<img src="/images/slider/slider-properties-detail-12.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-properties-detail-13.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-properties-detail-14.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-properties-detail-15.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-properties-detail-16.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-properties-detail-15.jpg" alt="" />
-											</SwiperSlide>
-											<SwiperSlide>
-												<img src="/images/slider/slider-properties-detail-16.jpg" alt="" />
-											</SwiperSlide>
+											{thumbSlides.map((src, idx) => (
+												<SwiperSlide key={`thumb-${idx}`}>
+													<img src={src} alt="" />
+												</SwiperSlide>
+											))}
 										</div>
 									</Swiper>
 								</div>
@@ -199,38 +246,42 @@ export default function PropertySingleV5({ slug }) {
 												<div className="icon">
 													<i className="flaticon-city" />
 												</div>
-												<div className="text-content">Multi Family</div>
+												<div className="text-content">
+													{category?.name ??
+														(detail?.room != null ? `${detail.room} Rooms` : '—')}
+												</div>
 											</div>
 											<div className="item wow fadeInUp" data-wow-delay="0.1s">
 												<div className="icon">
-													<i className="flaticon-hammer" />
+													<CalendarArrowUp size={22} strokeWidth={1.75} aria-hidden />
 												</div>
-												<div className="text-content">Built in 1940</div>
+												<div className="text-content">Check-in {checkIn ? `${checkIn}` : '—'}</div>
+											</div>
+											<div className="item wow fadeInUp" data-wow-delay="0.2s">
+												<div className="icon">
+													<CalendarArrowDown size={22} strokeWidth={1.75} aria-hidden />
+												</div>
+												<div className="text-content">Check-out {checkOut ? `${checkOut}` : '—'}</div>
 											</div>
 											<div className="item wow fadeInUp" data-wow-delay="0.2s">
 												<div className="icon">
 													<i className="flaticon-minus-front" />
 												</div>
-												<div className="text-content">1500 Sq Ft</div>
+												<div className="text-content">{detail?.guest != null ? `${detail.guest} Guests` : '—'}</div>
 											</div>
 											<div className="item wow fadeInUp">
 												<div className="icon">
 													<i className="flaticon-hotel" />
 												</div>
-												<div className="text-content">3 Bedrooms</div>
+												<div className="text-content">{detail?.bedroom != null ? `${detail.bedroom} Bedrooms` : '—'}</div>
 											</div>
 											<div className="item wow fadeInUp" data-wow-delay="0.1s">
 												<div className="icon">
 													<i className="flaticon-bath-tub" />
 												</div>
-												<div className="text-content">2 Bathrooms</div>
+												<div className="text-content">{detail?.bathroom != null ? `${detail.bathroom} Bathrooms` : '—'}</div>
 											</div>
-											<div className="item wow fadeInUp" data-wow-delay="0.2s">
-												<div className="icon">
-													<i className="flaticon-garage" />
-												</div>
-												<div className="text-content">1 Garage</div>
-											</div>
+										
 										</div>
 									</div>
 									<div className="widget-tabs style-2">
@@ -264,10 +315,12 @@ export default function PropertySingleV5({ slug }) {
 												<div className="desc">
 													<h4 className="wow fadeInUp">Description</h4>
 													<p className="wow fadeInUp">
-														Enchanting three bedroom, three bath home with spacious one bedroom, one bath cabana, in-laws quarters. Charming living area features fireplace and fabulous art deco details. Formal dining room.
-														<br />
-														<br />
-														Remodeled kitchen with granite countertops, white cabinetry and stainless appliances. Lovely master bedroom has updated bath, beautiful view of the pool. Guest bedrooms have walk-in, cedar closets. Delightful backyard; majestic oaks surround the free form pool and expansive patio, wet bar and grill.
+														{(announcement?.description ?? '—').split(/\r?\n/).map((line, i, arr) => (
+															<Fragment key={i}>
+																{line}
+																{i < arr.length - 1 ? <br /> : null}
+															</Fragment>
+														))}
 													</p>
 												</div>
 											</div>
@@ -275,32 +328,16 @@ export default function PropertySingleV5({ slug }) {
 												<div className="address">
 													<div className="flex items-center justify-between gap30 flex-wrap">
 														<h4 className="mb-0">Address</h4>
-														<Link href="/#" className="tf-button-green"><i className="flaticon-location" />Open On Google Maps</Link>
+														<Link href={locationLine !== '—' ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationLine)}` : '/#'} className="tf-button-green"><i className="flaticon-location" />Open On Google Maps</Link>
 													</div>
 													<div className="list-item">
-														<div className="item">
+														<div className="item gap20">
 															<div className="text">Address</div>
-															<p>10425 Tabor St</p>
-														</div>
-														<div className="item">
-															<div className="text">Zip/Postal Code</div>
-															<p>90034</p>
+															<p>{address?.street ?? '—'}</p>
 														</div>
 														<div className="item">
 															<div className="text">City</div>
-															<p>Los Angeles</p>
-														</div>
-														<div className="item">
-															<div className="text">Area</div>
-															<p>Brookside</p>
-														</div>
-														<div className="item">
-															<div className="text">State/county</div>
-															<p>California</p>
-														</div>
-														<div className="item">
-															<div className="text">Country</div>
-															<p>United States</p>
+															<p>{address?.region_name ?? '—'}</p>
 														</div>
 													</div>
 												</div>
@@ -310,45 +347,28 @@ export default function PropertySingleV5({ slug }) {
 													<h4>Details</h4>
 													<div className="list-item">
 														<div className="item">
-															<div className="text">Property ID:</div>
-															<p>HZ48</p>
-														</div>
-														<div className="item">
-															<div className="text">Garage:</div>
-															<p>1</p>
-														</div>
-														<div className="item">
 															<div className="text">Price:</div>
-															<p>$252,000</p>
+															<p>{announcement?.price ?? '—'}</p>
 														</div>
-														<div className="item">
-															<div className="text">Garage Size:</div>
-															<p>200 SqFt</p>
-														</div>
+														
 														<div className="item">
 															<div className="text">Property Size:</div>
-															<p>1500 Sq Ft</p>
+															<p>{detail?.room != null ? `${detail.room} rooms` : '—'}</p>
 														</div>
-														<div className="item">
-															<div className="text">Year Built:</div>
-															<p>2024</p>
-														</div>
+													
 														<div className="item">
 															<div className="text">Bedrooms:</div>
-															<p>6</p>
+															<p>{detail?.bedroom ?? '—'}</p>
 														</div>
 														<div className="item">
 															<div className="text">Property Type:</div>
-															<p>Apartment</p>
+															<p>{category?.name ?? '—'}</p>
 														</div>
 														<div className="item">
 															<div className="text">Bathrooms:</div>
-															<p>4</p>
+															<p>{detail?.bathroom ?? '—'}</p>
 														</div>
-														<div className="item">
-															<div className="text">Property Status:</div>
-															<p>For Sale</p>
-														</div>
+														
 													</div>
 												</div>
 											</div>
@@ -357,158 +377,21 @@ export default function PropertySingleV5({ slug }) {
 													<h4>Facts &amp; Features</h4>
 													<p>Lorem ipsum dolor sit amet, homero debitis temporibus in mei, at sit voluptua antiopam hendrerit. Lorem epicuri eu per. Mediocrem torquatos deseruisse te eum commodo.</p>
 													<ul>
-														<li>
-															<h5>Interior Details</h5>
-															<div className="wrap-check-ellipse">
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Equipped Kitchen</p>
+														{[1, 2, 3, 4].map((pid) => (
+															<li key={pid}>
+																<h5>{FEATURE_PARENT_LABELS[pid]}</h5>
+																<div className="wrap-check-ellipse">
+																	{(attrGroups[pid] ?? []).map((attr) => (
+																		<div key={attr.id} className="check-ellipse-item">
+																			<div className="icon">
+																				<i className="flaticon-check" />
+																			</div>
+																			<p>{attr.name}</p>
+																		</div>
+																	))}
 																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Gym</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Laundry</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Media Room</p>
-																</div>
-															</div>
-														</li>
-														<li>
-															<h5>Outdoor Details</h5>
-															<div className="wrap-check-ellipse">
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Back yard</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Basketball court</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Front yard</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Garage Attached</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Hot Bath</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Pool</p>
-																</div>
-															</div>
-														</li>
-														<li>
-															<h5>Utilities Central</h5>
-															<div className="wrap-check-ellipse">
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Central Air</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Electricity</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Heating</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Natural Gas</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Ventilation</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Water</p>
-																</div>
-															</div>
-														</li>
-														<li>
-															<h5>Other Features</h5>
-															<div className="wrap-check-ellipse">
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Chair Accessible</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Elevator </p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Fireplace</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Smoke detectors</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>Washer and dryer</p>
-																</div>
-																<div className="check-ellipse-item">
-																	<div className="icon">
-																		<i className="flaticon-check" />
-																	</div>
-																	<p>WiFi</p>
-																</div>
-															</div>
-														</li>
+															</li>
+														))}
 													</ul>
 												</div>
 											</div>
@@ -616,15 +499,25 @@ export default function PropertySingleV5({ slug }) {
 												<div className="video">
 													<h4>Video</h4>
 													<div className="video-wrap">
-														<img src="/images/image-box/video-2.jpg" alt="" />
-														<VideoPopup />
+														{videoEmbedSrc ? 
+															<iframe
+																src={videoEmbedSrc}
+																height={400}
+																style={{ border: 0, width: "100%", display: 'block' }}
+																allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+																allowFullScreen
+																loading="lazy"
+																referrerPolicy="no-referrer-when-downgrade"
+															/>
+														
+														: <p>No video available</p>}
 													</div>
 												</div>
 											</div>
 											<div className="widget-content-inner">
 												<div className="map">
 													<h4>Map</h4>
-													<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2643.6895046810805!2d-122.52642526124438!3d38.00014098339506!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085976736097a2f%3A0xbe014d20e6e22654!2sSan Rafael%2C California%2C Hoa Kỳ!5e0!3m2!1svi!2s!4v1678975266976!5m2!1svi!2s" height={400} style={{ border: 0, width: "100%" }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+													<iframe src={mapEmbedSrc} height={400} style={{ border: 0, width: "100%" }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
 												</div>
 											</div>
 										</div>
@@ -726,20 +619,20 @@ export default function PropertySingleV5({ slug }) {
 										<div className="contact-info">
 											<div className="person">
 												<div className="image-group relative">
-													<img src="/images/sidebar/agent-1.png" alt="" />
+													<img src={user?.image || '/images/sidebar/agent-1.png'} alt="" />
 												</div>
 												<div className="content">
 													<div className="name">
-														<Link href="/#">Jane Cooper</Link>
+														<Link href="/#">{user?.name ?? '—'}</Link>
 													</div>
-													<p>sale@justhome.com</p>
-													<p>3-596 95 38 12</p>
+													<p>{user?.email ?? '—'}</p>
+													<p>{user?.mobile ?? '—'}</p>
 												</div>
 											</div>
 											<form className="form-comment">
 												<div className="flex gap20">
-													<Link href="/#" className="tf-button-primary w-full style-bg-white">Call<i className="flaticon-phone" /></Link>
-													<Link href="/#" className="tf-button-primary w-full style-bg-white">WhatsApp<i className="flaticon-whatsapp" /></Link>
+													<Link href={telHref} className="tf-button-primary w-full style-bg-white">Call<i className="flaticon-phone" /></Link>
+													<Link href={whatsappHref} className="tf-button-primary w-full style-bg-white">WhatsApp<i className="flaticon-whatsapp" /></Link>
 												</div>
 											</form>
 										</div>

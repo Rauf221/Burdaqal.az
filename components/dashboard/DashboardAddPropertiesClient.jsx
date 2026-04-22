@@ -16,6 +16,7 @@ import {
 	useSaveDetailSectionMutation,
 	useSaveMediaSectionMutation,
 } from '@/services/dashboard/Add-New-Properties'
+import { myAnnouncementShowQuery } from '@/services/dashboard/My-properties'
 
 function getSubmitErrorMessage(err) {
 	if (err == null) return 'Naməlum xəta'
@@ -46,12 +47,30 @@ const MEDIA_RULES = {
 
 const LABEL_ABOVE = { display: 'block', marginBottom: 10, fontWeight: 600, fontSize: 17 }
 
-export default function DashboardAddPropertiesClient() {
+function absoluteStoragePreviewUrl(path) {
+	if (!path) return null
+	const raw = String(path).trim()
+	if (!raw) return null
+	if (/^https?:\/\//i.test(raw)) return raw
+	const base = process.env.NEXT_PUBLIC_USER_API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || ''
+	try {
+		const u = new URL(base)
+		const p = raw.startsWith('/') ? raw : `/${raw}`
+		return `${u.origin}${p}`
+	} catch {
+		return raw
+	}
+}
+
+export default function DashboardAddPropertiesClient({
+	initialAnnouncementId = null,
+	breadcrumbTitle = 'Add New Property',
+}) {
 	const locale = useLocale()
 	const formRef = useRef(null)
 	const [submitError, setSubmitError] = useState(null)
 	const [submitSuccess, setSubmitSuccess] = useState(null)
-	const [announcementId, setAnnouncementId] = useState(null)
+	const [announcementId, setAnnouncementId] = useState(initialAnnouncementId)
 	const [addressId, setAddressId] = useState(null)
 	const [detailId, setDetailId] = useState(null)
 	const [mediaId, setMediaId] = useState(null)
@@ -61,6 +80,7 @@ export default function DashboardAddPropertiesClient() {
 	const galleryBlobsRef = useRef([])
 	const [coverPreviewUrl, setCoverPreviewUrl] = useState(null)
 	const [galleryPreviews, setGalleryPreviews] = useState([])
+	const hydratedEditIdRef = useRef(null)
 
 	useEffect(() => {
 		return () => {
@@ -100,6 +120,20 @@ export default function DashboardAddPropertiesClient() {
 		setGalleryPreviews(next)
 	}
 
+	function handleRemoveCoverPreview() {
+		if (coverBlobRef.current) {
+			URL.revokeObjectURL(coverBlobRef.current)
+			coverBlobRef.current = null
+		}
+		setCoverPreviewUrl(null)
+		const input = document.getElementById('property-cover-image')
+		if (input) input.value = ''
+	}
+
+	function handleRemoveGalleryPreview(idx) {
+		setGalleryPreviews((prev) => prev.filter((_, i) => i !== idx))
+	}
+
 	const coreM = useSaveAnnouncementCoreMutation(locale)
 	const addrM = useSaveAddressSectionMutation(locale)
 	const detailM = useSaveDetailSectionMutation(locale)
@@ -109,6 +143,103 @@ export default function DashboardAddPropertiesClient() {
 	const catQ = useQuery(categoriesListQuery(locale))
 	const regQ = useQuery(regionsListQuery(locale))
 	const attrQ = useQuery(attributesListQuery(locale))
+	const editShowQ = useQuery(
+		myAnnouncementShowQuery(
+			Number.isFinite(initialAnnouncementId) ? Number(initialAnnouncementId) : 0,
+			locale
+		)
+	)
+
+	useEffect(() => {
+		if (initialAnnouncementId == null) return
+		const editData = editShowQ.data?.data
+		if (!editData || !formRef.current) return
+		// Eyni id üçün yalnız bir dəfə hydrate et; istifadəçinin sonrakı manual dəyişikliklərini silməsin.
+		if (hydratedEditIdRef.current === editData.id) return
+
+		const form = formRef.current
+		const setField = (name, value) => {
+			const node = form.elements.namedItem(name)
+			if (!node) return
+			const v = value == null ? '' : String(value)
+			if (node instanceof RadioNodeList) {
+				const first = node[0]
+				if (first && 'value' in first) first.value = v
+				return
+			}
+			if ('value' in node) node.value = v
+		}
+
+		setField('title', editData.title)
+		setField('description', editData.description)
+		setField('category_id', editData.category?.id ?? editData.category_id)
+		setField('price', editData.price)
+		setField('check_in', editData.check_in)
+		setField('check_out', editData.check_out)
+
+		setField('region_id', editData.address?.region_id)
+		setField('street_address', editData.address?.street)
+		setField('map', editData.address?.map)
+		setField('landmark', editData.address?.landmark)
+
+		setField('room_count', editData.detail?.room)
+		setField('bed_count', editData.detail?.bedroom)
+		setField('bathroom_count', editData.detail?.bathroom)
+		setField('max_guests', editData.detail?.guest)
+
+		// Edit açılarkən mövcud media fayllarını preview kimi göstər.
+		const coverFromApi = absoluteStoragePreviewUrl(editData.media?.cover_image)
+		setCoverPreviewUrl(coverFromApi)
+		const galleryFromApi = (editData.media?.gallery ?? [])
+			.map((p, i) => {
+				const url = absoluteStoragePreviewUrl(p)
+				if (!url) return null
+				const tail = String(p).split('/').pop() || `gallery-${i + 1}`
+				return { url, name: tail }
+			})
+			.filter(Boolean)
+		setGalleryPreviews(galleryFromApi)
+
+		// Atributları yenidən işarələ
+		for (const input of form.querySelectorAll('input[name="attribute_id[]"]')) {
+			input.checked = false
+		}
+		for (const attr of editData.attributes ?? []) {
+			const escaped = String(attr.id).replace(/"/g, '\\"')
+			const input = form.querySelector(`input[name="attribute_id[]"][value="${escaped}"]`)
+			if (input) input.checked = true
+		}
+
+		setAnnouncementId(editData.id ?? null)
+		setAddressId(editData.address?.id ?? null)
+		setDetailId(editData.detail?.id ?? null)
+		setMediaId(editData.media?.id ?? null)
+		setAttributesDidStore((editData.attributes?.length ?? 0) > 0)
+		hydratedEditIdRef.current = editData.id
+	}, [initialAnnouncementId, editShowQ.data])
+
+	// Kateqoriya/region `<select>`-ləri: siyahı (catQ/regQ) gec gələndə option yox olur, ilk hydrate boş qalır;
+	// `hydratedEditIdRef` ikinci full-hydrate-ə imkan vermir — dəyəri siyahı hazır olanda təkrar oturt.
+	useEffect(() => {
+		if (initialAnnouncementId == null) return
+		const editData = editShowQ.data?.data
+		if (!editData || !formRef.current) return
+
+		function setSelectIfOptionExists(name, rawValue) {
+			if (rawValue == null || rawValue === '') return
+			const form = formRef.current
+			if (!form) return
+			const node = form.elements.namedItem(name)
+			if (!node || !('options' in node)) return
+			const v = String(rawValue)
+			if (![...node.options].some((o) => o.value === v)) return
+			if (node.value !== v) node.value = v
+		}
+
+		const categoryVal = editData.category?.id ?? editData.category_id
+		setSelectIfOptionExists('category_id', categoryVal)
+		setSelectIfOptionExists('region_id', editData.address?.region_id)
+	}, [initialAnnouncementId, editShowQ.data, catQ.data, regQ.data])
 
 	function handleSaveCore() {
 		setSubmitError(null)
@@ -298,13 +429,41 @@ export default function DashboardAddPropertiesClient() {
 
 	return (
 		<>
-			<LayoutAdmin breadcrumbTitle="Add New Property">
+			<LayoutAdmin breadcrumbTitle={breadcrumbTitle}>
 				<form
 					ref={formRef}
 					className="form-add-property flex gap30 flex-column"
 					onSubmit={(e) => e.preventDefault()}
 				>
 					<div>
+					{initialAnnouncementId != null && editShowQ.isPending ? (
+						<p
+							style={{
+								margin: '0 0 16px',
+								padding: '10px 14px',
+								fontSize: 14,
+								background: '#fff8e1',
+								borderRadius: 8,
+								color: '#8a6d3b',
+							}}
+						>
+							Elan məlumatları yüklənir…
+						</p>
+					) : null}
+					{initialAnnouncementId != null && editShowQ.isError ? (
+						<p
+							style={{
+								margin: '0 0 16px',
+								padding: '10px 14px',
+								fontSize: 14,
+								background: '#fdecea',
+								borderRadius: 8,
+								color: '#c0392b',
+							}}
+						>
+							Edit məlumatları yüklənmədi. Səhifəni yeniləyib yenidən cəhd edin.
+						</p>
+					) : null}
 					{announcementId != null ? (
 						<p
 							style={{
@@ -318,6 +477,35 @@ export default function DashboardAddPropertiesClient() {
 						>
 							Aktiv layihə — elan ID: <strong>{announcementId}</strong>. Əsas məlumatları dəyişib saxladıqda elan
 							yeniləmə sorğusu göndərilir.
+						</p>
+					) : null}
+					{submitError ? (
+						<p
+							role="alert"
+							style={{
+								margin: '0 0 16px',
+								padding: '12px 16px',
+								fontSize: 14,
+								color: '#c0392b',
+								background: '#fdecea',
+								borderRadius: 8,
+							}}
+						>
+							{submitError}
+						</p>
+					) : null}
+					{submitSuccess ? (
+						<p
+							style={{
+								margin: '0 0 16px',
+								padding: '12px 16px',
+								fontSize: 14,
+								color: '#1e6b2f',
+								background: '#e8f5e9',
+								borderRadius: 8,
+							}}
+						>
+							{submitSuccess}
 						</p>
 					) : null}
 					<div className="wg-box pl-44 mb-20">
@@ -475,15 +663,14 @@ export default function DashboardAddPropertiesClient() {
 								/>
 							</fieldset>
 							<div>
-								<p style={{ fontWeight: 600, marginBottom: 12, fontSize: 15 }}>Xəritədə pin (Google Maps)</p>
-								<iframe
-									title="Xəritə — Bakı (önizləmə)"
-									src={MAP_EMBED_BAKU}
-									height={400}
-									style={{ border: 0, width: '100%' }}
-									allowFullScreen
-									loading="lazy"
-									referrerPolicy="no-referrer-when-downgrade"
+								<p style={{ fontWeight: 600, marginBottom: 12, fontSize: 15 }}>Iframe Linki(Google Maps)</p>
+								<input
+									id="property-iframe-link"
+									type="text"
+									name="map"
+									placeholder="https://www.google.com/maps/embed?pb=... və ya https://www.google.com/maps/embed?pb=..."
+									tabIndex={2}
+									aria-required="true"
 								/>
 							</div>
 							<fieldset className="description">
@@ -561,28 +748,23 @@ export default function DashboardAddPropertiesClient() {
 										</label>
 									</div>
 									{coverPreviewUrl ? (
-										<div
-											style={{
-												flexShrink: 0,
-												width: 290,
-												height: 166,
-												borderRadius: 8,
-												overflow: 'hidden',
-												border: '1px solid #ddd',
-												background: '#fff',
-												boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-											}}
-										>
+										<div className="item media-preview-item">
 											<img
 												src={coverPreviewUrl}
 												alt=""
-												style={{
-													width: '100%',
-													height: '100%',
-													objectFit: 'cover',
-													display: 'block',
-												}}
 											/>
+											<ul>
+												<li>
+													<button
+														type="button"
+														aria-label="Cover şəklini sil"
+														onClick={handleRemoveCoverPreview}
+														className="media-preview-delete-btn"
+													>
+														<i className="flaticon-delete" />
+													</button>
+												</li>
+											</ul>
 										</div>
 									) : null}
 								</div>
@@ -616,42 +798,29 @@ export default function DashboardAddPropertiesClient() {
 										</div>
 									</div>
 									{galleryPreviews.length > 0 ? (
-										<div
-											style={{
-												display: 'flex',
-												flexWrap: 'wrap',
-												gap: 8,
-												alignItems: 'flex-start',
-												alignContent: 'flex-start',
-												flex: '1 1 200px',
-												minWidth: 0,
-											}}
-											>
+										<div className="list media-preview-grid">
 											{galleryPreviews.map((item, idx) => (
 												<div
 													key={`${item.name}-${idx}`}
 													title={item.name}
-													style={{
-														width:290,
-														height: 166,
-														borderRadius: 6,
-														overflow: 'hidden',
-														border: '1px solid #ddd',
-														background: '#fff',
-														flexShrink: 0,
-														boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-													}}
+													className="item media-preview-item"
 												>
 													<img
 														src={item.url}
 														alt=""
-														style={{
-															width: '100%',
-															height: '100%',
-															objectFit: 'cover',
-															display: 'block',
-														}}
 													/>
+													<ul>
+														<li>
+															<button
+																type="button"
+																aria-label="Şəkli sil"
+																onClick={() => handleRemoveGalleryPreview(idx)}
+																className="media-preview-delete-btn"
+															>
+																<i className="flaticon-delete" />
+															</button>
+														</li>
+													</ul>
 												</div>
 											))}
 										</div>
@@ -817,17 +986,6 @@ export default function DashboardAddPropertiesClient() {
 							</div>
 						</div>
 					</div>
-
-					{submitError ? (
-						<p role="alert" style={{ margin: '0 0 12px', padding: '12px 16px', fontSize: 14, color: '#c0392b', background: '#fdecea', borderRadius: 8 }}>
-							{submitError}
-						</p>
-					) : null}
-					{submitSuccess ? (
-						<p style={{ margin: '0 0 12px', padding: '12px 16px', fontSize: 14, color: '#1e6b2f', background: '#e8f5e9', borderRadius: 8 }}>
-							{submitSuccess}
-						</p>
-					) : null}
 
 					</div>
 				</form>

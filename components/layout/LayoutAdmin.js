@@ -3,7 +3,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import AddClassBody from "../elements/AddClassBody"
 import BackToTop from '../elements/BackToTop'
-import DeleteButton from "../elements/DeleteButton"
 import LoginPopup from "../elements/LoginPopup"
 import RegisterPopup from "../elements/RegisterPopup"
 import BreadcrumbAdmin from "./BreadcrumbAdmin"
@@ -73,8 +72,6 @@ export default function LayoutAdmin({ breadcrumbTitle, children }) {
 	return (
 		<><div id="top" />
 			<AddClassBody />
-
-			<DeleteButton />
 
 			<div id="wrapper">
 				<div id="page" className="layout-wrap background-F9F9F9">

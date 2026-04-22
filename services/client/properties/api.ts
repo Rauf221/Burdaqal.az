@@ -11,12 +11,20 @@ export type PublicAnnouncementUser = {
 	username: string
 }
 
+export type PublicAnnouncementCategory = {
+	id: number
+	name: string
+	slug: string
+}
+
 export type PublicAnnouncementAddress = {
 	id: number
 	street: string
 	map: string | null
 	landmark: string | null
 	region_id: number
+	/** Bölgə adı (məs. "Baku") */
+	region_name?: string | null
 }
 
 export type PublicAnnouncementDetail = {
@@ -52,6 +60,7 @@ export type PublicAnnouncementItem = {
 	check_in: string
 	check_out: string
 	slug: string
+	category?: PublicAnnouncementCategory | null
 	address: PublicAnnouncementAddress | null
 	detail: PublicAnnouncementDetail | null
 	media: PublicAnnouncementMedia | null
@@ -63,10 +72,19 @@ export type PublicAnnouncementItem = {
 
 export type PublicAnnouncementsResponse = PaginatedListResponse<PublicAnnouncementItem>
 
+/** GET /announcement/{slug} — tək elan (Show) */
+export type PublicAnnouncementShowResponse = {
+	data: PublicAnnouncementItem
+}
+
 export type GetAnnouncementsOptions = {
 	locale?: string
 	/** Laravel `?page=` */
 	page?: number
+}
+
+export type GetAnnouncementBySlugOptions = {
+	locale?: string
 }
 
 /**
@@ -81,6 +99,22 @@ export async function getAnnouncements(
 		params: { page },
 		...(locale && { locale }),
 	})
+}
+
+/**
+ * Tək elan slug ilə — GET …/announcement/{slug}
+ */
+export async function getAnnouncementBySlug(
+	slug: string,
+	options?: GetAnnouncementBySlugOptions
+): Promise<PublicAnnouncementShowResponse> {
+	const { locale } = options ?? {}
+	return get<PublicAnnouncementShowResponse>(
+		`/announcement/${encodeURIComponent(slug)}`,
+		{
+			...(locale && { locale }),
+		}
+	)
 }
 
 /**

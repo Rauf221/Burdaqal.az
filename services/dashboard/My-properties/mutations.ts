@@ -5,7 +5,18 @@ export function useDeleteAnnouncementMutation(locale?: string) {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: (announcementId: number) => deleteAnnouncement(announcementId, locale),
+		mutationFn: ({
+			announcementId,
+			confirmed,
+		}: {
+			announcementId: number
+			confirmed: boolean
+		}) => {
+			if (!confirmed) {
+				throw new Error('Delete təsdiqlənməyib.')
+			}
+			return deleteAnnouncement(announcementId, locale)
+		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['dashboard', 'my-properties', 'announcements'] })
 		},

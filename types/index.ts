@@ -119,6 +119,7 @@ export type BlogListItem = {
 	meta_title: string
 	meta_description: string
 	meta_keywords: string
+	created_at?: string
 	tags: BlogTag[]
 }
 
@@ -163,6 +164,7 @@ export type BlogDetailData = {
 	meta_title: string
 	meta_description: string
 	meta_keywords: string
+	created_at?: string
 	tags?: BlogTag[]
 }
 
