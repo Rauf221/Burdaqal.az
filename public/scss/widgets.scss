@@ -3116,10 +3116,10 @@ ul.grid-tags {
 	max-width: 250px;
 
 	.icon {
-		width: 18px;
-		height: 18px;
+		width: 30px;
+		height: 30px;
 		@include flex(center, center);
-		border: 1px solid var(--Secondary);
+		
 		border-radius: 50%;
 
 		i {

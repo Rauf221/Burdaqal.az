@@ -3,6 +3,7 @@ import Layout from "@/components/layout/Layout"
 import SliderBoxDream from "@/components/slider/SliderBoxDream"
 import { PROPERTY_GRID, getPropertyTitle, propertyDetailHref } from "@/utils/propertyRoutes"
 import { Link } from '@/i18n/navigation'
+import { publicStorageUrl } from '@/services/client/properties'
 import { CalendarArrowDown, CalendarArrowUp } from 'lucide-react'
 import { Fragment, useState } from 'react'
 import 'swiper/css/free-mode'
@@ -89,6 +90,14 @@ function extractVideoEmbedSrc(videoValue) {
 	} catch {
 		return ''
 	}
+}
+
+function attributeIconSrc(icon) {
+	if (!icon) return null
+	const raw = String(icon).trim()
+	if (!raw) return null
+	if (/^https?:\/\//i.test(raw)) return raw
+	return publicStorageUrl(raw) || null
 }
 
 export default function PropertySingleV5({ slug, announcement }) {
@@ -379,12 +388,21 @@ export default function PropertySingleV5({ slug, announcement }) {
 													<ul>
 														{[1, 2, 3, 4].map((pid) => (
 															<li key={pid}>
-																<h5>{FEATURE_PARENT_LABELS[pid]}</h5>
-																<div className="wrap-check-ellipse">
+																<h5 style={{ fontSize: 17 , fontWeight: 700 , marginBottom: 10 }}>{FEATURE_PARENT_LABELS[pid]}</h5>
+																<div className="wrap-check-ellipse" style={{ marginBottom: 30 }}>
 																	{(attrGroups[pid] ?? []).map((attr) => (
 																		<div key={attr.id} className="check-ellipse-item">
 																			<div className="icon">
-																				<i className="flaticon-check" />
+																				{attributeIconSrc(attr.icon) ? (
+																					<img
+																						src={attributeIconSrc(attr.icon)}
+																						alt=""
+																						style={{ width: 20, height: 20, objectFit: 'contain' }}
+																						className=""
+																					/>
+																				) : (
+																					<i className="flaticon-check" />
+																				)}
 																			</div>
 																			<p>{attr.name}</p>
 																		</div>

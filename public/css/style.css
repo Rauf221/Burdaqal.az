@@ -3841,8 +3841,8 @@ ul.grid-tags li a:hover {
   max-width: 250px;
 }
 .check-ellipse-item .icon {
-  width: 18px;
-  height: 18px;
+  width: 30px;
+  height: 30px;
   display: -webkit-box;
   display: -moz-box;
   display: -ms-flexbox;
@@ -3850,7 +3850,6 @@ ul.grid-tags li a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--Secondary);
   border-radius: 50%;
 }
 .check-ellipse-item .icon i {
