@@ -1,13 +1,19 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query'
+import { useLocale } from 'next-intl'
 import FooterContactInfo from '@/components/layout/footer/FooterContactInfo'
 import FooterNewsletterForm from '@/components/layout/footer/FooterNewsletterForm'
 import { useSiteBranding } from '@/providers/SiteBrandingProvider'
 import { Link } from '@/i18n/navigation'
+import { categoriesListQuery } from '@/services/dashboard/Add-New-Properties/queries'
 
 export default function Footer1({ footerCls }) {
+	const locale = useLocale()
 	const branding = useSiteBranding()
 	const logoFooter = branding.logoOnDarkBg
+	const { data: categoriesRes } = useQuery(categoriesListQuery(locale))
+	const categories = (categoriesRes?.data ?? []).slice(0, 6)
 	return (
 		<>
 
@@ -62,23 +68,28 @@ export default function Footer1({ footerCls }) {
 							<div className="footer-cl-2">
 								<div className="ft-title">Discover</div>
 								<ul className="navigation-menu-footer">
-									<li><Link href="/elanlar">Miami</Link></li>
-									<li><Link href="/elanlar">New York</Link></li>
-									<li><Link href="/elanlar">Chicago</Link></li>
-									<li><Link href="/elanlar">Sacramento</Link></li>
-									<li><Link href="/elanlar">Los Angeles</Link></li>
-									<li><Link href="/elanlar">San Francisco</Link></li>
+									{categories.length ? (
+										categories.map((cat) => (
+											<li key={cat.id}>
+												<Link href={`/elanlar?category=${encodeURIComponent(cat.slug)}`}>{cat.name}</Link>
+											</li>
+										))
+									) : (
+										<li>
+											<Link href="/elanlar">Elanlar</Link>
+										</li>
+									)}
 								</ul>
 							</div>
 							<div className="footer-cl-3">
 								<div className="ft-title">Quick Links</div>
 								<ul className="navigation-menu-footer">
+									<li><Link href="/">Ana Sehife</Link></li>
+							     	<li><Link href="/elanlar">Burda Qal</Link></li>
 									<li><Link href="/about">About</Link></li>
 									<li><Link href="/contact">Contact</Link></li>
 									<li><Link href="/about#faq">Faq</Link></li>
 									<li><Link href="/bloglar">Blog</Link></li>
-									<li><Link href="/#">Privacy Policy</Link></li>
-									<li><Link href="/#">Terms &amp; Conditions</Link></li>
 								</ul>
 							</div>
 							<FooterContactInfo />

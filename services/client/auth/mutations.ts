@@ -84,6 +84,28 @@ export function useVerifyCodeMutation(locale?: string) {
 }
 
 /**
+ * Daxil olmuş profil: POST /verify-code — yalnız `code`.
+ * user-profile dərhal refetch edilmir; yoxlama bitəndən sonra POST /update işləmir — form köhnə e-poçta atlanmasın.
+ */
+export function useVerifyProfileEmailCodeMutation(locale?: string) {
+	return useMutation({
+		retry: false,
+		mutationFn: (payload: { code: string }) => {
+			const fd = new FormData()
+			fd.append('code', String(payload.code).trim())
+			return postVerifyCode(fd, locale)
+		},
+		onSuccess: (data) => {
+			clearPasswordResetBearerToken()
+			const token = extractAccessToken(data)
+			if (token) {
+				setAuthToken(token)
+			}
+		},
+	})
+}
+
+/**
  * Şifrə bərpası OTP təsdiqi — token cookie-də saxlanmır (profil sorğusu 401 ilə əsas tokeni silməsin).
  * Müvəqqəti Bearer yalnız sessionStorage-da saxlanır; userClient həm cookie, həm də onu Authorization-da istifadə edir.
  */
@@ -171,22 +193,6 @@ export function useUpdateProfileMutation(locale?: string) {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['user-profile'] })
 		},
-	})
-}
-
-/**
- * E-poçt dəyişikliyində OTP göndərmə / yenidən göndərmə üçün POST /update.
- * Uğurda user-profile sorğusu invalidasiya olunmur — OTP təsdiqlənmədən hesab forması serverdən yenilənməsin.
- */
-export function useSendEmailChangeOtpMutation(locale?: string) {
-	return useMutation({
-		retry: false,
-		mutationFn: (payload: {
-			name: string
-			email: string
-			mobile: string
-			image?: File | null
-		}) => postUpdateUser(buildUpdateUserFormData(payload), locale),
 	})
 }
 

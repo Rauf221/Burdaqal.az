@@ -141,7 +141,7 @@ export default function ContactView() {
 									<label>
 										<p>Məlumatımın saxlanmasına razıyam</p>
 										<input type="checkbox" name="consent" required />
-										<span className="btn-checkbox" />
+										<span className="btn-checkbox" style={{ borderColor: '#9ea4ad' }} />
 									</label>
 								</div>
 								{formMsg && (
@@ -166,26 +166,7 @@ export default function ContactView() {
 					</div>
 				</div>
 			</section>
-			<section className="tf-section flat-partner style-1 pt-0">
-				<div className="themesflat-container">
-					<div className="row">
-						<div className="col-12">
-							<div className="heading-section text-center">
-								<div className="text wow fadeInUp">Thousands of world’s leading companies trust Space</div>
-							</div>
-						</div>
-					</div>
-					<div className="row">
-						<div className="col-12">
-							<div className="flat-brand">
-								<div className="swiper-container slider-brand">
-									<SliderBrand />
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
+			
 		</div>
 	)
 }

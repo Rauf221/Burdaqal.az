@@ -12,13 +12,14 @@ export default function FooterNewsletterForm() {
 	const onSubmit = async (e) => {
 		e.preventDefault()
 		setMsg(null)
-		const fd = new FormData(e.currentTarget)
+		const formEl = e.currentTarget
+		const fd = new FormData(formEl)
 		const email = String(fd.get('email') || '').trim()
 		if (!email) return
 		try {
 			await subscribe.mutateAsync(email)
 			setMsg({ ok: true, text: 'Abunəlik qeydə alındı.' })
-			e.currentTarget.reset()
+			formEl.reset()
 		} catch {
 			setMsg({ ok: false, text: 'Xəta baş verdi. Sonra cəhd edin.' })
 		}

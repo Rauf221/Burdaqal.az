@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
@@ -24,6 +24,7 @@ function sliderImageUrls(media) {
 export default function ElanlarListings() {
 	const locale = useLocale()
 	const [page, setPage] = useState(1)
+	const cardSwiperByIdRef = useRef({})
 	const q = useQuery(announcementsListQuery(locale, page))
 
 	const items = q.data?.data ?? []
@@ -79,6 +80,14 @@ export default function ElanlarListings() {
 									<div
 										className="box-dream has-border wow fadeInUp"
 										{...(wowDelay ? { 'data-wow-delay': wowDelay } : {})}
+										onMouseEnter={() => {
+											const s = cardSwiperByIdRef.current[row.id]
+											s?.autoplay?.start()
+										}}
+										onMouseLeave={() => {
+											const s = cardSwiperByIdRef.current[row.id]
+											s?.autoplay?.stop()
+										}}
 									>
 										<div className="image-group relative">
 											<div className="list-tags">
@@ -94,6 +103,10 @@ export default function ElanlarListings() {
 												detailHref={detailHref}
 												images={images}
 												navKey={`elan-${row.id}`}
+												autoplayOnHover
+												onSwiperReady={(swiper) => {
+													cardSwiperByIdRef.current[row.id] = swiper
+												}}
 											/>
 										</div>
 										<Link href={detailHref} className="box-dream-body-link">

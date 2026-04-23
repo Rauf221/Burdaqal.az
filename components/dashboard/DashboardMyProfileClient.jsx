@@ -7,9 +7,8 @@ import { useAuthSession } from '@/lib/auth/useAuthSession'
 import { getUserProfileQuery } from '@/services/client/auth/queries'
 import {
 	usePasswordChangeMutation,
-	useSendEmailChangeOtpMutation,
 	useUpdateProfileMutation,
-	useVerifyCodeMutation,
+	useVerifyProfileEmailCodeMutation,
 } from '@/services/client/auth/mutations'
 import { getAxiosErrorMessage } from '@/services/client/auth/apiMessage'
 import {
@@ -22,11 +21,6 @@ const PLACEHOLDER_AVATAR = '/images/author/author-4.png'
 
 function normalizeEmail(s) {
 	return (s ?? '').trim().toLowerCase()
-}
-
-/** Laravel e-poçt dəyişikliyində OTP göndərmək üçün tez-tez 422 qaytarır. */
-function isHttp422(err) {
-	return Boolean(err && typeof err === 'object' && err.response && err.response.status === 422)
 }
 
 export default function DashboardMyProfileClient() {
@@ -83,9 +77,10 @@ export default function DashboardMyProfileClient() {
 		}
 	}, [imagePreview])
 
-	const verifyEmailMutation = useVerifyCodeMutation(locale)
+	/** Postman /verify-code — yalnız `code` (Bearer). Yalnız modalın “Təsdiqlə” düyməsindən çağırılır. */
+	const verifyProfileEmailMutation = useVerifyProfileEmailCodeMutation(locale)
+	/** /update — e-poçt eyni olanda Save birbaşa; e-poçt fərqlidirsə yalnız verify-code uğurundan sonra. */
 	const updateMutation = useUpdateProfileMutation(locale)
-	const sendEmailOtpMutation = useSendEmailChangeOtpMutation(locale)
 	const passwordMutation = usePasswordChangeMutation(locale)
 
 	const avatarSrc = imagePreview || resolveUserMediaUrl(serverImagePath) || PLACEHOLDER_AVATAR
@@ -138,32 +133,15 @@ export default function DashboardMyProfileClient() {
 			return
 		}
 
-		// Əvvəlcə OTP modalı açılır; kod serverə növbəti tick-də göndərilir ki, UI bloklanmasın.
+		// E-poçt dəyişibsə Save heç bir sorğu atmır: yalnız OTP modalı açılır.
+		// Update sorğusu yalnız modal içindəki Təsdiqlə düyməsindən (verify-code uğrundan) sonra gedir.
 		setPendingProfile(payload)
 		setOtpError('')
-		setOtpHint('')
+		setOtpHint('E-poçtunuza göndərilən altı rəqəmli kodu daxil edib təsdiqləyin.')
 		setOtpCode('')
 		setOtpResendKey((k) => k + 1)
 		setOtpModalOpen(true)
 		setProfileOk('')
-
-		queueMicrotask(() => {
-			sendEmailOtpMutation.mutate(payload, {
-				onSuccess: () => {
-					// OTP yazılmadan profil uğurlu sayılmır; bəzən server 200 qaytarır — yalnız kod gözləyirik.
-					setOtpHint('Yeni e-poçt ünvanınıza göndərilən kodu daxil edin.')
-					setProfileOk('')
-				},
-				onError: (err) => {
-					if (isHttp422(err)) {
-						setOtpHint('Təsdiq kodu yeni e-poçt ünvanınıza göndərildi.')
-						setProfileOk('Təsdiq kodu yeni e-poçt ünvanınıza göndərildi.')
-						return
-					}
-					setOtpError(getAxiosErrorMessage(err, 'Kod göndərilmədi. Yenidən göndər düyməsini sınayın.'))
-				},
-			})
-		})
 	}
 
 	const closeOtpModal = () => {
@@ -183,39 +161,35 @@ export default function DashboardMyProfileClient() {
 			setOtpError('Altı rəqəmli kodu daxil edin.')
 			return
 		}
-		const newEmail = pendingProfile.email.trim()
-		verifyEmailMutation.mutate(
-			{ email: newEmail, code: otpCode },
+		const toSave = {
+			name: pendingProfile.name,
+			email: pendingProfile.email.trim(),
+			mobile: pendingProfile.mobile,
+			image: pendingProfile.image,
+		}
+		verifyProfileEmailMutation.mutate(
+			{ code: otpCode },
 			{
 				onSuccess: () => {
-					// verify-code düzgün olanda e-poçt serverdə təsdiqlənir; qalan sahələr üçün update.
-					updateMutation.mutate(
-						{
-							name: pendingProfile.name,
-							email: pendingProfile.email,
-							mobile: pendingProfile.mobile,
-							image: pendingProfile.image,
-						},
-						{
+					setOtpModalOpen(false)
+					setOtpError('')
+					setOtpHint('')
+					setOtpCode('')
+					setPendingProfile(null)
+					queueMicrotask(() => {
+						updateMutation.mutate(toSave, {
 							onSuccess: () => {
+								applyProfileSaveSuccess({ ...toSave, email: toSave.email })
 								setProfileOk('E-poçt təsdiqləndi və profil yeniləndi.')
-								setSavedEmailRaw(pendingProfile.email.trim())
-								setBaselineEmailNorm(normalizeEmail(pendingProfile.email))
-								setEmail(pendingProfile.email.trim())
-								setOtpModalOpen(false)
-								setPendingProfile(null)
-								setOtpCode('')
-								setImageFile(null)
-								if (imagePreview) {
-									URL.revokeObjectURL(imagePreview)
-									setImagePreview(null)
-								}
+								setEmail(toSave.email)
 							},
 							onError: (err) => {
-								setOtpError(getAxiosErrorMessage(err, 'E-poçt təsdiqləndi, amma profil saxlanılmadı.'))
+								setProfileError(
+									getAxiosErrorMessage(err, 'Kod təsdiqləndi, amma profil saxlanılmadı.')
+								)
 							},
-						}
-					)
+						})
+					})
 				},
 				onError: (err) => {
 					setOtpError(getAxiosErrorMessage(err, 'Kod yanlışdır və ya müddəti bitib.'))
@@ -225,22 +199,10 @@ export default function DashboardMyProfileClient() {
 	}
 
 	const onResendEmailOtp = () => {
-		if (!pendingProfile) return
-		sendEmailOtpMutation.mutate(pendingProfile, {
-			onSuccess: () => {
-				setOtpError('')
-				setOtpHint('Kod yenidən göndərildi.')
-			},
-			onError: (err) => {
-				if (isHttp422(err)) {
-					setOtpError('')
-					setOtpHint('Kod yenidən göndərildi.')
-					setOtpResendKey((k) => k + 1)
-					return
-				}
-				setOtpError(getAxiosErrorMessage(err, 'Kod yenidən göndərilmədi.'))
-			},
-		})
+		// Təkrar göndərmə üçün ayrıca endpoint yoxdur; burada heç bir sorğu atılmır.
+		setOtpError('')
+		setOtpHint('Kodu yenidən almaq üçün pəncərəni bağlayıb yenidən Save edin.')
+		setOtpResendKey((k) => k + 1)
 	}
 
 	const onSubmitPassword = (e) => {
@@ -273,8 +235,7 @@ export default function DashboardMyProfileClient() {
 
 	const busyProfile =
 		updateMutation.isPending ||
-		sendEmailOtpMutation.isPending ||
-		verifyEmailMutation.isPending
+		verifyProfileEmailMutation.isPending
 	const busyPw = passwordMutation.isPending
 	const loadingProfile = isAuthed && isPending && !isFetched
 
@@ -325,7 +286,7 @@ export default function DashboardMyProfileClient() {
 						) : null}
 						{normalizeEmail(email) !== baselineEmailNorm && baselineEmailNorm ? (
 							<p style={{ fontSize: 13, marginBottom: 0, color: 'var(--Secondary, #333)' }}>
-								E-poçt dəyişəndə dərhal OTP pəncərəsi açılır; kodu yeni ünvana daxil edib təsdiqləyin.
+								E-poçt dəyişibsə Save sorğu atmır: modal açılır, yalnız Təsdiqlə düyməsindən sonra profil yenilənir.
 							</p>
 						) : null}
 						<div className="cols">
@@ -482,9 +443,8 @@ export default function DashboardMyProfileClient() {
 											onResend={onResendEmailOtp}
 											error={otpError}
 											disabled={
-												verifyEmailMutation.isPending ||
-												updateMutation.isPending ||
-												sendEmailOtpMutation.isPending
+												verifyProfileEmailMutation.isPending ||
+												updateMutation.isPending
 											}
 											onClearError={() => setOtpError('')}
 										/>
@@ -494,9 +454,8 @@ export default function DashboardMyProfileClient() {
 												className="tf-button-primary w-full"
 												disabled={
 													otpCode.length !== 6 ||
-													verifyEmailMutation.isPending ||
-													updateMutation.isPending ||
-													sendEmailOtpMutation.isPending
+													verifyProfileEmailMutation.isPending ||
+													updateMutation.isPending
 												}
 											>
 												Kodu təsdiqlə

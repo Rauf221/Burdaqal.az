@@ -11,7 +11,11 @@ export async function postRegister(formData: FormData, locale?: string) {
 	return userPost<unknown>('/register', formData, { ...localeHeaders(locale) })
 }
 
-/** POST /verify-code — form-data: email, code (CASIO ilə eyni məntiq; qeydiyyat və ya şifrə bərpası) */
+/**
+ * POST /verify-code — form-data:
+ * - Qeydiyyat / üzən label: `email` + `code`
+ * - Profil + Bearer: Postman “Verify Code” kimi yalnız `code` (istifadəçi session ilə)
+ */
 export async function postVerifyCode(formData: FormData, locale?: string) {
 	return userPost<unknown>('/verify-code', formData, { ...localeHeaders(locale) })
 }
@@ -47,7 +51,11 @@ export async function getUserInfo(locale?: string) {
 	return userGet<unknown>('/get-user', { locale })
 }
 
-/** POST /update — form-data: name, email, mobile; image fayl (opsional). */
+/**
+ * POST /update — form-data: name, email, mobile; image fayl (opsional) — Postman: «Update information».
+ * Postman `email` təsviri: əgər e-poçt (cari məlumatdan) fərqlidirsə, yenidən `POST /verify-code` sorğusu atılmalıdır;
+ * yəni: bu update-dən sonra istifadəçi e-poçt təsdiq kodunu daxil edir, sonra uğurlu /verify-code.
+ */
 export async function postUpdateUser(formData: FormData, locale?: string) {
 	return userPost<unknown>('/update', formData, { ...localeHeaders(locale) })
 }

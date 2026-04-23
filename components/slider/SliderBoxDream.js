@@ -6,10 +6,11 @@ import { Swiper, SwiperSlide } from "swiper/react"
 
 
 /**
- * @param {{ start: number, end: number, path: string, detailHref?: string, images?: string[], navKey?: string }} props
+ * @param {{ start: number, end: number, path: string, detailHref?: string, images?: string[], navKey?: string, autoplayOnHover?: boolean, onSwiperReady?: (swiper: unknown) => void }} props
  * `images` veriləndə uzaq URL-lərlə slaydlar; əks halda mövzunun `/images/${path}-${id}.jpg` nümunəsi.
+ * `autoplayOnHover` true olanda avtomatik oynatma söndürülür; valideyn (məs. elan kartı) üzərində hover ilə `onSwiperReady` ilə gələn instansda `autoplay.start` / `autoplay.stop` çağırıla bilər.
  */
-export default function SliderBoxDream({ start, end, path, detailHref, images, navKey }) {
+export default function SliderBoxDream({ start, end, path, detailHref, images, navKey, autoplayOnHover, onSwiperReady }) {
 	const useRemoteImages = Array.isArray(images) && images.length > 0
 
 	const slideEntries = useRemoteImages
@@ -27,10 +28,18 @@ export default function SliderBoxDream({ start, end, path, detailHref, images, n
 		modules: [Navigation, Pagination, Autoplay],
 		spaceBetween: 0,
 		slidesPerView: 1,
-		autoplay: {
-			delay: 3000,
-			disableOnInteraction: false,
-		},
+		autoplay: autoplayOnHover
+			? {
+					delay: 3000,
+					disableOnInteraction: false,
+					enabled: false,
+					pauseOnMouseEnter: false,
+				}
+			: {
+					delay: 3000,
+					disableOnInteraction: false,
+					enabled: true,
+				},
 		observer: true,
 		observeParents: true,
 		navigation: {
@@ -45,7 +54,11 @@ export default function SliderBoxDream({ start, end, path, detailHref, images, n
 	}
 	return (
 		<>
-			<Swiper {...sliderBoxDream} className="swiper-container slider-box-dream arrow-style-1 pagination-style-1">
+			<Swiper
+			{...sliderBoxDream}
+			onSwiper={(swiper) => onSwiperReady?.(swiper)}
+			className="swiper-container slider-box-dream arrow-style-1 pagination-style-1"
+		>
 				<div className="swiper-wrapper">
 					{slideEntries.map((entry, i) => (
 						<SwiperSlide key={entry.key ?? `${start}-${i}`}>
