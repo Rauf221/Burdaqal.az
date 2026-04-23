@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useLocale } from 'next-intl'
 import Layout from '@/components/layout/Layout'
 import { blogPostPath } from '@/utils/blogRoutes'
-import { Link } from '@/i18n/navigation'
+import { Link, useRouter } from '@/i18n/navigation'
 import { getBlogsQuery, getTagsQuery } from '@/services/client/blogs'
 import {
 	BlogFilterSkeletonRow,
@@ -20,6 +20,7 @@ function BlogListFallback() {
 
 function BlogListContent() {
 	const locale = useLocale()
+	const router = useRouter()
 	const searchParams = useSearchParams()
 	const activeTag = searchParams.get('tag') || ''
 	const page = Math.max(1, Number(searchParams.get('page') || '1') || 1)
@@ -109,7 +110,19 @@ function BlogListContent() {
 							!isError &&
 							posts.map((post, index) => (
 								<div key={post.slug} className="col-xl-3 col-md-6 col-12">
-									<div className="wg-blog wow fadeInUp" data-wow-delay={`${(index % 4) * 0.1}s`}>
+									<div
+										className="wg-blog wow fadeInUp"
+										data-wow-delay={`${(index % 4) * 0.1}s`}
+										role="link"
+										tabIndex={0}
+										onClick={() => router.push(blogPostPath(post.slug))}
+										onKeyDown={(e) => {
+											if (e.key === 'Enter' || e.key === ' ') {
+												e.preventDefault()
+												router.push(blogPostPath(post.slug))
+											}
+										}}
+									>
 										<div className="image">
 											<img src={post.thumb_image || post.image} alt={post.title} />
 										</div>

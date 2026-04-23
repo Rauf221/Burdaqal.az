@@ -26,6 +26,7 @@ export type MyAnnouncementMedia = {
 	cover_image: string
 	gallery: string[]
 	thumb_gallery: string[]
+	link: string | null
 }
 
 /** Elana bağlı imkan/atribut */

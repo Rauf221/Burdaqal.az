@@ -9,7 +9,6 @@ import {
 	buildDetailUpdateFormData,
 	buildMediaStoreFormData,
 	buildMediaUpdateFormData,
-	buildVideoOnlyFormData,
 	postAnnouncementAddressStore,
 	postAnnouncementAddressUpdate,
 	postAnnouncementAttributeStore,
@@ -98,7 +97,7 @@ export function useSaveDetailSectionMutation(locale: string) {
 	})
 }
 
-/** Şəkillər — cover_image, gallery[]; video URL elan üzərində */
+/** Şəkillər — cover_image, gallery[]; YouTube link media API-də `link` sahəsi ilə */
 export function useSaveMediaSectionMutation(locale: string) {
 	return useMutation({
 		mutationFn: async ({
@@ -110,11 +109,6 @@ export function useSaveMediaSectionMutation(locale: string) {
 			announcementId: number
 			mediaId: number | null
 		}) => {
-			const videoFd = buildVideoOnlyFormData(source)
-			if ([...videoFd.keys()].length > 0) {
-				await postAnnouncementUpdate(announcementId, videoFd, locale)
-			}
-
 			if (mediaId != null) {
 				const mfd = buildMediaUpdateFormData(source)
 				if ([...mfd.keys()].length > 0) {

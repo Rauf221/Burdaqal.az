@@ -79,7 +79,14 @@ export default function DashboardAddPropertiesClient({
 	const coverBlobRef = useRef(null)
 	const galleryBlobsRef = useRef([])
 	const [coverPreviewUrl, setCoverPreviewUrl] = useState(null)
+	const [selectedCoverFile, setSelectedCoverFile] = useState(null)
+	const [selectedGalleryFiles, setSelectedGalleryFiles] = useState([])
 	const [galleryPreviews, setGalleryPreviews] = useState([])
+	const [initialGalleryPaths, setInitialGalleryPaths] = useState([])
+	const [deletedGalleryPaths, setDeletedGalleryPaths] = useState([])
+	const galleryPreviewsRef = useRef([])
+	const initialGalleryPathsRef = useRef([])
+	const deletedGalleryPathsRef = useRef([])
 	const hydratedEditIdRef = useRef(null)
 
 	useEffect(() => {
@@ -103,21 +110,27 @@ export default function DashboardAddPropertiesClient({
 			const url = URL.createObjectURL(file)
 			coverBlobRef.current = url
 			setCoverPreviewUrl(url)
+			setSelectedCoverFile(file)
 		} else {
 			setCoverPreviewUrl(null)
+			setSelectedCoverFile(null)
 		}
 	}
 
 	function handleGalleryPreviewChange(e) {
-		galleryBlobsRef.current.forEach((u) => URL.revokeObjectURL(u))
-		galleryBlobsRef.current = []
 		const files = [...(e.target.files || [])].filter((f) => f.type.startsWith('image/'))
+		setSelectedGalleryFiles((prev) => [...prev, ...files])
 		const next = files.map((f) => {
 			const url = URL.createObjectURL(f)
 			galleryBlobsRef.current.push(url)
-			return { url, name: f.name }
+			return { url, name: f.name, fileSize: f.size, isLocalBlob: true }
 		})
-		setGalleryPreviews(next)
+		// Edit rejimində yeni seçim köhnə preview-ları silməsin; mövcudlara əlavə et.
+		setGalleryPreviews((prev) => {
+			const merged = [...prev, ...next]
+			galleryPreviewsRef.current = merged
+			return merged
+		})
 	}
 
 	function handleRemoveCoverPreview() {
@@ -126,12 +139,30 @@ export default function DashboardAddPropertiesClient({
 			coverBlobRef.current = null
 		}
 		setCoverPreviewUrl(null)
+		setSelectedCoverFile(null)
 		const input = document.getElementById('property-cover-image')
 		if (input) input.value = ''
 	}
 
 	function handleRemoveGalleryPreview(idx) {
-		setGalleryPreviews((prev) => prev.filter((_, i) => i !== idx))
+		setGalleryPreviews((prev) => {
+			const item = prev[idx]
+			if (item?.isLocalBlob && item?.url) {
+				setSelectedGalleryFiles((old) => old.filter((f) => !(f.name === item.name && item.fileSize === f.size)))
+				URL.revokeObjectURL(item.url)
+				galleryBlobsRef.current = galleryBlobsRef.current.filter((u) => u !== item.url)
+			}
+			if (item?.path) {
+				setDeletedGalleryPaths((old) => {
+					const nextDeleted = old.includes(item.path) ? old : [...old, item.path]
+					deletedGalleryPathsRef.current = nextDeleted
+					return nextDeleted
+				})
+			}
+			const nextPreviews = prev.filter((_, i) => i !== idx)
+			galleryPreviewsRef.current = nextPreviews
+			return nextPreviews
+		})
 	}
 
 	const coreM = useSaveAnnouncementCoreMutation(locale)
@@ -186,19 +217,32 @@ export default function DashboardAddPropertiesClient({
 		setField('bed_count', editData.detail?.bedroom)
 		setField('bathroom_count', editData.detail?.bathroom)
 		setField('max_guests', editData.detail?.guest)
+		setField('video_youtube_url', editData.media?.link)
 
 		// Edit açılarkən mövcud media fayllarını preview kimi göstər.
 		const coverFromApi = absoluteStoragePreviewUrl(editData.media?.cover_image)
 		setCoverPreviewUrl(coverFromApi)
+		setSelectedCoverFile(null)
 		const galleryFromApi = (editData.media?.gallery ?? [])
-			.map((p, i) => {
-				const url = absoluteStoragePreviewUrl(p)
+			.map((entry, i) => {
+				const rawPath =
+					typeof entry === 'string'
+						? entry
+						: String(entry?.path ?? entry?.image ?? entry?.url ?? '')
+				const url = absoluteStoragePreviewUrl(rawPath)
 				if (!url) return null
-				const tail = String(p).split('/').pop() || `gallery-${i + 1}`
-				return { url, name: tail }
+				const tail = String(rawPath).split('/').pop() || `gallery-${i + 1}`
+				return { url, name: tail, path: String(rawPath), isLocalBlob: false }
 			})
 			.filter(Boolean)
 		setGalleryPreviews(galleryFromApi)
+		galleryPreviewsRef.current = galleryFromApi
+		const initialPaths = galleryFromApi.map((item) => item.path).filter(Boolean)
+		setInitialGalleryPaths(initialPaths)
+		initialGalleryPathsRef.current = initialPaths
+		setSelectedGalleryFiles([])
+		setDeletedGalleryPaths([])
+		deletedGalleryPathsRef.current = []
 
 		// Atributları yenidən işarələ
 		for (const input of form.querySelectorAll('input[name="attribute_id[]"]')) {
@@ -359,11 +403,28 @@ export default function DashboardAddPropertiesClient({
 		const form = formRef.current
 		if (!form) return
 		const raw = new FormData(form)
+		if (selectedCoverFile instanceof File && selectedCoverFile.size > 0) {
+			// Cover update üçün ayrıca "new_*" tag istifadə etmirik; birbaşa cover_image overwrite olunur.
+			raw.set('cover_image', selectedCoverFile)
+		}
+		raw.delete('gallery_images[]')
+		for (const file of selectedGalleryFiles) {
+			raw.append('gallery_images[]', file)
+		}
+		const keptServerPaths = galleryPreviewsRef.current
+			.filter((item) => !item?.isLocalBlob && item?.path)
+			.map((item) => String(item.path))
+		const deletedByDiff = initialGalleryPathsRef.current.filter((p) => !keptServerPaths.includes(p))
+		const deletedUnion = [...new Set([...deletedGalleryPathsRef.current, ...deletedByDiff])]
+		for (const path of deletedUnion) {
+			raw.append('deleted_images[]', path)
+		}
 
 		const cover = raw.get('cover_image')
 		const galleryFiles = [...raw.getAll('gallery_images[]')].filter(
 			(f) => f instanceof File && f.size > 0
 		)
+		const totalGalleryCount = galleryPreviews.length
 		const hasVideo = String(raw.get('video_youtube_url') ?? '').trim() !== ''
 
 		if (mediaId == null) {
@@ -381,8 +442,8 @@ export default function DashboardAddPropertiesClient({
 					return
 				}
 			}
-		} else if (galleryFiles.length > 0 && galleryFiles.length < 5) {
-			setSubmitError('Ən azı 5 qalereya şəkli seçin (və ya heç birini dəyişməyin).')
+		} else if (totalGalleryCount < 5 && !hasVideo) {
+			setSubmitError('Edit zamanı qalereyada minimum 5 şəkil qalmalıdır.')
 			return
 		}
 
@@ -391,6 +452,12 @@ export default function DashboardAddPropertiesClient({
 			{
 				onSuccess: (data) => {
 					if (data?.mediaId != null) setMediaId(data.mediaId)
+					setDeletedGalleryPaths([])
+					deletedGalleryPathsRef.current = []
+					setSelectedCoverFile(null)
+					setSelectedGalleryFiles([])
+					const galleryInput = document.getElementById('property-gallery-images')
+					if (galleryInput) galleryInput.value = ''
 					setSubmitSuccess('Media saxlanıldı (announcement-media).')
 				},
 				onError: (err) => setSubmitError(getSubmitErrorMessage(err)),

@@ -95,14 +95,6 @@ export function buildAnnouncementCoreFormData(source: FormData): FormData {
 	return fd
 }
 
-/** YouTube URL — yalnız elan üzərində saxlamaq üçün */
-export function buildVideoOnlyFormData(source: FormData): FormData {
-	const fd = new FormData()
-	const v = source.get('video_youtube_url')
-	if (v != null && String(v).trim() !== '') fd.append('video_youtube_url', String(v).trim())
-	return fd
-}
-
 /** Form sahələrindən room_count → room və s. (Postman Detail) */
 export function buildDetailStoreFormData(source: FormData, announcementId: number): FormData {
 	const fd = new FormData()
@@ -123,7 +115,7 @@ export function buildDetailUpdateFormData(source: FormData): FormData {
 	return fd
 }
 
-/** Postman Media store — gallery[] (formda gallery_images[]), link */
+/** Postman Media store — gallery[] (formda gallery_images[]), link (video_youtube_url -> link) */
 export function buildMediaStoreFormData(source: FormData, announcementId: number): FormData {
 	const fd = new FormData()
 	fd.append('announcement_id', String(announcementId))
@@ -132,7 +124,7 @@ export function buildMediaStoreFormData(source: FormData, announcementId: number
 	for (const f of source.getAll('gallery_images[]')) {
 		if (f instanceof File && f.size > 0) fd.append('gallery[]', f)
 	}
-	const link = String(source.get('link') ?? '').trim()
+	const link = String(source.get('link') ?? source.get('video_youtube_url') ?? '').trim()
 	if (link) fd.append('link', link)
 	return fd
 }
@@ -142,11 +134,31 @@ export function buildMediaUpdateFormData(source: FormData): FormData {
 	const cover = source.get('cover_image')
 	if (cover instanceof File && cover.size > 0) fd.append('cover_image', cover)
 	for (const f of source.getAll('gallery_images[]')) {
-		if (f instanceof File && f.size > 0) fd.append('gallery[]', f)
+		// API dəyişikliyi: update endpoint yeni şəkilləri `new_images[]` ilə qəbul edir.
+		if (f instanceof File && f.size > 0) fd.append('new_images[]', f)
 	}
-	const link = String(source.get('link') ?? '').trim()
+	for (const imagePath of source.getAll('deleted_images[]')) {
+		const p = normalizeDeletedImagePath(imagePath)
+		if (p) fd.append('deleted_images[]', p)
+	}
+	const link = String(source.get('link') ?? source.get('video_youtube_url') ?? '').trim()
 	if (link) fd.append('link', link)
 	return fd
+}
+
+function normalizeDeletedImagePath(value: FormDataEntryValue | null): string {
+	const raw = String(value ?? '').trim()
+	if (!raw) return ''
+	try {
+		// Backend adətən storage path gözləyir; full URL gəlsə pathname-ə sal.
+		if (/^https?:\/\//i.test(raw)) {
+			const parsed = new URL(raw)
+			return parsed.pathname || ''
+		}
+	} catch {
+		// URL parse alınmasa xam dəyəri saxla.
+	}
+	return raw
 }
 
 function appendAttributeIds(source: FormData, target: FormData): void {
