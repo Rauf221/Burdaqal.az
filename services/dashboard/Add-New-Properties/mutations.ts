@@ -124,9 +124,11 @@ export function useSaveMediaSectionMutation(locale: string) {
 			}
 			const sfd = buildMediaStoreFormData(source, announcementId)
 			const cov = sfd.get('cover_image')
+			const link = String(sfd.get('link') ?? '').trim()
 			const hasMedia =
 				(cov instanceof File && cov.size > 0) ||
-				[...sfd.getAll('gallery[]')].some((f) => f instanceof File && f.size > 0)
+				[...sfd.getAll('gallery[]')].some((f) => f instanceof File && f.size > 0) ||
+				Boolean(link)
 			if (!hasMedia) {
 				return { mediaId: null }
 			}

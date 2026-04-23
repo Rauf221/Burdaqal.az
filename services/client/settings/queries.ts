@@ -1,6 +1,6 @@
 import { extractSettingsFromApiPayload } from '@/lib/media-url'
 import { queryOptions } from '@tanstack/react-query'
-import { getMetaTagList, getSettings } from './api'
+import { getMetaTagList, getSettings, getSocialMediaList } from './api'
 
 /**
  * Sabit referans — hər renderdə yeni obyekt yaratmır (useQuery üçün).
@@ -21,4 +21,12 @@ const getMetaTagListQuery = (locale?: string) => {
 	})
 }
 
-export { getMetaTagListQuery }
+const getSocialMediaListQuery = () => {
+	return queryOptions({
+		queryKey: ['social-media'],
+		queryFn: () => getSocialMediaList(),
+		staleTime: 5 * 60 * 1000,
+	})
+}
+
+export { getMetaTagListQuery, getSocialMediaListQuery }

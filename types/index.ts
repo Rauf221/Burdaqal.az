@@ -145,6 +145,19 @@ export type SliderListResponse = {
 	meta: LaravelPaginationMeta
 }
 
+/** `GET /random-regions` -> `data[]` (ana səhifə rayon kartları). */
+export type RandomRegionItem = {
+	id: number
+	name: string
+	slug: string
+	image: string | null
+	announcements_count: number
+}
+
+export type RandomRegionsResponse = {
+	data: RandomRegionItem[]
+}
+
 /** `GET /contact` → `data`. */
 export type ContactMainData = {
 	email: string
@@ -205,6 +218,19 @@ export type MetaTagRow = {
 /** Tam JSON `GET /meta-tag` (Laravel paginator). */
 export type MetaTagListResponse = {
 	data: MetaTagRow[]
+	links: LaravelPaginationLinks
+	meta: LaravelPaginationMeta
+}
+
+/** `GET /sosial-media` — footer social links. */
+export type SocialMediaItem = {
+	icon: string
+	thumb_icon: string
+	link: string
+}
+
+export type SocialMediaListResponse = {
+	data: SocialMediaItem[]
 	links: LaravelPaginationLinks
 	meta: LaravelPaginationMeta
 }

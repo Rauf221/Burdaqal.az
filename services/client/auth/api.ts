@@ -60,6 +60,16 @@ export async function postUpdateUser(formData: FormData, locale?: string) {
 	return userPost<unknown>('/update', formData, { ...localeHeaders(locale) })
 }
 
+/** POST /email/send-otp — form-data: email (yeni e-poçt ünvanı) */
+export async function postEmailSendOtp(formData: FormData, locale?: string) {
+	return userPost<unknown>('/email/send-otp', formData, { ...localeHeaders(locale) })
+}
+
+/** POST /email/verify — form-data: code */
+export async function postEmailVerify(formData: FormData, locale?: string) {
+	return userPost<unknown>('/email/verify', formData, { ...localeHeaders(locale) })
+}
+
 /** POST /password/change — form-data: old_password, password, password_confirmation */
 export async function postPasswordChange(formData: FormData, locale?: string) {
 	return userPost<unknown>('/password/change', formData, { ...localeHeaders(locale) })

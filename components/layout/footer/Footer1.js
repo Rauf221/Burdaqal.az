@@ -7,6 +7,14 @@ import FooterNewsletterForm from '@/components/layout/footer/FooterNewsletterFor
 import { useSiteBranding } from '@/providers/SiteBrandingProvider'
 import { Link } from '@/i18n/navigation'
 import { categoriesListQuery } from '@/services/dashboard/Add-New-Properties/queries'
+import { getSocialMediaListQuery } from '@/services/client/settings'
+
+function normalizeExternalLink(raw) {
+	if (!raw || !String(raw).trim()) return '/#'
+	const val = String(raw).trim()
+	if (/^https?:\/\//i.test(val)) return val
+	return `https://${val}`
+}
 
 export default function Footer1({ footerCls }) {
 	const locale = useLocale()
@@ -14,6 +22,8 @@ export default function Footer1({ footerCls }) {
 	const logoFooter = branding.logoOnDarkBg
 	const { data: categoriesRes } = useQuery(categoriesListQuery(locale))
 	const categories = (categoriesRes?.data ?? []).slice(0, 6)
+	const { data: socialRes } = useQuery(getSocialMediaListQuery())
+	const socials = socialRes?.data ?? []
 	return (
 		<>
 
@@ -36,26 +46,42 @@ export default function Footer1({ footerCls }) {
 							<div className="wg-social">
 								<span>Follow Us</span>
 								<ul className="list-social">
-									<li>
-										<Link href="/#">
-											<i className="icon-facebook" />
-										</Link>
-									</li>
-									<li>
-										<Link href="/#">
-											<i className="icon-twitter" />
-										</Link>
-									</li>
-									<li>
-										<Link href="/#">
-											<i className="icon-instagram" />
-										</Link>
-									</li>
-									<li>
-										<Link href="/#">
-											<i className="icon-linkedin2" />
-										</Link>
-									</li>
+									{socials.length ? (
+										socials.map((s, i) => (
+											<li key={`${s.link}-${i}`}>
+												<a href={normalizeExternalLink(s.link)} target="_blank" rel="noopener noreferrer">
+													<img
+														src={s.icon}
+														alt=""
+														style={{ width: 16, height: 16, objectFit: 'contain' }}
+													/>
+												</a>
+											</li>
+										))
+									) : (
+										<>
+											<li>
+												<Link href="/#">
+													<i className="icon-facebook" />
+												</Link>
+											</li>
+											<li>
+												<Link href="/#">
+													<i className="icon-twitter" />
+												</Link>
+											</li>
+											<li>
+												<Link href="/#">
+													<i className="icon-instagram" />
+												</Link>
+											</li>
+											<li>
+												<Link href="/#">
+													<i className="icon-linkedin2" />
+												</Link>
+											</li>
+										</>
+									)}
 								</ul>
 							</div>
 						</div>

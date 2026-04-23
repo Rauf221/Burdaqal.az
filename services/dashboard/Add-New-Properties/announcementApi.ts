@@ -47,7 +47,7 @@ export async function postAnnouncementDetailUpdate(
 	return userPost<unknown>(`/announcement-detail/update/${detailId}`, fd, withLocale(locale))
 }
 
-/** POST .../announcement-media/store — cover_image, gallery[], announcement_id */
+/** POST .../announcement-media/store — cover_image, gallery[], announcement_id, link */
 export async function postAnnouncementMediaStore(fd: FormData, locale: string): Promise<unknown> {
 	return userPost<unknown>('/announcement-media/store', fd, withLocale(locale))
 }
@@ -123,7 +123,7 @@ export function buildDetailUpdateFormData(source: FormData): FormData {
 	return fd
 }
 
-/** Postman Media store — gallery[] (formda gallery_images[]) */
+/** Postman Media store — gallery[] (formda gallery_images[]), link */
 export function buildMediaStoreFormData(source: FormData, announcementId: number): FormData {
 	const fd = new FormData()
 	fd.append('announcement_id', String(announcementId))
@@ -132,6 +132,8 @@ export function buildMediaStoreFormData(source: FormData, announcementId: number
 	for (const f of source.getAll('gallery_images[]')) {
 		if (f instanceof File && f.size > 0) fd.append('gallery[]', f)
 	}
+	const link = String(source.get('link') ?? '').trim()
+	if (link) fd.append('link', link)
 	return fd
 }
 
@@ -142,6 +144,8 @@ export function buildMediaUpdateFormData(source: FormData): FormData {
 	for (const f of source.getAll('gallery_images[]')) {
 		if (f instanceof File && f.size > 0) fd.append('gallery[]', f)
 	}
+	const link = String(source.get('link') ?? '').trim()
+	if (link) fd.append('link', link)
 	return fd
 }
 

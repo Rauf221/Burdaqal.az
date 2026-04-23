@@ -7,8 +7,9 @@ import { useAuthSession } from '@/lib/auth/useAuthSession'
 import { getUserProfileQuery } from '@/services/client/auth/queries'
 import {
 	usePasswordChangeMutation,
+	useSendEmailOtpMutation,
 	useUpdateProfileMutation,
-	useVerifyProfileEmailCodeMutation,
+	useVerifyEmailOtpMutation,
 } from '@/services/client/auth/mutations'
 import { getAxiosErrorMessage } from '@/services/client/auth/apiMessage'
 import {
@@ -77,8 +78,9 @@ export default function DashboardMyProfileClient() {
 		}
 	}, [imagePreview])
 
-	/** Postman /verify-code — yalnız `code` (Bearer). Yalnız modalın “Təsdiqlə” düyməsindən çağırılır. */
-	const verifyProfileEmailMutation = useVerifyProfileEmailCodeMutation(locale)
+	/** Yeni email axını: /email/send-otp -> /email/verify */
+	const sendEmailOtpMutation = useSendEmailOtpMutation(locale)
+	const verifyEmailOtpMutation = useVerifyEmailOtpMutation(locale)
 	/** /update — e-poçt eyni olanda Save birbaşa; e-poçt fərqlidirsə yalnız verify-code uğurundan sonra. */
 	const updateMutation = useUpdateProfileMutation(locale)
 	const passwordMutation = usePasswordChangeMutation(locale)
@@ -142,6 +144,20 @@ export default function DashboardMyProfileClient() {
 		setOtpResendKey((k) => k + 1)
 		setOtpModalOpen(true)
 		setProfileOk('')
+
+		queueMicrotask(() => {
+			sendEmailOtpMutation.mutate(
+				{ email: payload.email },
+				{
+					onSuccess: () => {
+						setOtpHint('Kod yeni e-poct unvaniniza gonderildi.')
+					},
+					onError: (err) => {
+						setOtpError(getAxiosErrorMessage(err, 'Kod gonderilmedi. Yeniden cehd edin.'))
+					},
+				}
+			)
+		})
 	}
 
 	const closeOtpModal = () => {
@@ -167,7 +183,7 @@ export default function DashboardMyProfileClient() {
 			mobile: pendingProfile.mobile,
 			image: pendingProfile.image,
 		}
-		verifyProfileEmailMutation.mutate(
+		verifyEmailOtpMutation.mutate(
 			{ code: otpCode },
 			{
 				onSuccess: () => {
@@ -199,10 +215,20 @@ export default function DashboardMyProfileClient() {
 	}
 
 	const onResendEmailOtp = () => {
-		// Təkrar göndərmə üçün ayrıca endpoint yoxdur; burada heç bir sorğu atılmır.
-		setOtpError('')
-		setOtpHint('Kodu yenidən almaq üçün pəncərəni bağlayıb yenidən Save edin.')
-		setOtpResendKey((k) => k + 1)
+		if (!pendingProfile?.email) return
+		sendEmailOtpMutation.mutate(
+			{ email: pendingProfile.email },
+			{
+				onSuccess: () => {
+					setOtpError('')
+					setOtpHint('Kod yeniden gonderildi.')
+					setOtpResendKey((k) => k + 1)
+				},
+				onError: (err) => {
+					setOtpError(getAxiosErrorMessage(err, 'Kod yeniden gonderilmedi.'))
+				},
+			}
+		)
 	}
 
 	const onSubmitPassword = (e) => {
@@ -235,7 +261,8 @@ export default function DashboardMyProfileClient() {
 
 	const busyProfile =
 		updateMutation.isPending ||
-		verifyProfileEmailMutation.isPending
+		sendEmailOtpMutation.isPending ||
+		verifyEmailOtpMutation.isPending
 	const busyPw = passwordMutation.isPending
 	const loadingProfile = isAuthed && isPending && !isFetched
 
@@ -443,7 +470,8 @@ export default function DashboardMyProfileClient() {
 											onResend={onResendEmailOtp}
 											error={otpError}
 											disabled={
-												verifyProfileEmailMutation.isPending ||
+												verifyEmailOtpMutation.isPending ||
+												sendEmailOtpMutation.isPending ||
 												updateMutation.isPending
 											}
 											onClearError={() => setOtpError('')}
@@ -454,7 +482,8 @@ export default function DashboardMyProfileClient() {
 												className="tf-button-primary w-full"
 												disabled={
 													otpCode.length !== 6 ||
-													verifyProfileEmailMutation.isPending ||
+													verifyEmailOtpMutation.isPending ||
+													sendEmailOtpMutation.isPending ||
 													updateMutation.isPending
 												}
 											>

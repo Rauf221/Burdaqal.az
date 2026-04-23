@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query'
-import { getSlider } from './api'
+import { getRandomRegions, getSlider } from './api'
 
 const getSliderQuery = (locale?: string, page?: number) => {
 	return queryOptions({
@@ -9,4 +9,12 @@ const getSliderQuery = (locale?: string, page?: number) => {
 	})
 }
 
-export { getSliderQuery }
+const getRandomRegionsQuery = (locale?: string) => {
+	return queryOptions({
+		queryKey: ['random-regions', locale ?? 'default'],
+		queryFn: () => getRandomRegions(locale),
+		staleTime: 2 * 60 * 1000,
+	})
+}
+
+export { getSliderQuery, getRandomRegionsQuery }

@@ -1,5 +1,5 @@
 import { get } from '@/lib/api'
-import type { SliderListResponse } from '@/types'
+import type { RandomRegionsResponse, SliderListResponse } from '@/types'
 
 const getSlider = async (locale?: string, page?: number) => {
 	return get<SliderListResponse>('/slider', {
@@ -8,4 +8,8 @@ const getSlider = async (locale?: string, page?: number) => {
 	})
 }
 
-export { getSlider }
+const getRandomRegions = async (locale?: string) => {
+	return get<RandomRegionsResponse>('/random-regions', { locale })
+}
+
+export { getSlider, getRandomRegions }

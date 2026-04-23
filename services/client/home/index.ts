@@ -1,2 +1,2 @@
-export { getSlider } from './api'
-export { getSliderQuery } from './queries'
+export { getRandomRegions, getSlider } from './api'
+export { getRandomRegionsQuery, getSliderQuery } from './queries'

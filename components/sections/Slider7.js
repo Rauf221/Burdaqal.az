@@ -105,27 +105,9 @@ export default function Slider7() {
 												<div className="row">
 													<div className="col-12">
 														<div className="slider-content">
-															<div className="text fade-item fade-item-1">{item.description}</div>
+														
 															<TitleLines text={item.title} />
-															{target.kind === 'internal' ? (
-																<Link
-																	href={target.href}
-																	className="tf-button-primary m-auto fade-item fade-item-4"
-																>
-																	{item.btn}
-																	<i className="icon-arrow-right-add" />
-																</Link>
-															) : (
-																<a
-																	href={target.href}
-																	className="tf-button-primary m-auto fade-item fade-item-4"
-																	target="_blank"
-																	rel="noopener noreferrer"
-																>
-																	{item.btn}
-																	<i className="icon-arrow-right-add" />
-																</a>
-															)}
+															<div className="text fade-item fade-item-1">{item.description}</div>
 														</div>
 													</div>
 												</div>
@@ -143,7 +125,7 @@ export default function Slider7() {
 					<div className="list">
 						<div className="group-form form-search-content">
 							<div className="form-style-has-title">
-								<div className="title">Keyword</div>
+								<div className="title">Axtar</div>
 								<div className="relative">
 									<fieldset className="name">
 										<input type="text" placeholder="Enter Keyyword" className="show-search style-default" name="name" tabIndex={2} aria-required="true" required />
@@ -206,7 +188,7 @@ export default function Slider7() {
 						<div className="divider-1" />
 						<div className="group-form">
 							<div className="form-style-has-title">
-								<div className="title">Status</div>
+								<div className="title">Rayon</div>
 								<select className="nice-select style-white" tabIndex={0}>
 									<option data-value="For Sale" className="option selected">For Sale</option>
 									<option data-value="For Ren" className="option">For Ren</option>
@@ -217,7 +199,7 @@ export default function Slider7() {
 						<div className="divider-1" />
 						<div className="group-form">
 							<div className="form-style-has-title">
-								<div className="title">Type</div>
+								<div className="title">Kategoriya</div>
 								<select className="nice-select" tabIndex={0}>
 									<option data-value className="option selected focus">All Type</option>
 									<option data-value="Office" className="option">Office</option>
@@ -234,16 +216,8 @@ export default function Slider7() {
 								<div className="tf-button-filter btn-filter"><i className="flaticon-filter" />Filter</div>
 								<div className="open-filter filter-no-content" id="a1">
 									<div>
-										<div className="grid-3-cols mb-20">
-											<select className="nice-select" tabIndex={0}>
-
-
-												<option data-value className="option selected">City</option>
-												<option data-value="New York" className="option">New York</option>
-												<option data-value="Paris" className="option">Paris</option>
-												<option data-value="Ha Noi" className="option">Ha Noi</option>
-
-											</select>
+										<div className="grid-2-cols mb-20">
+											
 											<select className="nice-select" tabIndex={0}>
 
 

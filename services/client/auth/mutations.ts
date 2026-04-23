@@ -2,6 +2,8 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
+	postEmailSendOtp,
+	postEmailVerify,
 	getLogout,
 	postForgotPassword,
 	postLogin,
@@ -101,6 +103,30 @@ export function useVerifyProfileEmailCodeMutation(locale?: string) {
 			if (token) {
 				setAuthToken(token)
 			}
+		},
+	})
+}
+
+/** Email dəyişmə OTP göndərmə: POST /email/send-otp */
+export function useSendEmailOtpMutation(locale?: string) {
+	return useMutation({
+		retry: false,
+		mutationFn: (payload: { email: string }) => {
+			const fd = new FormData()
+			fd.append('email', payload.email.trim())
+			return postEmailSendOtp(fd, locale)
+		},
+	})
+}
+
+/** Email dəyişmə OTP yoxlama: POST /email/verify */
+export function useVerifyEmailOtpMutation(locale?: string) {
+	return useMutation({
+		retry: false,
+		mutationFn: (payload: { code: string }) => {
+			const fd = new FormData()
+			fd.append('code', String(payload.code).trim())
+			return postEmailVerify(fd, locale)
 		},
 	})
 }

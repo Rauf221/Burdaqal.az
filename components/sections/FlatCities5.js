@@ -1,6 +1,9 @@
 
 'use client'
+import { useQuery } from '@tanstack/react-query'
+import { useLocale } from 'next-intl'
 import { Swiper, SwiperSlide } from 'swiper/react'
+import { getRandomRegionsQuery } from '@/services/client/home'
 const sliderCities2 = {
 	spaceBetween: 25,
 	slidesPerView: 5,
@@ -23,7 +26,19 @@ const sliderCities2 = {
 }
 import { Link } from '@/i18n/navigation'
 
+const FALLBACK_CITY_IMAGES = [
+	'/images/image-box/cities-1.jpg',
+	'/images/image-box/cities-2.jpg',
+	'/images/image-box/cities-3.jpg',
+	'/images/image-box/cities-4.jpg',
+	'/images/image-box/cities-5.jpg',
+]
+
 export default function FlatCities5() {
+	const locale = useLocale()
+	const { data: regionsPayload, isPending, isError } = useQuery(getRandomRegionsQuery(locale))
+	const regions = regionsPayload?.data ?? []
+
 	return (
 		<>
 
@@ -42,76 +57,53 @@ export default function FlatCities5() {
 							<div className="wrap">
 								<div className="swiper-container slider-cities-2">
 									<Swiper {...sliderCities2}>
-										<SwiperSlide>
-											<div className="cities-item style-2 wow fadeInUp">
-												<img src="/images/image-box/cities-1.jpg" alt="" />
-												<div className="content">
-													<p>23 Properties</p>
-													<h4>New York</h4>
+										{isPending ? (
+											<SwiperSlide>
+												<div className="cities-item style-2 wow fadeInUp">
+													<img src={FALLBACK_CITY_IMAGES[0]} alt="" />
+													<div className="content">
+														<p>...</p>
+														<h4>Yuklenir</h4>
+													</div>
+													<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
 												</div>
-												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
-											</div>
-										</SwiperSlide>
-										<SwiperSlide>
-											<div className="cities-item style-2 wow fadeInUp" data-wow-delay="0.1s">
-												<img src="/images/image-box/cities-2.jpg" alt="" />
-												<div className="content">
-													<p>23 Properties</p>
-													<h4>Los Angeles</h4>
+											</SwiperSlide>
+										) : isError ? (
+											<SwiperSlide>
+												<div className="cities-item style-2 wow fadeInUp">
+													<img src={FALLBACK_CITY_IMAGES[0]} alt="" />
+													<div className="content">
+														<p>0 Properties</p>
+														<h4>Xeta</h4>
+													</div>
+													<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
 												</div>
-												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
-											</div>
-										</SwiperSlide>
-										<SwiperSlide>
-											<div className="cities-item style-2 wow fadeInUp" data-wow-delay="0.2s">
-												<img src="/images/image-box/cities-3.jpg" alt="" />
-												<div className="content">
-													<p>23 Properties</p>
-													<h4>Miami</h4>
-												</div>
-												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
-											</div>
-										</SwiperSlide>
-										<SwiperSlide>
-											<div className="cities-item style-2 wow fadeInUp" data-wow-delay="0.3s">
-												<img src="/images/image-box/cities-4.jpg" alt="" />
-												<div className="content">
-													<p>23 Properties</p>
-													<h4>Florida</h4>
-												</div>
-												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
-											</div>
-										</SwiperSlide>
-										<SwiperSlide>
-											<div className="cities-item style-2 wow fadeInUp" data-wow-delay="0.4s">
-												<img src="/images/image-box/cities-5.jpg" alt="" />
-												<div className="content">
-													<p>23 Properties</p>
-													<h4>San Francisco</h4>
-												</div>
-												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
-											</div>
-										</SwiperSlide>
-										<SwiperSlide>
-											<div className="cities-item style-2">
-												<img src="/images/image-box/cities-4.jpg" alt="" />
-												<div className="content">
-													<p>23 Properties</p>
-													<h4>Florida</h4>
-												</div>
-												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
-											</div>
-										</SwiperSlide>
-										<SwiperSlide>
-											<div className="cities-item style-2">
-												<img src="/images/image-box/cities-5.jpg" alt="" />
-												<div className="content">
-													<p>23 Properties</p>
-													<h4>San Francisco</h4>
-												</div>
-												<Link href="/elanlar" className="button-arrow-right"><i className="icon-arrow-right-add" /></Link>
-											</div>
-										</SwiperSlide>
+											</SwiperSlide>
+										) : (
+											regions.map((region, idx) => (
+												<SwiperSlide key={region.id}>
+													<div
+														className="cities-item style-2 wow fadeInUp"
+														{...(idx ? { 'data-wow-delay': `${idx * 0.1}s` } : {})}
+													>
+														<img
+															src={region.image || FALLBACK_CITY_IMAGES[idx % FALLBACK_CITY_IMAGES.length]}
+															alt={region.name}
+														/>
+														<div className="content">
+															<p>{region.announcements_count ?? 0} Properties</p>
+															<h4>{region.name}</h4>
+														</div>
+														<Link
+															href={`/elanlar?region=${encodeURIComponent(region.slug)}`}
+															className="button-arrow-right"
+														>
+															<i className="icon-arrow-right-add" />
+														</Link>
+													</div>
+												</SwiperSlide>
+											))
+										)}
 									</Swiper>
 								</div>
 							</div>
