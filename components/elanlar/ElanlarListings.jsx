@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useLocale } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
@@ -22,6 +22,110 @@ function sliderImageUrls(media) {
 	return urls.length ? urls : [PLACEHOLDER_IMG]
 }
 
+const PropertyCard = memo(function PropertyCard({ row, index, cardSwiperByIdRef }) {
+	const cardRef = useRef(null)
+	const [isVisible, setIsVisible] = useState(false)
+
+	useEffect(() => {
+		if (!cardRef.current || isVisible) return
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) {
+						setIsVisible(true)
+						observer.disconnect()
+						break
+					}
+				}
+			},
+			{ rootMargin: '220px 0px' }
+		)
+		observer.observe(cardRef.current)
+		return () => observer.disconnect()
+	}, [isVisible])
+
+	const wowDelay =
+		index % 3 === 1 ? '0.1s' : index % 3 === 2 ? '0.2s' : undefined
+	const d = row.detail
+	const street = row.address?.street
+	const images = sliderImageUrls(row.media)
+	const detailHref = `/elanlar/${row.slug}`
+
+	return (
+		<div className="col-xl-4 col-md-6" key={row.id} ref={cardRef}>
+			<div
+				className="box-dream has-border wow fadeInUp"
+				{...(wowDelay ? { 'data-wow-delay': wowDelay } : {})}
+				onMouseEnter={() => {
+					const s = cardSwiperByIdRef.current[row.id]
+					s?.autoplay?.start()
+				}}
+				onMouseLeave={() => {
+					const s = cardSwiperByIdRef.current[row.id]
+					s?.autoplay?.stop()
+				}}
+			>
+				<div className="image-group relative">
+					<div className="list-tags">
+						<span className="tags-item for-sell">ELAN</span>
+					</div>
+					<div className="button-heart">
+						<i className="flaticon-heart-1" />
+					</div>
+					{isVisible ? (
+						<SliderBoxDream
+							path="house/property-listing"
+							start={1}
+							end={3}
+							detailHref={detailHref}
+							images={images}
+							navKey={`elan-${row.id}`}
+							autoplayOnHover
+							onSwiperReady={(swiper) => {
+								cardSwiperByIdRef.current[row.id] = swiper
+							}}
+						/>
+					) : (
+						<Link href={detailHref} className="block">
+							<img src={images[0] || PLACEHOLDER_IMG} alt={row.title || ''} loading="lazy" decoding="async" />
+						</Link>
+					)}
+				</div>
+				<Link href={detailHref} className="box-dream-body-link">
+					<div className="content">
+						<div className="head">
+							<div className="title">{row.title}</div>
+							<div className="price">
+								{row.price ? `${row.price} AZN` : '—'}
+							</div>
+						</div>
+						<div className="location">
+							<div className="icon">
+								<i className="flaticon-location" />
+							</div>
+							<p>{street || '—'}</p>
+						</div>
+						<div className="icon-box">
+							<div className="item">
+								<i className="flaticon-hotel" />
+								<p>{d ? `${d.bedroom} yataq` : '—'}</p>
+							</div>
+							<div className="item">
+								<i className="flaticon-bath-tub" />
+								<p>{d ? `${d.bathroom} hamam` : '—'}</p>
+							</div>
+							<div className="item">
+								<i className="flaticon-minus-front" />
+								<p>{d ? `${d.room} otaq` : '—'}</p>
+							</div>
+						</div>
+					</div>
+				</Link>
+			</div>
+		</div>
+	)
+})
+
 export default function ElanlarListings() {
 	const locale = useLocale()
 	const searchParams = useSearchParams()
@@ -37,8 +141,14 @@ export default function ElanlarListings() {
 			region_id,
 		})
 	)
+	const searchKey = searchParams.toString()
 
-	const items = q.data?.data ?? []
+	useEffect(() => {
+		setPage(1)
+		cardSwiperByIdRef.current = {}
+	}, [searchKey])
+
+	const items = useMemo(() => q.data?.data ?? [], [q.data?.data])
 	const meta = q.data?.meta
 	const total = meta?.total ?? 0
 	const lastPage = meta?.last_page ?? 1
@@ -78,82 +188,14 @@ export default function ElanlarListings() {
 							</p>
 						</div>
 					) : (
-						items.map((row, index) => {
-							const wowDelay =
-								index % 3 === 1 ? '0.1s' : index % 3 === 2 ? '0.2s' : undefined
-							const d = row.detail
-							const street = row.address?.street
-							const images = sliderImageUrls(row.media)
-							const detailHref = `/elanlar/${row.slug}`
-
-							return (
-								<div className="col-xl-4 col-md-6" key={row.id}>
-									<div
-										className="box-dream has-border wow fadeInUp"
-										{...(wowDelay ? { 'data-wow-delay': wowDelay } : {})}
-										onMouseEnter={() => {
-											const s = cardSwiperByIdRef.current[row.id]
-											s?.autoplay?.start()
-										}}
-										onMouseLeave={() => {
-											const s = cardSwiperByIdRef.current[row.id]
-											s?.autoplay?.stop()
-										}}
-									>
-										<div className="image-group relative">
-											<div className="list-tags">
-												<span className="tags-item for-sell">ELAN</span>
-											</div>
-											<div className="button-heart">
-												<i className="flaticon-heart-1" />
-											</div>
-											<SliderBoxDream
-												path="house/property-listing"
-												start={1}
-												end={3}
-												detailHref={detailHref}
-												images={images}
-												navKey={`elan-${row.id}`}
-												autoplayOnHover
-												onSwiperReady={(swiper) => {
-													cardSwiperByIdRef.current[row.id] = swiper
-												}}
-											/>
-										</div>
-										<Link href={detailHref} className="box-dream-body-link">
-											<div className="content">
-												<div className="head">
-													<div className="title">{row.title}</div>
-													<div className="price">
-														{row.price ? `${row.price} AZN` : '—'}
-													</div>
-												</div>
-												<div className="location">
-													<div className="icon">
-														<i className="flaticon-location" />
-													</div>
-													<p>{street || '—'}</p>
-												</div>
-												<div className="icon-box">
-													<div className="item">
-														<i className="flaticon-hotel" />
-														<p>{d ? `${d.bedroom} yataq` : '—'}</p>
-													</div>
-													<div className="item">
-														<i className="flaticon-bath-tub" />
-														<p>{d ? `${d.bathroom} hamam` : '—'}</p>
-													</div>
-													<div className="item">
-														<i className="flaticon-minus-front" />
-														<p>{d ? `${d.room} otaq` : '—'}</p>
-													</div>
-												</div>
-											</div>
-										</Link>
-									</div>
-								</div>
-							)
-						})
+						items.map((row, index) => (
+							<PropertyCard
+								key={row.id}
+								row={row}
+								index={index}
+								cardSwiperByIdRef={cardSwiperByIdRef}
+							/>
+						))
 					)}
 				</div>
 				{!q.isPending && !q.isError && items.length === 0 ? (
