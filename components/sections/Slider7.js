@@ -1,11 +1,15 @@
 'use client'
 
 import { Link } from '@/i18n/navigation'
+import { useRouter } from '@/i18n/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { useLocale } from 'next-intl'
 import { EffectFade, Navigation } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { getSliderQuery } from '@/services/client/home'
+import { categoriesListQuery, regionsListQuery } from '@/services/dashboard/Add-New-Properties/queries'
+import { useState } from 'react'
+import { announcementsListQuery, publicStorageUrl } from '@/services/client/properties'
 
 const sliderHome7 = {
 	modules: [Navigation, EffectFade],
@@ -79,9 +83,41 @@ function TitleLines({ text }) {
 
 export default function Slider7() {
 	const locale = useLocale()
+	const router = useRouter()
 	const { data, isPending } = useQuery(getSliderQuery(locale, 1))
+	const categoriesQ = useQuery(categoriesListQuery(locale))
+	const regionsQ = useQuery(regionsListQuery(locale))
+	const [filters, setFilters] = useState({
+		search: '',
+		region_id: '',
+		category_id: '',
+	})
+	const previewQ = useQuery(
+		announcementsListQuery(locale, 1, {
+			search: filters.search,
+			category_id: filters.category_id,
+			region_id: filters.region_id,
+		})
+	)
 
 	const slides = !isPending && data?.data?.length > 0 ? data.data : FALLBACK_SLIDES
+	const categories = categoriesQ.data?.data ?? []
+	const regions = regionsQ.data?.data ?? []
+	const previewItems = (previewQ.data?.data ?? []).slice(0, 4)
+	const fallbackPreviewImage = '/images/author/avatar-8.png'
+
+	const onSubmitFilters = (event) => {
+		event.preventDefault()
+		const query = {}
+		const search = filters.search.trim()
+		if (search) query.search = search
+		if (filters.category_id) query.category_id = filters.category_id
+		if (filters.region_id) query.region_id = filters.region_id
+		router.push({
+			pathname: '/elanlar',
+			query,
+		})
+	}
 
 	return (
 		<>
@@ -121,14 +157,23 @@ export default function Slider7() {
 					<div className="home7-next has-background swiper-button-next" />
 					<div className="home7-prev has-background swiper-button-prev" />
 				</div>
-				<form className="form-search-home5 background-secondary wow fadeInUp">
+				<form className="form-search-home5 background-secondary wow fadeInUp" onSubmit={onSubmitFilters}>
 					<div className="list">
 						<div className="group-form form-search-content">
 							<div className="form-style-has-title">
 								<div className="title">Axtar</div>
 								<div className="relative">
 									<fieldset className="name">
-										<input type="text" placeholder="Enter Keyyword" className="show-search style-default" name="name" tabIndex={2} aria-required="true" required />
+										<input
+											type="text"
+											placeholder="Axtar..."
+											className="show-search style-default"
+											name="search"
+											value={filters.search}
+											onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
+											tabIndex={2}
+											aria-required="false"
+										/>
 									</fieldset>
 									<div className="style-absolute-right">
 										<div className="style-icon-default"><i className="flaticon-magnifiying-glass" />
@@ -136,50 +181,37 @@ export default function Slider7() {
 									</div>
 									<div className="box-content-search style-1">
 										<ul>
-											<li>
-												<div className="item1">
-													<div>
-														<div className="image">
-															<img src="/images/author/avatar-8.png" alt="" />
+											{previewItems.map((row) => (
+												<li key={row.id}>
+													<Link href={`/elanlar/${row.slug}`} className="item1">
+														<div>
+															<div
+																className="image"
+																style={{
+																	width: 56,
+																	height: 56,
+																	borderRadius: '50%',
+																	overflow: 'hidden',
+																	flexShrink: 0,
+																}}
+															>
+																<img
+																	src={publicStorageUrl(row.media?.cover_image) || fallbackPreviewImage}
+																	alt={row.title || ''}
+																	style={{
+																		width: '100%',
+																		height: '100%',
+																		objectFit: 'cover',
+																		borderRadius: '50%',
+																	}}
+																/>
+															</div>
+															<p>{row.title}</p>
 														</div>
-														<p>Archer House</p>
-													</div>
-													<div className="text">For Sale</div>
-												</div>
-											</li>
-											<li>
-												<div className="item1">
-													<div>
-														<div className="image">
-															<img src="/images/author/avatar-7.png" alt="" />
-														</div>
-														<p>Home Pitt Street</p>
-													</div>
-													<div className="text">For Rent</div>
-												</div>
-											</li>
-											<li>
-												<div className="item1">
-													<div>
-														<div className="image">
-															<img src="/images/author/avatar-9.png" alt="" />
-														</div>
-														<p>Villa One Hyde Park</p>
-													</div>
-													<div className="text">For Rent</div>
-												</div>
-											</li>
-											<li>
-												<div className="item1">
-													<div>
-														<div className="image">
-															<img src="/images/author/avatar-10.png" alt="" />
-														</div>
-														<p>House on the beverly hills</p>
-													</div>
-													<div className="text">For Sale</div>
-												</div>
-											</li>
+														<div className="text">{row.category?.name || 'Elan'}</div>
+													</Link>
+												</li>
+											))}
 										</ul>
 									</div>
 								</div>
@@ -189,10 +221,21 @@ export default function Slider7() {
 						<div className="group-form">
 							<div className="form-style-has-title">
 								<div className="title">Rayon</div>
-								<select className="nice-select style-white" tabIndex={0}>
-									<option data-value="For Sale" className="option selected">For Sale</option>
-									<option data-value="For Ren" className="option">For Ren</option>
-
+								<select
+									className="nice-select style-white"
+									tabIndex={0}
+									name="region_id"
+									value={filters.region_id}
+									onChange={(e) =>
+										setFilters((prev) => ({ ...prev, region_id: e.target.value }))
+									}
+								>
+									<option value="">Hamısı</option>
+									{regions.map((region) => (
+										<option key={region.id} value={String(region.id)}>
+											{region.name}
+										</option>
+									))}
 								</select>
 							</div>
 						</div>
@@ -200,12 +243,21 @@ export default function Slider7() {
 						<div className="group-form">
 							<div className="form-style-has-title">
 								<div className="title">Kategoriya</div>
-								<select className="nice-select" tabIndex={0}>
-									<option data-value className="option selected focus">All Type</option>
-									<option data-value="Office" className="option">Office</option>
-									<option data-value="Villa" className="option">Villa</option>
-									<option data-value="Shop" className="option">Shop</option>
-
+								<select
+									className="nice-select"
+									tabIndex={0}
+									name="category_id"
+									value={filters.category_id}
+									onChange={(e) =>
+										setFilters((prev) => ({ ...prev, category_id: e.target.value }))
+									}
+								>
+									<option value="">Hamısı</option>
+									{categories.map((category) => (
+										<option key={category.id} value={String(category.id)}>
+											{category.name}
+										</option>
+									))}
 								</select>
 							</div>
 						</div>
@@ -236,10 +288,10 @@ export default function Slider7() {
 										</div>
 										<div className="grid-4-cols">
 											<fieldset className="name">
-												<input type="text" placeholder="Min. Area" name="name" tabIndex={2} aria-required="true" required />
+												<input type="text" placeholder="Min. Area" name="name" tabIndex={2} aria-required="false" />
 											</fieldset>
 											<fieldset className="name">
-												<input type="text" placeholder="Max. Area" name="name" tabIndex={2} aria-required="true" required />
+												<input type="text" placeholder="Max. Area" name="name" tabIndex={2} aria-required="false" />
 											</fieldset>
 											<select className="nice-select" tabIndex={0}>
 

@@ -81,6 +81,9 @@ export type GetAnnouncementsOptions = {
 	locale?: string
 	/** Laravel `?page=` */
 	page?: number
+	search?: string
+	category_id?: string | number
+	region_id?: string | number
 }
 
 export type GetAnnouncementBySlugOptions = {
@@ -94,9 +97,19 @@ export type GetAnnouncementBySlugOptions = {
 export async function getAnnouncements(
 	options?: GetAnnouncementsOptions
 ): Promise<PublicAnnouncementsResponse> {
-	const { locale, page = 1 } = options ?? {}
+	const { locale, page = 1, search, category_id, region_id } = options ?? {}
+	const params: Record<string, string | number> = { page }
+	if (search != null && String(search).trim() !== '') {
+		params.search = String(search).trim()
+	}
+	if (category_id != null && String(category_id).trim() !== '') {
+		params.category_id = String(category_id).trim()
+	}
+	if (region_id != null && String(region_id).trim() !== '') {
+		params.region_id = String(region_id).trim()
+	}
 	return get<PublicAnnouncementsResponse>('/announcements', {
-		params: { page },
+		params,
 		...(locale && { locale }),
 	})
 }

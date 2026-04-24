@@ -3,6 +3,7 @@ import { Link } from '@/i18n/navigation'
 import data from "@/utils/carousel.json"
 import { Autoplay, Navigation, Pagination } from "swiper/modules"
 import { Swiper, SwiperSlide } from "swiper/react"
+import { useMemo } from 'react'
 
 
 /**
@@ -13,45 +14,54 @@ import { Swiper, SwiperSlide } from "swiper/react"
 export default function SliderBoxDream({ start, end, path, detailHref, images, navKey, autoplayOnHover, onSwiperReady }) {
 	const useRemoteImages = Array.isArray(images) && images.length > 0
 
-	const slideEntries = useRemoteImages
-		? images.map((src, i) => ({ src, key: `remote-${i}` }))
-		: data.slice(start, end).map((item) => ({
-				src: `/images/${path}-${item.id}.jpg`,
-				key: item.id,
-			}))
+	const slideEntries = useMemo(
+		() =>
+			useRemoteImages
+				? images.map((src, i) => ({ src, key: `remote-${i}` }))
+				: data.slice(start, end).map((item) => ({
+					src: `/images/${path}-${item.id}.jpg`,
+					key: item.id,
+				})),
+		[useRemoteImages, images, path, start, end]
+	)
 
 	const navId = useRemoteImages ? (navKey ?? `r-${start}-${end}`) : null
 	const nextNavClass = useRemoteImages ? `sdp-next-${navId}` : `sdp${start}`
 	const prevNavClass = useRemoteImages ? `sdp-prev-${navId}` : `sdp${end}`
+	const paginationClass = useRemoteImages ? `box-dream-pagination-${navId}` : `box-dream-pagination-${start}-${end}`
 
-	const sliderBoxDream = {
-		modules: [Navigation, Pagination, Autoplay],
-		spaceBetween: 0,
-		slidesPerView: 1,
-		autoplay: autoplayOnHover
-			? {
+	const sliderBoxDream = useMemo(
+		() => ({
+			modules: [Navigation, Pagination, Autoplay],
+			spaceBetween: 0,
+			slidesPerView: 1,
+			autoplay: autoplayOnHover
+				? {
 					delay: 3000,
 					disableOnInteraction: false,
 					enabled: false,
 					pauseOnMouseEnter: false,
 				}
-			: {
+				: {
 					delay: 3000,
 					disableOnInteraction: false,
 					enabled: true,
 				},
-		observer: true,
-		observeParents: true,
-		navigation: {
-			nextEl: `.${nextNavClass}`,
-			prevEl: `.${prevNavClass}`,
-			clickable: true,
-		},
-		pagination: {
-			el: ".box-dream-pagination",
-			clickable: true,
-		},
-	}
+			// observer/reobserve hər kart sliderində CPU yükü yaradır.
+			observer: false,
+			observeParents: false,
+			navigation: {
+				nextEl: `.${nextNavClass}`,
+				prevEl: `.${prevNavClass}`,
+				clickable: true,
+			},
+			pagination: {
+				el: `.${paginationClass}`,
+				clickable: true,
+			},
+		}),
+		[autoplayOnHover, nextNavClass, prevNavClass, paginationClass]
+	)
 	return (
 		<>
 			<Swiper
@@ -59,22 +69,20 @@ export default function SliderBoxDream({ start, end, path, detailHref, images, n
 			onSwiper={(swiper) => onSwiperReady?.(swiper)}
 			className="swiper-container slider-box-dream arrow-style-1 pagination-style-1"
 		>
-				<div className="swiper-wrapper">
-					{slideEntries.map((entry, i) => (
-						<SwiperSlide key={entry.key ?? `${start}-${i}`}>
-							<div className="w-full">
-								{detailHref ? (
-									<Link href={detailHref} className="block">
-										<img src={entry.src} alt="" />
-									</Link>
-								) : (
-									<img src={entry.src} alt="" />
-								)}
-							</div>
-						</SwiperSlide>
-					))}
-				</div>
-				<div className="swiper-pagination box-dream-pagination" />
+			{slideEntries.map((entry, i) => (
+				<SwiperSlide key={entry.key ?? `${start}-${i}`}>
+					<div className="w-full">
+						{detailHref ? (
+							<Link href={detailHref} className="block">
+								<img src={entry.src} alt="" loading="lazy" decoding="async" />
+							</Link>
+						) : (
+							<img src={entry.src} alt="" loading="lazy" decoding="async" />
+						)}
+					</div>
+				</SwiperSlide>
+			))}
+			<div className={`swiper-pagination ${paginationClass}`} />
 				<div className={`box-dream-next swiper-button-next ${nextNavClass}`} />
 				<div className={`box-dream-prev swiper-button-prev ${prevNavClass}`} />
 			</Swiper>

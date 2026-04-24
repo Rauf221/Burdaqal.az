@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useLocale } from 'next-intl'
+import { useSearchParams } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
 import SliderBoxDream from '@/components/slider/SliderBoxDream'
 import { announcementsListQuery, publicStorageUrl } from '@/services/client/properties'
@@ -23,9 +24,19 @@ function sliderImageUrls(media) {
 
 export default function ElanlarListings() {
 	const locale = useLocale()
+	const searchParams = useSearchParams()
 	const [page, setPage] = useState(1)
 	const cardSwiperByIdRef = useRef({})
-	const q = useQuery(announcementsListQuery(locale, page))
+	const search = String(searchParams.get('search') ?? '').trim()
+	const category_id = String(searchParams.get('category_id') ?? '').trim()
+	const region_id = String(searchParams.get('region_id') ?? '').trim()
+	const q = useQuery(
+		announcementsListQuery(locale, page, {
+			search,
+			category_id,
+			region_id,
+		})
+	)
 
 	const items = q.data?.data ?? []
 	const meta = q.data?.meta
